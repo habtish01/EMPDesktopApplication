@@ -2,6 +2,8 @@
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraEditors.Filtering.Templates;
 using DevExpress.XtraExport.Helpers;
+using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraPrinting;
 using Patient_Managment_System.Data_Access_Layer;
 using Patient_Managment_System.Models;
@@ -15,6 +17,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -29,13 +33,63 @@ namespace Patient_Managment_System
     {
 
         private patientRegistration validationHelper = new patientRegistration();
-        string personId;
-            
+     
+        IdGenerationDataAcess acess = new IdGenerationDataAcess();
+        List<Person> persons = new List<Person>();
+        DataAccessLayer layer = new DataAccessLayer();
+        List<Patient> DataGridPatients = new List<Patient>();
+        IEnumerable<Patient> searchedPatient;
+        Patient rowData;
+        patientInfo patientInfo =new patientInfo();
+        List<patientInfo> allPatients=new List<patientInfo>();
+        patientInfo selectedPatient;
+
+
         public PatientMSystem()
         {
             InitializeComponent();
+            var id=acess.idGeneration();
+            txtId.Text = id.ToString();
         }
 
+        private void PatientMSystem_Load(object sender, EventArgs e)
+        {
+            btnStart.Enabled = false;
+            btnClose.Enabled = false;
+            btnDelete.Enabled = false;
+
+            var dataList = layer.LoadListForVisitTypeCoboBox();
+            ///cobo box for visit type
+            cBoxVisitType.DataSource = dataList;
+            cBoxVisitType.ValueMember = "Id";
+            cBoxVisitType.DisplayMember = "Description";
+            //combo box for Finance Type
+            var dataList1 = layer.LoadListForFinanceTypeCoboBox();
+            cBoxFinanceType.DataSource = dataList1;
+            cBoxFinanceType.ValueMember = "Id";
+            cBoxFinanceType.DisplayMember = "Description";
+            //combo box for assignment
+            var datalist = layer.LoadListForAssignmentTypeCoboBox();
+            cBoxAssignType.DataSource = datalist;
+            cBoxAssignType.ValueMember = "Id";
+            cBoxAssignType.DisplayMember = "Description";
+
+
+            var id = txtId.Text.Trim();
+            if (string.IsNullOrEmpty(id))
+            {
+                btnClose.Enabled = false;
+            }
+
+            DataGridPatients = layer.GetPatients();
+            
+            //data grid forn patient document
+            gridControlPatient.DataSource = DataGridPatients;
+
+
+          
+
+        }
 
 
 
@@ -43,6 +97,8 @@ namespace Patient_Managment_System
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+           
+         
             //constant values
             var dateregistered = System.DateTime.Now;
             int typeid = 1;
@@ -50,14 +106,8 @@ namespace Patient_Managment_System
             var remark = "registered";
 
             ///check the validation
-            string id = txtId.Text.Trim();
-            if (!validationHelper.isIdValid(id)) { 
-
-                txtId.BackColor = Color.LightPink; 
-                txtId.Focus();
-                return;     
-
-            }
+           
+           
 
             // Validate First Name
             string firstname = txtFirstName.Text.Trim();
@@ -170,10 +220,11 @@ namespace Patient_Managment_System
                 cBoxAssignValue.Focus();                 
                 return;
             }
-              
-            //assign values to person object
+
+            var personId = acess.idNo();
+            
             Person person=new Person();
-            person.Id = txtId.Text.Trim();
+            person.Id =personId;    
             person.FirstName = txtFirstName.Text.Trim();  
             person.MiddleName = txtMiddleName.Text.Trim();
             person.LastName = txtLastName.Text.Trim();  
@@ -181,42 +232,86 @@ namespace Patient_Managment_System
             person.Age=Convert.ToInt32(txtAge.Text.Trim());
             person.PhoneNumber=txtPhone.Text.Trim();  
             person.DateRegistered=DateTime.Now;
-            //call data access layer
+           
+            //assign values to patientinfo model class
+            patientInfo.PersonId = person.Id;
+            patientInfo.FirstName=person.FirstName; 
+            patientInfo.MiddleName=person.MiddleName;
+            patientInfo.LastName=person.LastName;
+            patientInfo.Age = person.Age;
+            patientInfo.Gender= person.Gender;
+            patientInfo.Phone = int.Parse(person.PhoneNumber);
+            patientInfo.RegistrationDate = person.DateRegistered;
 
-            DataAccessLayer accessLayer = new DataAccessLayer();    
-            var PatientRegister=accessLayer.InsertPerson(person);   
             
             //assign address values to address class
             Address address = new Address();
             address.City = txtCity.Text.Trim(); 
             address.SubCity = txtSubCity.Text.Trim();   
             address.Kebele = txtKebele.Text.Trim(); 
-            address.HouseNo = txtHouseNo.Text.Trim();   
-            address.PatientId=txtId.Text.Trim();
-            //call the data acess layer
-           var AddressRegister= accessLayer.InsertAddress(address);
+            address.HouseNo = txtHouseNo.Text.Trim();
+            address.PersonId = personId;
+          
+
+            patientInfo.City= address.City; 
+            patientInfo.subCity=address.SubCity;
+            patientInfo.Kebele= address.Kebele; 
+            patientInfo.HouseNo= address.HouseNo;   
+
             ComoBoxList selectedListItem = (ComoBoxList)cBoxAssignType.SelectedItem;
             var assignId=selectedListItem.Id;
-           //var dataList= accessLayer.LoadListForAssignmentValueCoboBox(assignId); 
-            //cBoxAssignValue.DataSource=dataList;
+          
             cBoxAssignValue.DisplayMember = "Description";
             cBoxAssignValue.ValueMember = "Id";
 
             ComoBoxList selectedListValue = (ComoBoxList)cBoxAssignValue.SelectedItem;
+            var id=txtId.Text.Trim();
 
 
+            if (!layer.checkPersonExistance(id))
+            {
+                var isPatientInserted = layer.InsertPerson(person);
+                var isAddressRegistered = layer.InsertAddress(address);
+                //call the data acess layer
 
-            if (PatientRegister && AddressRegister)
+                if (isPatientInserted && isAddressRegistered)
                 {
-                 
-                    btnStart.Enabled = true;  
+                    btnStart.Enabled = true;
                     btnSave.Enabled = false;
                     MessageBox.Show("Registration Success", "Sucess", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    txtId.Text = personId;
+                    persons.Add(person);
+                    allPatients.Add(patientInfo);
+
+
                 }
                 else
                 {
                     MessageBox.Show("Registrationfailed!. No records inserted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            else
+            {
+                var isPatientUpdated = layer.UpdatePatient(person,id);
+                var isAddressUpdated = layer.UpdateAddress(address,id);
+                //call the data acess layer
+
+                if (isPatientUpdated && isAddressUpdated)
+                {
+                    btnStart.Enabled = true;
+                    btnSave.Enabled = false;
+                    MessageBox.Show("Patient Update Success", "Sucess", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //txtId.Text = personId;
+                  
+
+
+                }
+                else
+                {
+                    MessageBox.Show("Patient Update Failed!.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+            }
             
         }
 
@@ -302,19 +397,24 @@ namespace Patient_Managment_System
                 txtSearch.Focus();
                 return;
             }
-            //          //Sql Connection
-            //          SqlConnection conn = new SqlConnection("Data Source=HEAL-AFRICA-HEA;Initial Catalog=HAHC;Integrated Security=True");
-            //          //sql command
-            //          SqlCommand searchCmd = new SqlCommand(@"SELECT[Id]
-            //    , [first_name]
-            //    , [middile_name]
-            //    , [last_name]
+            //searchPatient(SearchBy, searchText);
+          
 
-            //    , [date_registered]
-
-            //    , [phone]
-
-            //FROM[general].[person] where searchBy='"+searchText+"'");
+            if (SearchBy == "Phone Number")
+            {
+                searchedPatient = DataGridPatients.Where(member => member.PhoneNumber.Contains(searchText.TrimStart()));
+                gridControlPatient.DataSource=searchedPatient.ToList();
+                
+            }
+            else if(SearchBy=="Name")
+            {
+                searchedPatient = DataGridPatients.Where(member => member.FirstName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0 || member.MiddleName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0 || member.LastName.IndexOf(searchText) >= 0);
+                gridControlPatient.DataSource=searchedPatient.ToList() ;
+            }
+            else
+            {
+                gridControlPatient.DataSource = DataGridPatients;
+            }
 
 
         }
@@ -358,28 +458,7 @@ namespace Patient_Managment_System
 
         private void pictureBoxPatientProfile_Click(object sender, EventArgs e)
         {
-            // Create an instance of the OpenFileDialog
-            //using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            //{
-            //    openFileDialog.Filter = "Image Files (*.jpg;*.jpeg;*.png;*.gif;*.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
-            //    openFileDialog.FilterIndex = 1;
-
-            //    if (openFileDialog.ShowDialog() == DialogResult.OK)
-            //    {
-            //        try
-            //        {
-            //            // Get the selected image file path
-            //            string imagePath = openFileDialog.FileName;
-
-            //            // Load the image into the PictureBox
-            //            pictureBoxPatientProfile.Image = new System.Drawing.Bitmap(imagePath);
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        }
-            //    }
-            //}
+           
         }
 
         private void btnUploadPhoto_Click(object sender, EventArgs e)
@@ -446,41 +525,7 @@ namespace Patient_Managment_System
             Application.Exit();
         }
 
-        private void PatientMSystem_Load(object sender, EventArgs e)
-        {
-            btnStart.Enabled = false;
-           DataAccessLayer layer=new DataAccessLayer();
-             var dataList=layer.LoadListForVisitTypeCoboBox();
-                ///cobo box for visit type
-            cBoxVisitType.DataSource = dataList; 
-            cBoxVisitType.ValueMember ="Id";
-            cBoxVisitType.DisplayMember = "Description";
-            //combo box for Finance Type
-           var dataList1= layer.LoadListForFinanceTypeCoboBox();
-            cBoxFinanceType.DataSource = dataList1; 
-            cBoxFinanceType.ValueMember="Id";
-            cBoxFinanceType.DisplayMember = "Description";
-            //combo box for assignment
-            var datalist = layer.LoadListForAssignmentTypeCoboBox();
-            cBoxAssignType.DataSource = datalist;
-            cBoxAssignType.ValueMember="Id";    
-            cBoxAssignType.DisplayMember="Description";
-
-
-            var id = txtId.Text.Trim();
-            if (string.IsNullOrEmpty(id))
-            {
-                btnClose.Enabled = false;
-            }
-
-            var patients=layer.GetPatients();
-
-            gridControlPatient.DataSource = patients;   
-           // GridView gridView = PatientsDataGrid.MainView as GridView;
-            // PatientsDataGrid.();
-            //PatientsDataGrid.Columns.AddVisible("PropertyName1", "Column Header 1");
-        }
-
+     
         private void btnStart_Click(object sender, EventArgs e)
         {
 
@@ -494,15 +539,36 @@ namespace Patient_Managment_System
             ComoBoxList selectedListItem = (ComoBoxList)cBoxVisitType.SelectedItem;
              var id=txtId.Text.Trim();  
             DataAccessLayer layer = new DataAccessLayer();
-            if (layer.InsertVisitType(selectedListItem,id))
+            if (layer.checkVisitExistanceForPatient(id))
             {
-                btnClose.Enabled = true;
-               
-                MessageBox.Show("Visit Type addedd", "success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (layer.updateVisitType(selectedListItem, id))
+                {
+
+                    btnClose.Enabled = true;
+                 
+
+                    MessageBox.Show("Visit Type Updated", "success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                }
+                else
+                {
+                    MessageBox.Show("Visit Type Update Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
             }
             else
             {
-                MessageBox.Show("Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (layer.InsertVisitType(selectedListItem, id))
+                {
+                    btnClose.Enabled = true;
+                    btnStart.Enabled = false;
+
+                    MessageBox.Show("Visit Type addedd", "success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Visit Type Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
 
 
@@ -520,6 +586,8 @@ namespace Patient_Managment_System
             DataAccessLayer layer = new DataAccessLayer();
             if (layer.UpdateStatus(id))
             {
+                btnStart.Enabled = true;
+                btnClose.Enabled = false;
                 MessageBox.Show("Visit Status closed Successfully", "success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }
@@ -537,6 +605,170 @@ namespace Patient_Managment_System
 
         private void gridControlPatient_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            var patients = layer.GetPatients();
+
+            gridControlPatient.DataSource = patients;
+        }
+
+       
+        private void txtFirstName_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!char.IsLetter(ch) && ch != 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtMiddleName_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!char.IsLetter(ch) && ch != 8)
+            {
+                e.Handled = true;
+            }
+        }
+       
+      
+
+        private void txtLastName_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!char.IsLetter(ch)&& ch!=8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtAge_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!char.IsDigit(ch) && ch != 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtPhone_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!char.IsDigit(ch) && ch != 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtRegAmount_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!char.IsDigit(ch) && ch != 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtFinanceAmount_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!char.IsDigit(ch) && ch != 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtCity_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!char.IsLetter(ch) && ch != 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtSubCity_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!char.IsLetter(ch) && ch != 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void gridViewPatients_RowClick(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
+        {
+          rowData = (Patient)gridViewPatients.GetRow(e.RowHandle);
+            var id = rowData.Id;
+           
+            selectedPatient = allPatients.FirstOrDefault(patient => patient.PersonId==id);
+            var patientId=layer.getPatientId(rowData.Id);
+            var adrress = layer.getPatientAdrressInfo(patientId);
+            var patienttInfo=layer.getPatientInfo(rowData.Id);
+            var location_id = layer.getVisitLocation(patientId);
+
+            txtId.Text = rowData.Id;
+            txtFirstName.Text = rowData.FirstName;
+            txtMiddleName.Text =rowData.MiddleName;
+            txtLastName.Text = rowData.LastName;
+            txtAge.Text = patienttInfo.Age.ToString();
+            txtPhone.Text = rowData.PhoneNumber;
+            cBoxGeneder.Text = rowData.Gender;
+            if (adrress != null)
+            {
+                txtSubCity.Text = adrress.SubCity != null ? adrress.SubCity : "";
+                txtCity.Text = adrress.City != null ? adrress.City : "";
+                txtKebele.Text = adrress.Kebele != null ? adrress.Kebele : "";
+                txtHouseNo.Text = adrress.HouseNo != null ? adrress.HouseNo : "";
+            }
+            cBoxRegType.Text = string.Empty;
+            txtRegAmount.Text = string.Empty;
+            txtFinanceAmount.Text = string.Empty;
+            cBoxFinanceType.Text = string.Empty;
+            cBoxAssignType.Text = string.Empty;
+            cBoxAssignValue.Text = string.Empty;
+            //cBoxVisitType.Text = string.Empty;
+
+            cBoxVisitType.SelectedValue = location_id;
+            
+
+            PatienRegTab.SelectedTab = tabPage1;
+            btnSave.Enabled = true;
+            btnClose.Enabled = true;
+            btnStart.Enabled = true;
+            btnDelete.Enabled = true;   
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            var id = txtId.Text.Trim(); 
+            if (layer.DeletePatient(id))
+            {
+                MessageBox.Show("Patient Deleted Successfully","Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
+                btnDelete.Enabled = false;  
+            }
+            else
+            {
+                MessageBox.Show("Patient Deleting Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnDelete.Enabled=true;
+
+            }
+        }
+
+        private void comboBoxSortby_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           var value= comboBoxSortby.Text.Trim();
+            if(value=="Name")
+            gridControlPatient.DataSource=DataGridPatients.OrderBy(x => x.FirstName).ToList();
+            else if(value=="ID")
+            gridControlPatient.DataSource=DataGridPatients.OrderBy(x => x.Id).ToList();
+            else if(value=="Phone Number")
+            gridControlPatient.DataSource=DataGridPatients.OrderBy(x => x.PhoneNumber).ToList();
+            else if(value=="Gender")
+            gridControlPatient.DataSource=DataGridPatients.OrderBy(x => x.Gender).ToList();
 
         }
     }

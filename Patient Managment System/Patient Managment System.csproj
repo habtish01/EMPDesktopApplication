@@ -65,6 +65,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data Access Layer\DataAccessLayer.cs" />
+    <Compile Include="Data Access Layer\IdGenerationDataAcess.cs" />
+    <Compile Include="Models\IdGeneration.cs" />
     <Compile Include="PatientManagmentSystemForm.cs">
       <SubType>Form</SubType>
     </Compile>

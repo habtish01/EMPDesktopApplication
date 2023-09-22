@@ -9,8 +9,10 @@ namespace Patient_Managment_System.Validation
 {
     public class patientRegistration
     {
+      
         public  bool isFirstNameValid(string firstName)
         {
+           
             if (String.IsNullOrEmpty(firstName))  
             {
                 return false;
@@ -47,7 +49,16 @@ namespace Patient_Managment_System.Validation
 
         public  bool isAgeValid(string age)
         {
-            if(String.IsNullOrEmpty(age)) { return false; }
+            if(String.IsNullOrEmpty(age))
+            {
+                
+                return false;
+            }
+            if (!(int.TryParse(age, out int ag)))
+            {
+                return false;
+            }
+            if (ag <= 0) return false;
             return true;
         }
         public  bool isIdValid(string id)
