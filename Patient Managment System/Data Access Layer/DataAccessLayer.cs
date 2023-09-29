@@ -4,12 +4,13 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 using System.Windows.Forms;
 using System.Configuration;
 using Patient_Managment_System.Models;
 using System.Net;
 using static DevExpress.Utils.Svg.CommonSvgImages;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 
 namespace Patient_Managment_System.Data_Access_Layer
 {
@@ -38,7 +39,7 @@ namespace Patient_Managment_System.Data_Access_Layer
             }
             return false;
         }
-        public bool UpdatePatient (Person person,string id)
+        public bool UpdatePatient (Person person)
         {
             string updatePerson = "UPDATE [general].[person] SET [first_name] = @first_name,[middile_name] = @middile_name,[last_name] = @last_name,[gender] = @gender,[age] = @age ,[phone] = @phone WHERE Id=@id";
             SqlConnection connection = new SqlConnection(connectionString);
@@ -46,7 +47,7 @@ namespace Patient_Managment_System.Data_Access_Layer
             SqlCommand command = new SqlCommand(updatePerson, connection);
 
             // Add parameters 
-            command.Parameters.AddWithValue("@id", id);
+            command.Parameters.AddWithValue("@id", person.Id);
             command.Parameters.AddWithValue("@first_name", person.FirstName);
             command.Parameters.AddWithValue("@middile_name", person.MiddleName);
             command.Parameters.AddWithValue("@last_name", person.LastName);
@@ -63,36 +64,60 @@ namespace Patient_Managment_System.Data_Access_Layer
             return false;
 
         }
-        public bool UpdateAddress(Address address,string id)
+        public int getPatientID(string personId)
+        {
+            int PatientId = 0;  
+            SqlConnection connection = new SqlConnection(connectionString);
+            string filterId = "select id from general.patient where person_id=@id";
+            connection.Open();
+            SqlCommand sqlCommand1 = new SqlCommand(filterId, connection);
+            sqlCommand1.Parameters.AddWithValue("@id", personId);
+            SqlDataReader reader = sqlCommand1.ExecuteReader();
+            if (reader.HasRows)
+            {
+                reader.Read();
+                 PatientId = int.Parse(reader["id"].ToString());
+                reader.Close();
+            }
+            return PatientId;
+      }
+
+        public bool isAddressExist(int patientId)
+        {
+            string isAddressExit = "select patient_id from general.patientaddress where patient_id=@id";
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand cmd = new SqlCommand(isAddressExit, connection);
+            cmd.Parameters.AddWithValue("@id", patientId);
+            SqlDataReader sqlDataReader = cmd.ExecuteReader();
+            if (sqlDataReader.HasRows)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public bool UpdateAddress(Address address)
         {
             SqlConnection connection = new SqlConnection(connectionString);
-
-            //update
-            string UpdateAddress = "UPDATE [general].[patientaddress] SET [subcity] = @subcity ,[city] = @city ,[kebele] = @kebele ,[house_no] = @house_no WHERE patient_id=@id";
-                string filterId = "select id from general.patient where person_id=@id";
-                SqlCommand sqlCommand = new SqlCommand(UpdateAddress, connection);
-                SqlCommand sqlCommand1 = new SqlCommand(filterId, connection);
-                 connection.Open();
-                sqlCommand1.Parameters.AddWithValue("@id", id);
-                SqlDataReader reader = sqlCommand1.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    var PatientId = reader["id"].ToString();
-                    reader.Close();
-                    //Add parametres
-                    sqlCommand.Parameters.AddWithValue("@id", Convert.ToInt32(PatientId));
+            string addressQuery = "UPDATE [general].[patientaddress] SET [subcity] = @subcity ,[city] = @city ,[kebele] = @kebele ,[house_no] = @house_no WHERE patient_id=@id";
+            connection.Open();
+            SqlCommand sqlCommand =new SqlCommand(addressQuery,connection);
+           
+                //Add parametres
+                    sqlCommand.Parameters.AddWithValue("@id", address.PatientId);
                     sqlCommand.Parameters.AddWithValue("@city", address.City);
                     sqlCommand.Parameters.AddWithValue("@subcity", address.SubCity);
                     sqlCommand.Parameters.AddWithValue("@kebele", address.Kebele);
                     sqlCommand.Parameters.AddWithValue("@house_no", address.HouseNo);
 
                     int rowsAffected = sqlCommand.ExecuteNonQuery();
-                connection.Close(); 
+                    connection.Close(); 
                     if (rowsAffected > 0) return true;
-                    return false;   
                    
-                }
+                   
+                
             return false;
         }
 
@@ -143,20 +168,12 @@ namespace Patient_Managment_System.Data_Access_Layer
             SqlConnection connection = new SqlConnection(connectionString);
             string InsertAddress = "insert into[general].[patientaddress] ([patient_id],[city],[subcity],[kebele],[house_no]) values (@id,@city,@subcity,@kebele,@houseno)";
             connection.Open();           
-            string filterId = "select id from general.patient where person_id=@id";
-
+           
                 //insert
                 SqlCommand sqlCommand = new SqlCommand(InsertAddress, connection);
-                SqlCommand sqlCommand1 = new SqlCommand(filterId, connection);
-                sqlCommand1.Parameters.AddWithValue("@id", address.PersonId);
-                SqlDataReader reader = sqlCommand1.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    var PatientId = reader["id"].ToString();
-                    reader.Close();
+               
                     //Add parametres
-                    sqlCommand.Parameters.AddWithValue("@id", Convert.ToInt32(PatientId));
+                    sqlCommand.Parameters.AddWithValue("@id", address.PatientId);
                     sqlCommand.Parameters.AddWithValue("@city", address.City);
                     sqlCommand.Parameters.AddWithValue("@subcity", address.SubCity);
                     sqlCommand.Parameters.AddWithValue("@kebele", address.Kebele);
@@ -164,10 +181,11 @@ namespace Patient_Managment_System.Data_Access_Layer
 
                     int rowsAffected = sqlCommand.ExecuteNonQuery();
                     if (rowsAffected > 0) return true;
-                    return false;
-                }
+                   
+                
             return false;
         }
+
         #endregion
        public int getVisitLocation(int id)
         {
@@ -501,6 +519,86 @@ namespace Patient_Managment_System.Data_Access_Layer
                 return true;    
             }
             return false;   
+        }
+
+        public List<ComoBoxList> loadAppointmentServices()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            List<ComoBoxList> dataList = new List<ComoBoxList>();
+
+            string query = "SELECT id,description FROM appointment.appointment_type";
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ComoBoxList visit = new ComoBoxList
+                        {
+                            Id = reader.GetInt32(0),
+                            Description = reader.GetString(1)
+
+                        };
+                        dataList.Add(visit);
+                    }
+                }
+            }
+            connection.Close();
+
+            return dataList;
+
+        }
+
+        public bool createNewAppointment(Appointment appointment)
+        {
+            string query = "insert into appointment.appointment (patient_id,appointment_type_id,location_id,date,status,appointed_by,note) values (@id,@type,@location_id,@date,@status,@provider,@note)";
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@id",appointment.PateintId);
+            command.Parameters.AddWithValue("@type",appointment.ServiceId);
+            command.Parameters.AddWithValue("@location_id", appointment.LocationId);
+            command.Parameters.AddWithValue("@date",appointment.Date);
+            command.Parameters.AddWithValue("@provider",appointment.Provider);
+            command.Parameters.AddWithValue("@status",appointment.Status);
+            command.Parameters.AddWithValue("@note",appointment.Note);
+            int rows=command.ExecuteNonQuery(); 
+            if(rows > 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+        public List<AppointmentSummary> loadAppointmentSummary()
+        {
+           
+            List<AppointmentSummary> summary = new List<AppointmentSummary>();
+            string query = "select patient_id,appointment_type_id,location_id,date,status,appointed_by,note from appointment.appointment";
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand command = new SqlCommand(query, connection);
+            SqlDataReader reader = command.ExecuteReader(); 
+            while (reader.Read())
+            {
+
+                AppointmentSummary appointment = new AppointmentSummary
+                {
+                    PatientId = reader["patient_id"].ToString(),
+                    VisitLocation=int.Parse(reader["location_id"].ToString())==1? "IPD":"OPD",                                   
+                    ServiceType = int.Parse(reader["appointment_type_id"].ToString())==1? "Obstetrics" : "Cardiology",
+                    Provider = reader["appointed_by"].ToString(),
+                    AppointmentDate = DateTime.Parse(reader["date"].ToString()),
+                    Status = bool.Parse(reader["status"].ToString())==true?"On Time":"Late",
+                    Note = reader["note"].ToString()
+                };
+
+                summary.Add(appointment);
+            }
+
+            return summary;
+
         }
 
     }

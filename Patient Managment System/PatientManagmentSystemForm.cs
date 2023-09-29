@@ -23,6 +23,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Forms;
 
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -43,6 +44,8 @@ namespace Patient_Managment_System
         patientInfo patientInfo =new patientInfo();
         List<patientInfo> allPatients=new List<patientInfo>();
         patientInfo selectedPatient;
+        List<string> PatientId=new List<string>();
+        List<AppointmentSummary> summary = new List<AppointmentSummary>();
 
 
         public PatientMSystem()
@@ -50,6 +53,7 @@ namespace Patient_Managment_System
             InitializeComponent();
             var id=acess.idGeneration();
             txtId.Text = id.ToString();
+            txtId.Enabled = false;
         }
 
         private void PatientMSystem_Load(object sender, EventArgs e)
@@ -87,8 +91,28 @@ namespace Patient_Managment_System
             gridControlPatient.DataSource = DataGridPatients;
 
 
-          
+          //for patient id combo box
 
+            foreach(var item in DataGridPatients)
+            {
+                if(item.Id!=null)
+                    PatientId.Add(item.Id);
+
+            }
+            comboBoxPatientID.DataSource = PatientId;
+
+            //for Services Combo box
+            comboBoxServices.DataSource=layer.loadAppointmentServices();
+            comboBoxServices.DisplayMember = "Description";
+            comboBoxServices.ValueMember = "id";
+
+            //for Location combo box
+            comboBoxLocation.DataSource = layer.LoadListForVisitTypeCoboBox();
+            comboBoxLocation.DisplayMember = "Description";
+            comboBoxLocation.ValueMember = "id";
+            ///for appointment summary 
+            summary=layer.loadAppointmentSummary();
+            gridControlAppointmentList.DataSource = summary.OrderByDescending(x => x.AppointmentDate.Date == DateTime.Today).ThenBy(x => x.AppointmentDate);
         }
 
 
@@ -104,10 +128,11 @@ namespace Patient_Managment_System
             int typeid = 1;
             var active = true;
             var remark = "registered";
+            string personId;
 
             ///check the validation
-           
-           
+
+
 
             // Validate First Name
             string firstname = txtFirstName.Text.Trim();
@@ -221,10 +246,10 @@ namespace Patient_Managment_System
                 return;
             }
 
-            var personId = acess.idNo();
+           
             
             Person person=new Person();
-            person.Id =personId;    
+            person.Id =txtId.Text.Trim();    
             person.FirstName = txtFirstName.Text.Trim();  
             person.MiddleName = txtMiddleName.Text.Trim();
             person.LastName = txtLastName.Text.Trim();  
@@ -245,12 +270,13 @@ namespace Patient_Managment_System
 
             
             //assign address values to address class
+            
             Address address = new Address();
             address.City = txtCity.Text.Trim(); 
             address.SubCity = txtSubCity.Text.Trim();   
             address.Kebele = txtKebele.Text.Trim(); 
             address.HouseNo = txtHouseNo.Text.Trim();
-            address.PersonId = personId;
+            address.PatientId =layer.getPatientID(person.Id);
           
 
             patientInfo.City= address.City; 
@@ -265,23 +291,26 @@ namespace Patient_Managment_System
             cBoxAssignValue.ValueMember = "Id";
 
             ComoBoxList selectedListValue = (ComoBoxList)cBoxAssignValue.SelectedItem;
-            var id=txtId.Text.Trim();
+           
 
 
-            if (!layer.checkPersonExistance(id))
+            if (!layer.checkPersonExistance(person.Id))
             {
                 var isPatientInserted = layer.InsertPerson(person);
+                address.PatientId = layer.getPatientID(person.Id);
                 var isAddressRegistered = layer.InsertAddress(address);
                 //call the data acess layer
 
                 if (isPatientInserted && isAddressRegistered)
                 {
+                    personId = acess.idNo();
                     btnStart.Enabled = true;
-                    btnSave.Enabled = false;
+                    //btnSave.Enabled = false;
                     MessageBox.Show("Registration Success", "Sucess", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     txtId.Text = personId;
                     persons.Add(person);
                     allPatients.Add(patientInfo);
+                    
 
 
                 }
@@ -290,26 +319,54 @@ namespace Patient_Managment_System
                     MessageBox.Show("Registrationfailed!. No records inserted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+
+
             else
             {
-                var isPatientUpdated = layer.UpdatePatient(person,id);
-                var isAddressUpdated = layer.UpdateAddress(address,id);
-                //call the data acess layer
-
-                if (isPatientUpdated && isAddressUpdated)
+                if (layer.isAddressExist(address.PatientId))
                 {
-                    btnStart.Enabled = true;
-                    btnSave.Enabled = false;
-                    MessageBox.Show("Patient Update Success", "Sucess", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    //txtId.Text = personId;
-                  
+                    var isAddressUpdated = layer.UpdateAddress(address);
+                    var isPatientUpdated = layer.UpdatePatient(person);
+                    if (isPatientUpdated && isAddressUpdated)
+                    {
+                        btnStart.Enabled = true;
+                        btnSave.Enabled = false;
+                        MessageBox.Show("Patient Update Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //txtId.Text = personId;
 
 
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Patient Update Failed!.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Patient Update Failed!.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    var isAddressUpdated = layer.InsertAddress(address);
+                    var isPatientUpdated = layer.UpdatePatient(person);
+
+                    if (isPatientUpdated && isAddressUpdated)
+                    {
+                        btnStart.Enabled = true;
+                        btnSave.Enabled = false;
+                        MessageBox.Show("Patient Update Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //txtId.Text = personId;
+
+
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Patient Update Failed!.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
+               
+              
+                //call the data acess layer
+
+               
 
             }
             
@@ -498,7 +555,7 @@ namespace Patient_Managment_System
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            txtId.Text = string.Empty;
+       
             txtFirstName.Text = string.Empty;
             txtMiddleName.Text = string.Empty;
             txtLastName.Text = string.Empty;
@@ -771,5 +828,133 @@ namespace Patient_Managment_System
             gridControlPatient.DataSource=DataGridPatients.OrderBy(x => x.Gender).ToList();
 
         }
+
+        private void simpleButton1_Click(object sender, EventArgs e)
+        {
+            Appointment appointment = new Appointment();
+            AppointmentSummary appointment1 = new AppointmentSummary();  
+           
+            if (string.IsNullOrEmpty(comboBoxPatientID.Text.Trim()))
+            {
+                comboBoxPatientID.BackColor = Color.LightPink;
+                comboBoxPatientID.Focus();
+                return;
+            }
+            if(string.IsNullOrEmpty(comboBoxServices.Text.Trim()))
+            {
+                comboBoxServices.BackColor = Color.LightPink;   
+                comboBoxServices.Focus(); return;   
+            }
+            if (string.IsNullOrEmpty(comboBoxLocation.Text.Trim()))
+            {
+                comboBoxLocation.BackColor = Color.LightPink;
+                comboBoxLocation.Focus();   return;
+            }
+            if(appointmentDate.DateTime <= DateTime.Now)
+            {
+                appointmentDate.BackColor = Color.LightPink;    
+                appointmentDate.Focus(); return;    
+            }
+            if (string.IsNullOrEmpty(appointmentNote.Text.Trim()))
+            {
+                appointmentNote.BackColor = Color.LightPink;
+                appointmentNote.Focus(); return;
+            }
+            //if(!(checkBoxRecurring.Checked || checkBoxWalkIn.Checked)){
+            //    checkBoxWalkIn.BackColor= Color.LightPink;  
+            //    checkBoxWalkIn.Focus();
+            //    checkBoxRecurring.BackColor= Color.LightPink;   
+            //    checkBoxRecurring.Focus();  
+            //    return; 
+
+            //}
+            ComoBoxList selectedListValueforLocation = (ComoBoxList)comboBoxLocation.SelectedItem;
+            ComoBoxList selectedListValueforService = (ComoBoxList)comboBoxServices.SelectedItem;
+
+            appointment.PateintId = comboBoxPatientID.Text.Trim();
+            appointment.LocationId = selectedListValueforLocation.Id;
+            appointment.ServiceId = selectedListValueforService.Id;
+            appointment.Date = appointmentDate.DateTime;
+            appointment.Note= appointmentNote.Text.Trim();
+            appointment.Provider = "Habtish";
+            appointment.Status = true;
+            ///for summary list
+            appointment1.PatientId = appointment.PateintId;
+            appointment1.VisitLocation = selectedListValueforLocation.Description;
+            appointment1.ServiceType = selectedListValueforService.Description;
+            appointment1.Note=appointment.Note.Trim();
+            appointment1.Status = appointment.Status == true ? "On Time" : "Late";
+            appointment1.AppointmentDate = appointmentDate.DateTime;
+            appointment1.Provider = appointment.Provider;
+
+            appointment.Status = true;
+            if(layer.createNewAppointment(appointment)){
+                summary.Add(appointment1 );
+                gridControlAppointmentList.DataSource = summary.OrderByDescending(x => x.AppointmentDate.Date == DateTime.Today).ThenBy(x => x.AppointmentDate);
+                MessageBox.Show("Appointement Successfully Created", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+               
+            }
+            else
+            {
+                MessageBox.Show("Appointment Creating Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+           
+
+            }
+        }
+
+        private void appointmentDate_Click(object sender, EventArgs e)
+        {
+            appointmentDate.BackColor = SystemColors.Window;
+            dateLabel.Text=appointmentDate.DateTime.ToString("yyyy-MM-dd");   
+        }
+
+        private void appointmentNote_TextChanged(object sender, EventArgs e)
+        {
+            appointmentNote.BackColor = SystemColors.Window;    
+        }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           if(comboBox3.Text.Trim()=="Patient ID")
+            {
+                gridControlAppointmentList.DataSource=summary.OrderBy(x => x.PatientId);
+            }
+            else if (comboBox3.Text.Trim() == "Visit Location")
+            {
+                gridControlAppointmentList.DataSource = summary.OrderBy(x => x.VisitLocation);
+            }
+            else if (comboBox3.Text.Trim() == "Service Type")
+            {
+                gridControlAppointmentList.DataSource = summary.OrderBy(x => x.ServiceType);
+            }
+        }
+
+        private void btnAppointmentRefresh_Click(object sender, EventArgs e)
+        {
+            summary = layer.loadAppointmentSummary();
+            gridControlAppointmentList.DataSource = summary.OrderByDescending(x => x.AppointmentDate.Date==DateTime.Today).ThenBy(x=>x.AppointmentDate);
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if(checkBoxRecurring.Checked)
+            {
+                checkBoxWalkIn.BackColor = SystemColors.Window; 
+                checkBoxRecurring.BackColor = SystemColors.Window;
+                checkBoxWalkIn.Checked = false;
+            }
+        }
+
+        private void checkBoxWalkIn_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxWalkIn.Checked)
+            {
+                checkBoxWalkIn.BackColor = SystemColors.Window;
+                checkBoxRecurring.BackColor = SystemColors.Window;
+                checkBoxRecurring.Checked = false;    
+            }
+        }
     }
-}
+    }
+

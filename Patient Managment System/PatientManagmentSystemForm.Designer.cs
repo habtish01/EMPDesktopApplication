@@ -54,6 +54,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.panelforButtons = new System.Windows.Forms.Panel();
+            this.btnDelete = new DevExpress.XtraEditors.SimpleButton();
             this.btnSave = new DevExpress.XtraEditors.SimpleButton();
             this.btnStart = new DevExpress.XtraEditors.SimpleButton();
             this.btnClose = new DevExpress.XtraEditors.SimpleButton();
@@ -102,6 +103,8 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
             this.GridPanel = new System.Windows.Forms.Panel();
+            this.label29 = new System.Windows.Forms.Label();
+            this.comboBoxSortby = new System.Windows.Forms.ComboBox();
             this.gridControlPatient = new DevExpress.XtraGrid.GridControl();
             this.gridViewPatients = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -115,12 +118,39 @@
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
+            this.tabNewAppointment = new DevExpress.XtraTab.XtraTabPage();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.dateLabel = new System.Windows.Forms.Label();
+            this.appointmentDate = new DevExpress.XtraScheduler.DateNavigator();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.simpleButton1 = new DevExpress.XtraEditors.SimpleButton();
+            this.simpleButton2 = new DevExpress.XtraEditors.SimpleButton();
+            this.label34 = new System.Windows.Forms.Label();
+            this.appointmentNote = new System.Windows.Forms.RichTextBox();
+            this.comboBoxServices = new System.Windows.Forms.ComboBox();
+            this.comboBoxLocation = new System.Windows.Forms.ComboBox();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.comboBoxPatientID = new System.Windows.Forms.ComboBox();
+            this.tabAppointmentList = new DevExpress.XtraTab.XtraTabPage();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.label36 = new System.Windows.Forms.Label();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.label35 = new System.Windows.Forms.Label();
+            this.gridControlAppointmentList = new DevExpress.XtraGrid.GridControl();
+            this.gridViewAppointment = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.footerPanel = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.btnDelete = new DevExpress.XtraEditors.SimpleButton();
-            this.label29 = new System.Windows.Forms.Label();
-            this.comboBoxSortby = new System.Windows.Forms.ComboBox();
+            this.btnAppointmentRefresh = new System.Windows.Forms.Button();
+            this.label37 = new System.Windows.Forms.Label();
+            this.checkBoxRecurring = new System.Windows.Forms.CheckBox();
+            this.checkBoxWalkIn = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.HeaderPanel)).BeginInit();
             this.HeaderPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLogo)).BeginInit();
@@ -147,6 +177,20 @@
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
+            this.xtraTabControl1.SuspendLayout();
+            this.tabNewAppointment.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.appointmentDate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.appointmentDate.CalendarTimeProperties)).BeginInit();
+            this.panel6.SuspendLayout();
+            this.tabAppointmentList.SuspendLayout();
+            this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlAppointmentList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewAppointment)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView2)).BeginInit();
             this.footerPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -460,6 +504,24 @@
             this.panelforButtons.Name = "panelforButtons";
             this.panelforButtons.Size = new System.Drawing.Size(1395, 78);
             this.panelforButtons.TabIndex = 26;
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.btnDelete.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDelete.Appearance.Options.UseBackColor = true;
+            this.btnDelete.Appearance.Options.UseFont = true;
+            this.btnDelete.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.btnDelete.AppearanceHovered.Options.UseBackColor = true;
+            this.btnDelete.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDelete.ImageOptions.Image")));
+            this.btnDelete.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.TopCenter;
+            this.btnDelete.Location = new System.Drawing.Point(542, 8);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.PaintStyle = DevExpress.XtraEditors.Controls.PaintStyles.Light;
+            this.btnDelete.Size = new System.Drawing.Size(59, 62);
+            this.btnDelete.TabIndex = 9;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // btnSave
             // 
@@ -1076,6 +1138,30 @@
             this.GridPanel.Size = new System.Drawing.Size(1395, 563);
             this.GridPanel.TabIndex = 1;
             // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label29.Location = new System.Drawing.Point(1110, 12);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(88, 25);
+            this.label29.TabIndex = 24;
+            this.label29.Text = "Sort By";
+            // 
+            // comboBoxSortby
+            // 
+            this.comboBoxSortby.FormattingEnabled = true;
+            this.comboBoxSortby.Items.AddRange(new object[] {
+            "ID",
+            "Name",
+            "Phone Number",
+            "Gender"});
+            this.comboBoxSortby.Location = new System.Drawing.Point(1204, 4);
+            this.comboBoxSortby.Name = "comboBoxSortby";
+            this.comboBoxSortby.Size = new System.Drawing.Size(182, 33);
+            this.comboBoxSortby.TabIndex = 25;
+            this.comboBoxSortby.SelectedIndexChanged += new System.EventHandler(this.comboBoxSortby_SelectedIndexChanged);
+            // 
             // gridControlPatient
             // 
             this.gridControlPatient.Location = new System.Drawing.Point(10, 55);
@@ -1219,12 +1305,322 @@
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.White;
+            this.tabPage4.Controls.Add(this.xtraTabControl1);
             this.tabPage4.Location = new System.Drawing.Point(4, 51);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage4.Size = new System.Drawing.Size(1401, 679);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Appointment";
+            // 
+            // xtraTabControl1
+            // 
+            this.xtraTabControl1.Location = new System.Drawing.Point(3, 0);
+            this.xtraTabControl1.Name = "xtraTabControl1";
+            this.xtraTabControl1.SelectedTabPage = this.tabNewAppointment;
+            this.xtraTabControl1.Size = new System.Drawing.Size(1398, 676);
+            this.xtraTabControl1.TabIndex = 0;
+            this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.tabNewAppointment,
+            this.tabAppointmentList});
+            // 
+            // tabNewAppointment
+            // 
+            this.tabNewAppointment.Appearance.Header.BackColor = System.Drawing.Color.Silver;
+            this.tabNewAppointment.Appearance.Header.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold);
+            this.tabNewAppointment.Appearance.Header.Options.UseBackColor = true;
+            this.tabNewAppointment.Appearance.Header.Options.UseFont = true;
+            this.tabNewAppointment.Appearance.HeaderActive.BackColor = System.Drawing.Color.Lime;
+            this.tabNewAppointment.Appearance.HeaderActive.Options.UseBackColor = true;
+            this.tabNewAppointment.Controls.Add(this.panel5);
+            this.tabNewAppointment.Name = "tabNewAppointment";
+            this.tabNewAppointment.Size = new System.Drawing.Size(1396, 639);
+            this.tabNewAppointment.Text = "New Appointment";
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.Color.White;
+            this.panel5.Controls.Add(this.checkBoxWalkIn);
+            this.panel5.Controls.Add(this.checkBoxRecurring);
+            this.panel5.Controls.Add(this.label37);
+            this.panel5.Controls.Add(this.panel7);
+            this.panel5.Controls.Add(this.appointmentDate);
+            this.panel5.Controls.Add(this.panel6);
+            this.panel5.Controls.Add(this.label34);
+            this.panel5.Controls.Add(this.appointmentNote);
+            this.panel5.Controls.Add(this.comboBoxServices);
+            this.panel5.Controls.Add(this.comboBoxLocation);
+            this.panel5.Controls.Add(this.label33);
+            this.panel5.Controls.Add(this.label32);
+            this.panel5.Controls.Add(this.label31);
+            this.panel5.Controls.Add(this.label30);
+            this.panel5.Controls.Add(this.comboBoxPatientID);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(0, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(1396, 639);
+            this.panel5.TabIndex = 1;
+            // 
+            // panel7
+            // 
+            this.panel7.BackColor = System.Drawing.Color.LightGray;
+            this.panel7.Controls.Add(this.dateLabel);
+            this.panel7.Location = new System.Drawing.Point(637, 706);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(305, 47);
+            this.panel7.TabIndex = 21;
+            // 
+            // dateLabel
+            // 
+            this.dateLabel.AutoSize = true;
+            this.dateLabel.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateLabel.Location = new System.Drawing.Point(44, 11);
+            this.dateLabel.Name = "dateLabel";
+            this.dateLabel.Size = new System.Drawing.Size(0, 25);
+            this.dateLabel.TabIndex = 10;
+            // 
+            // appointmentDate
+            // 
+            this.appointmentDate.CalendarAppearance.DayCellSpecial.FontStyleDelta = System.Drawing.FontStyle.Bold;
+            this.appointmentDate.CalendarAppearance.DayCellSpecial.Options.UseFont = true;
+            this.appointmentDate.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.appointmentDate.FirstDayOfWeek = System.DayOfWeek.Sunday;
+            this.appointmentDate.Location = new System.Drawing.Point(47, 329);
+            this.appointmentDate.Name = "appointmentDate";
+            this.appointmentDate.Size = new System.Drawing.Size(305, 297);
+            this.appointmentDate.TabIndex = 20;
+            this.appointmentDate.Click += new System.EventHandler(this.appointmentDate_Click);
+            // 
+            // panel6
+            // 
+            this.panel6.BackColor = System.Drawing.Color.LightGray;
+            this.panel6.Controls.Add(this.simpleButton1);
+            this.panel6.Controls.Add(this.simpleButton2);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel6.Location = new System.Drawing.Point(0, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(1396, 68);
+            this.panel6.TabIndex = 19;
+            // 
+            // simpleButton1
+            // 
+            this.simpleButton1.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.simpleButton1.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.simpleButton1.Appearance.Options.UseBackColor = true;
+            this.simpleButton1.Appearance.Options.UseFont = true;
+            this.simpleButton1.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.simpleButton1.AppearanceHovered.Options.UseBackColor = true;
+            this.simpleButton1.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
+            this.simpleButton1.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.TopCenter;
+            this.simpleButton1.ImageOptions.SvgImageSize = new System.Drawing.Size(10, 10);
+            this.simpleButton1.Location = new System.Drawing.Point(193, 3);
+            this.simpleButton1.Name = "simpleButton1";
+            this.simpleButton1.PaintStyle = DevExpress.XtraEditors.Controls.PaintStyles.Light;
+            this.simpleButton1.Size = new System.Drawing.Size(59, 62);
+            this.simpleButton1.TabIndex = 10;
+            this.simpleButton1.Text = "Save";
+            this.simpleButton1.Click += new System.EventHandler(this.simpleButton1_Click);
+            // 
+            // simpleButton2
+            // 
+            this.simpleButton2.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.simpleButton2.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.simpleButton2.Appearance.Options.UseBackColor = true;
+            this.simpleButton2.Appearance.Options.UseFont = true;
+            this.simpleButton2.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.simpleButton2.AppearanceHovered.Options.UseBackColor = true;
+            this.simpleButton2.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton2.ImageOptions.Image")));
+            this.simpleButton2.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.TopCenter;
+            this.simpleButton2.Location = new System.Drawing.Point(66, 6);
+            this.simpleButton2.Name = "simpleButton2";
+            this.simpleButton2.PaintStyle = DevExpress.XtraEditors.Controls.PaintStyles.Light;
+            this.simpleButton2.Size = new System.Drawing.Size(59, 62);
+            this.simpleButton2.TabIndex = 9;
+            this.simpleButton2.Text = "New";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label34.Location = new System.Drawing.Point(911, 91);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(51, 23);
+            this.label34.TabIndex = 18;
+            this.label34.Text = "Note";
+            // 
+            // appointmentNote
+            // 
+            this.appointmentNote.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.appointmentNote.Location = new System.Drawing.Point(916, 121);
+            this.appointmentNote.Name = "appointmentNote";
+            this.appointmentNote.Size = new System.Drawing.Size(454, 164);
+            this.appointmentNote.TabIndex = 17;
+            this.appointmentNote.Text = "";
+            this.appointmentNote.TextChanged += new System.EventHandler(this.appointmentNote_TextChanged);
+            // 
+            // comboBoxServices
+            // 
+            this.comboBoxServices.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxServices.FormattingEnabled = true;
+            this.comboBoxServices.Location = new System.Drawing.Point(365, 130);
+            this.comboBoxServices.Name = "comboBoxServices";
+            this.comboBoxServices.Size = new System.Drawing.Size(167, 31);
+            this.comboBoxServices.TabIndex = 15;
+            // 
+            // comboBoxLocation
+            // 
+            this.comboBoxLocation.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxLocation.FormattingEnabled = true;
+            this.comboBoxLocation.Location = new System.Drawing.Point(686, 130);
+            this.comboBoxLocation.Name = "comboBoxLocation";
+            this.comboBoxLocation.Size = new System.Drawing.Size(167, 31);
+            this.comboBoxLocation.TabIndex = 14;
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label33.Location = new System.Drawing.Point(360, 91);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(81, 23);
+            this.label33.TabIndex = 13;
+            this.label33.Text = "Services";
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label32.Location = new System.Drawing.Point(58, 290);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(164, 23);
+            this.label32.TabIndex = 12;
+            this.label32.Text = "Appointment Date";
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label31.Location = new System.Drawing.Point(681, 91);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(84, 23);
+            this.label31.TabIndex = 11;
+            this.label31.Text = "Location";
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label30.Location = new System.Drawing.Point(62, 91);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(97, 23);
+            this.label30.TabIndex = 10;
+            this.label30.Text = "Patient ID";
+            // 
+            // comboBoxPatientID
+            // 
+            this.comboBoxPatientID.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxPatientID.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxPatientID.FormattingEnabled = true;
+            this.comboBoxPatientID.Location = new System.Drawing.Point(67, 130);
+            this.comboBoxPatientID.Name = "comboBoxPatientID";
+            this.comboBoxPatientID.Size = new System.Drawing.Size(167, 31);
+            this.comboBoxPatientID.TabIndex = 0;
+            // 
+            // tabAppointmentList
+            // 
+            this.tabAppointmentList.Appearance.Header.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tabAppointmentList.Appearance.Header.Options.UseFont = true;
+            this.tabAppointmentList.Appearance.HeaderActive.BackColor = System.Drawing.Color.Lime;
+            this.tabAppointmentList.Appearance.HeaderActive.Options.UseBackColor = true;
+            this.tabAppointmentList.Controls.Add(this.panel4);
+            this.tabAppointmentList.Name = "tabAppointmentList";
+            this.tabAppointmentList.Size = new System.Drawing.Size(1396, 639);
+            this.tabAppointmentList.Text = "Appointment List";
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.White;
+            this.panel4.Controls.Add(this.btnAppointmentRefresh);
+            this.panel4.Controls.Add(this.label36);
+            this.panel4.Controls.Add(this.comboBox3);
+            this.panel4.Controls.Add(this.label35);
+            this.panel4.Controls.Add(this.gridControlAppointmentList);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(1396, 639);
+            this.panel4.TabIndex = 0;
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label36.Location = new System.Drawing.Point(1049, 25);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(84, 23);
+            this.label36.TabIndex = 12;
+            this.label36.Text = "Filter By";
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Items.AddRange(new object[] {
+            "Patient ID",
+            "Visit Location",
+            "Service Type "});
+            this.comboBox3.Location = new System.Drawing.Point(1154, 17);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(167, 31);
+            this.comboBox3.TabIndex = 11;
+            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Font = new System.Drawing.Font("Times New Roman", 13.8F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label35.Location = new System.Drawing.Point(296, 37);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(220, 25);
+            this.label35.TabIndex = 10;
+            this.label35.Text = "List of Appointments";
+            // 
+            // gridControlAppointmentList
+            // 
+            this.gridControlAppointmentList.Location = new System.Drawing.Point(3, 75);
+            this.gridControlAppointmentList.MainView = this.gridViewAppointment;
+            this.gridControlAppointmentList.Name = "gridControlAppointmentList";
+            this.gridControlAppointmentList.Size = new System.Drawing.Size(1388, 554);
+            this.gridControlAppointmentList.TabIndex = 0;
+            this.gridControlAppointmentList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridViewAppointment,
+            this.gridView2});
+            // 
+            // gridViewAppointment
+            // 
+            this.gridViewAppointment.Appearance.EvenRow.BackColor = System.Drawing.Color.Silver;
+            this.gridViewAppointment.Appearance.EvenRow.Options.UseBackColor = true;
+            this.gridViewAppointment.Appearance.FocusedCell.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.gridViewAppointment.Appearance.FocusedCell.Options.UseBackColor = true;
+            this.gridViewAppointment.Appearance.FocusedRow.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.gridViewAppointment.Appearance.FocusedRow.Options.UseBackColor = true;
+            this.gridViewAppointment.Appearance.GroupRow.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gridViewAppointment.Appearance.GroupRow.Options.UseFont = true;
+            this.gridViewAppointment.Appearance.HeaderPanel.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Bold);
+            this.gridViewAppointment.Appearance.HeaderPanel.Options.UseFont = true;
+            this.gridViewAppointment.Appearance.OddRow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.gridViewAppointment.Appearance.OddRow.Options.UseBackColor = true;
+            this.gridViewAppointment.Appearance.Row.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gridViewAppointment.Appearance.Row.Options.UseFont = true;
+            this.gridViewAppointment.GridControl = this.gridControlAppointmentList;
+            this.gridViewAppointment.Name = "gridViewAppointment";
+            this.gridViewAppointment.OptionsBehavior.Editable = false;
+            // 
+            // gridView2
+            // 
+            this.gridView2.GridControl = this.gridControlAppointmentList;
+            this.gridView2.Name = "gridView2";
             // 
             // footerPanel
             // 
@@ -1256,47 +1652,50 @@
             this.button1.Text = "Log Out";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // btnDelete
+            // btnAppointmentRefresh
             // 
-            this.btnDelete.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.btnDelete.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Appearance.Options.UseBackColor = true;
-            this.btnDelete.Appearance.Options.UseFont = true;
-            this.btnDelete.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.btnDelete.AppearanceHovered.Options.UseBackColor = true;
-            this.btnDelete.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("simpleButton1.ImageOptions.Image")));
-            this.btnDelete.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.TopCenter;
-            this.btnDelete.Location = new System.Drawing.Point(542, 8);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.PaintStyle = DevExpress.XtraEditors.Controls.PaintStyles.Light;
-            this.btnDelete.Size = new System.Drawing.Size(59, 62);
-            this.btnDelete.TabIndex = 9;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnAppointmentRefresh.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAppointmentRefresh.Location = new System.Drawing.Point(864, 10);
+            this.btnAppointmentRefresh.Name = "btnAppointmentRefresh";
+            this.btnAppointmentRefresh.Size = new System.Drawing.Size(107, 42);
+            this.btnAppointmentRefresh.TabIndex = 23;
+            this.btnAppointmentRefresh.Text = "Refresh";
+            this.btnAppointmentRefresh.UseVisualStyleBackColor = true;
+            this.btnAppointmentRefresh.Click += new System.EventHandler(this.btnAppointmentRefresh_Click);
             // 
-            // label29
+            // label37
             // 
-            this.label29.AutoSize = true;
-            this.label29.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label29.Location = new System.Drawing.Point(1110, 12);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(88, 25);
-            this.label29.TabIndex = 24;
-            this.label29.Text = "Sort By";
+            this.label37.AutoSize = true;
+            this.label37.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label37.Location = new System.Drawing.Point(62, 217);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(47, 23);
+            this.label37.TabIndex = 22;
+            this.label37.Text = "Plan";
             // 
-            // comboBoxSortby
+            // checkBoxRecurring
             // 
-            this.comboBoxSortby.FormattingEnabled = true;
-            this.comboBoxSortby.Items.AddRange(new object[] {
-            "ID",
-            "Name",
-            "Phone Number",
-            "Gender"});
-            this.comboBoxSortby.Location = new System.Drawing.Point(1204, 4);
-            this.comboBoxSortby.Name = "comboBoxSortby";
-            this.comboBoxSortby.Size = new System.Drawing.Size(182, 33);
-            this.comboBoxSortby.TabIndex = 25;
-            this.comboBoxSortby.SelectedIndexChanged += new System.EventHandler(this.comboBoxSortby_SelectedIndexChanged);
+            this.checkBoxRecurring.AutoSize = true;
+            this.checkBoxRecurring.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxRecurring.Location = new System.Drawing.Point(169, 217);
+            this.checkBoxRecurring.Name = "checkBoxRecurring";
+            this.checkBoxRecurring.Size = new System.Drawing.Size(228, 27);
+            this.checkBoxRecurring.TabIndex = 23;
+            this.checkBoxRecurring.Text = "Recurring Appointment";
+            this.checkBoxRecurring.UseVisualStyleBackColor = true;
+            this.checkBoxRecurring.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // checkBoxWalkIn
+            // 
+            this.checkBoxWalkIn.AutoSize = true;
+            this.checkBoxWalkIn.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxWalkIn.Location = new System.Drawing.Point(465, 217);
+            this.checkBoxWalkIn.Name = "checkBoxWalkIn";
+            this.checkBoxWalkIn.Size = new System.Drawing.Size(212, 27);
+            this.checkBoxWalkIn.TabIndex = 24;
+            this.checkBoxWalkIn.Text = "Walk-In Appointment";
+            this.checkBoxWalkIn.UseVisualStyleBackColor = true;
+            this.checkBoxWalkIn.CheckedChanged += new System.EventHandler(this.checkBoxWalkIn_CheckedChanged);
             // 
             // PatientMSystem
             // 
@@ -1352,6 +1751,23 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).EndInit();
+            this.xtraTabControl1.ResumeLayout(false);
+            this.tabNewAppointment.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.appointmentDate.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.appointmentDate)).EndInit();
+            this.panel6.ResumeLayout(false);
+            this.tabAppointmentList.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlAppointmentList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewAppointment)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView2)).EndInit();
             this.footerPanel.ResumeLayout(false);
             this.footerPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -1452,6 +1868,36 @@
         private DevExpress.XtraEditors.SimpleButton btnDelete;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.ComboBox comboBoxSortby;
+        private DevExpress.XtraTab.XtraTabControl xtraTabControl1;
+        private DevExpress.XtraTab.XtraTabPage tabNewAppointment;
+        private DevExpress.XtraTab.XtraTabPage tabAppointmentList;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.ComboBox comboBoxPatientID;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.RichTextBox appointmentNote;
+        private System.Windows.Forms.Panel panel6;
+        private DevExpress.XtraEditors.SimpleButton simpleButton1;
+        private DevExpress.XtraEditors.SimpleButton simpleButton2;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.Label label35;
+        private DevExpress.XtraGrid.GridControl gridControlAppointmentList;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridViewAppointment;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
+        private DevExpress.XtraScheduler.DateNavigator appointmentDate;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Label dateLabel;
+        public System.Windows.Forms.ComboBox comboBoxServices;
+        public System.Windows.Forms.ComboBox comboBoxLocation;
+        private System.Windows.Forms.Button btnAppointmentRefresh;
+        private System.Windows.Forms.CheckBox checkBoxWalkIn;
+        private System.Windows.Forms.CheckBox checkBoxRecurring;
+        private System.Windows.Forms.Label label37;
     }
 }
 

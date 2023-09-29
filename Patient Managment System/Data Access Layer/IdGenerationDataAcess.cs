@@ -97,6 +97,7 @@ namespace Patient_Managment_System.Data_Access_Layer
 
 
                 int defNo = 1;
+             
 
                 var CenterId = maximumValue.ToString().PadLeft(id.Length, '0');
 
@@ -109,6 +110,10 @@ namespace Patient_Managment_System.Data_Access_Layer
                 cmd.ExecuteNonQuery();
                 conn1.Close();
                 maximumValue++;
+                 CenterId = maximumValue.ToString().PadLeft(id.Length, '0');
+
+                 PersonId = string.Format($"{id.prefix}" + $"{CenterId}" + $"{id.suffix}", maximumValue);
+
                 return PersonId;
 
 

@@ -31,7 +31,7 @@ namespace Patient_Managment_System.Models
 
     public class Address
     {
-        public string PersonId { get; set; }
+        public int PatientId { get; set; }
         public string City { get; set; }
         public string SubCity { get; set; }
         public string Kebele { get; set; }

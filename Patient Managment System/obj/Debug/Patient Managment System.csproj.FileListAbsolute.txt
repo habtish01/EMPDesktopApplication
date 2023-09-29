@@ -186,3 +186,18 @@ D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\obj\
 D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\obj\Debug\Patient Managment System.csproj.CopyComplete
 D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\obj\Debug\Patient Managment System.exe
 D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\obj\Debug\Patient Managment System.pdb
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\DevExpress.XtraScheduler.v21.2.Core.Desktop.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\DevExpress.XtraScheduler.v21.2.Core.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\DevExpress.XtraScheduler.v21.2.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\DevExpress.Images.v21.2.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\DevExpress.XtraScheduler.v21.2.xml
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\DevExpress.XtraScheduler.v21.2.Core.xml
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\DevExpress.XtraScheduler.v21.2.Core.Desktop.xml
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\de\DevExpress.XtraScheduler.v21.2.resources.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\es\DevExpress.XtraScheduler.v21.2.resources.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\ja\DevExpress.XtraScheduler.v21.2.resources.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\ru\DevExpress.XtraScheduler.v21.2.resources.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\de\DevExpress.XtraScheduler.v21.2.Core.resources.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\es\DevExpress.XtraScheduler.v21.2.Core.resources.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\ja\DevExpress.XtraScheduler.v21.2.Core.resources.dll
+D:\Projects\Opian\Uptym Full\EMPDesktopApplication\Patient Managment System\bin\Debug\ru\DevExpress.XtraScheduler.v21.2.Core.resources.dll
