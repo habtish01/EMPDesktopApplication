@@ -11,18 +11,20 @@ using Patient_Managment_System.Models;
 using System.Net;
 using static DevExpress.Utils.Svg.CommonSvgImages;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using DevExpress.XtraScheduler;
+using System.Windows.Controls.Primitives;
 
 namespace Patient_Managment_System.Data_Access_Layer
 {
     public class DataAccessLayer
     {
         string connectionString = ConfigurationManager.ConnectionStrings["HahcConnection"].ConnectionString;
-        List<Patient> patients = new List<Patient>();
-        bool checkPesron = false;
-    
-        #region
-      
-      
+ 
+
+
+        #region DataBase Access
+
+
         #region Patient Info
         public bool checkPersonExistance(string id)
         {
@@ -521,61 +523,14 @@ namespace Patient_Managment_System.Data_Access_Layer
             return false;   
         }
 
-        public List<ComoBoxList> loadAppointmentServices()
-        {
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            List<ComoBoxList> dataList = new List<ComoBoxList>();
 
-            string query = "SELECT id,description FROM appointment.appointment_type";
-            using (SqlCommand command = new SqlCommand(query, connection))
-            {
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        ComoBoxList visit = new ComoBoxList
-                        {
-                            Id = reader.GetInt32(0),
-                            Description = reader.GetString(1)
-
-                        };
-                        dataList.Add(visit);
-                    }
-                }
-            }
-            connection.Close();
-
-            return dataList;
-
-        }
-
-        public bool createNewAppointment(Appointment appointment)
-        {
-            string query = "insert into appointment.appointment (patient_id,appointment_type_id,location_id,date,status,appointed_by,note) values (@id,@type,@location_id,@date,@status,@provider,@note)";
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@id",appointment.PateintId);
-            command.Parameters.AddWithValue("@type",appointment.ServiceId);
-            command.Parameters.AddWithValue("@location_id", appointment.LocationId);
-            command.Parameters.AddWithValue("@date",appointment.Date);
-            command.Parameters.AddWithValue("@provider",appointment.Provider);
-            command.Parameters.AddWithValue("@status",appointment.Status);
-            command.Parameters.AddWithValue("@note",appointment.Note);
-            int rows=command.ExecuteNonQuery(); 
-            if(rows > 0)
-            {
-                return true;
-            }
-            return false;
-
-        }
-        public List<AppointmentSummary> loadAppointmentSummary()
+        // for the appointments
+        public List<Appointmentt> loadAppointmentSummary()
         {
            
-            List<AppointmentSummary> summary = new List<AppointmentSummary>();
-            string query = "select patient_id,appointment_type_id,location_id,date,status,appointed_by,note from appointment.appointment";
+            List<Appointmentt> appointments = new List<Appointmentt>();
+            string query = "SELECT *from dbo.AppointmentList";                    
+
             SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
             SqlCommand command = new SqlCommand(query, connection);
@@ -583,24 +538,27 @@ namespace Patient_Managment_System.Data_Access_Layer
             while (reader.Read())
             {
 
-                AppointmentSummary appointment = new AppointmentSummary
+                Appointmentt appointment = new Appointmentt
                 {
-                    PatientId = reader["patient_id"].ToString(),
-                    VisitLocation=int.Parse(reader["location_id"].ToString())==1? "IPD":"OPD",                                   
-                    ServiceType = int.Parse(reader["appointment_type_id"].ToString())==1? "Obstetrics" : "Cardiology",
-                    Provider = reader["appointed_by"].ToString(),
-                    AppointmentDate = DateTime.Parse(reader["date"].ToString()),
-                    Status = bool.Parse(reader["status"].ToString())==true?"On Time":"Late",
-                    Note = reader["note"].ToString()
+                    FirstName = reader["first_name"].ToString(),
+                    MiddleName=reader["middile_name"].ToString(),                                   
+                    LastName = reader["last_name"].ToString(),
+                    ServiceType = reader["service_description"].ToString(),
+                    VistLocation =reader["description"].ToString(),
+                    AppointmentNote = reader["note"].ToString(),
+                    OrderdBy = reader["appointed_by"].ToString(),
+                    OrderedDate = DateTime.Parse(reader["date"].ToString()),
+                    Status = bool.Parse(reader["status"].ToString()),
+                    Remark = reader["remark"].ToString(),
                 };
 
-                summary.Add(appointment);
+                appointments.Add(appointment);
             }
 
-            return summary;
+            return appointments;
 
         }
-
+       
     }
 }
-#endregion
+#endregion 

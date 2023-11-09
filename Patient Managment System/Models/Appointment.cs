@@ -6,24 +6,20 @@ using System.Threading.Tasks;
 
 namespace Patient_Managment_System.Models
 {
-    public class Appointment
+    public class Appointmentt
     {
-        public string PateintId { get; set; }
-        public int LocationId { get; set; }
-        public string Provider { get; set; }
-        public int ServiceId { get; set; }
-        public DateTime Date { get; set; }
-        public string Note { get; set; }
-        public bool Status { get; set; }
-    }
-    public class AppointmentSummary
-    {
-        public string PatientId { get; set; }
-        public string VisitLocation { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
         public string ServiceType { get; set; }
-        public DateTime AppointmentDate { get; set; }
-        public string Provider { get; set; }
-        public string Note { get; set; }
-        public string Status { get; set; }
+        public string VistLocation { get; set; }
+        public string AppointmentNote { get; set; }
+        public string OrderdBy { get; set; }
+        public DateTime OrderedDate { get; set; }      
+        public bool Status { get; set; }
+        public string Remark { get; set; }
     }
+   
+
+   
 }

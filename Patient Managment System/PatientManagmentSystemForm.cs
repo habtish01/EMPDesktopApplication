@@ -1,10 +1,12 @@
-﻿using DevExpress.XtraEditors;
+﻿using DevExpress.Utils;
+using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.DXErrorProvider;
 using DevExpress.XtraEditors.Filtering.Templates;
 using DevExpress.XtraExport.Helpers;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraPrinting;
+using DevExpress.XtraScheduler.Native;
 using Patient_Managment_System.Data_Access_Layer;
 using Patient_Managment_System.Models;
 using Patient_Managment_System.Properties;
@@ -25,6 +27,8 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Forms;
+using DevExpress.XtraGrid.Views.Grid;
+
 
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -32,21 +36,21 @@ namespace Patient_Managment_System
 {
     public partial class PatientMSystem : Form
     {
-
+        #region Global Variables and Instances
         private patientRegistration validationHelper = new patientRegistration();
      
         IdGenerationDataAcess acess = new IdGenerationDataAcess();
         List<Person> persons = new List<Person>();
         DataAccessLayer layer = new DataAccessLayer();
-        List<Patient> DataGridPatients = new List<Patient>();
+        List<Patient> listofPatientDocument = new List<Patient>();
         IEnumerable<Patient> searchedPatient;
         Patient rowData;
         patientInfo patientInfo =new patientInfo();
         List<patientInfo> allPatients=new List<patientInfo>();
         patientInfo selectedPatient;
-        List<string> PatientId=new List<string>();
-        List<AppointmentSummary> summary = new List<AppointmentSummary>();
-
+      
+      
+        #endregion
 
         public PatientMSystem()
         {
@@ -56,83 +60,66 @@ namespace Patient_Managment_System
             txtId.Enabled = false;
         }
 
+        #region Application On Load Method
         private void PatientMSystem_Load(object sender, EventArgs e)
         {
+           
             btnStart.Enabled = false;
             btnClose.Enabled = false;
             btnDelete.Enabled = false;
-
+            /*
+             * outer by habtish
+             * combo box data for Visit Location
+             */
             var dataList = layer.LoadListForVisitTypeCoboBox();
-            ///cobo box for visit type
+           
             cBoxVisitType.DataSource = dataList;
             cBoxVisitType.ValueMember = "Id";
             cBoxVisitType.DisplayMember = "Description";
-            //combo box for Finance Type
+            /*
+            * outer by habtish
+            * combo box data for Finance Type
+            */
+            
             var dataList1 = layer.LoadListForFinanceTypeCoboBox();
             cBoxFinanceType.DataSource = dataList1;
             cBoxFinanceType.ValueMember = "Id";
             cBoxFinanceType.DisplayMember = "Description";
-            //combo box for assignment
+            /*
+            * outer by habtish
+            * combo box data for Patient Assignment type
+            */
+         
             var datalist = layer.LoadListForAssignmentTypeCoboBox();
             cBoxAssignType.DataSource = datalist;
             cBoxAssignType.ValueMember = "Id";
             cBoxAssignType.DisplayMember = "Description";
 
+            /*
+             * outer by habtish
+             * patient document grid view 
+             */
+            listofPatientDocument = layer.GetPatients();
+            gridControlPatient.DataSource = listofPatientDocument;
 
-            var id = txtId.Text.Trim();
-            if (string.IsNullOrEmpty(id))
-            {
-                btnClose.Enabled = false;
-            }
 
-            DataGridPatients = layer.GetPatients();
+            /*
+             * outer by habtish
+             * load all appointment list to view 
+             */
+            loadAppointments();
+
             
-            //data grid forn patient document
-            gridControlPatient.DataSource = DataGridPatients;
-
-
-          //for patient id combo box
-
-            foreach(var item in DataGridPatients)
-            {
-                if(item.Id!=null)
-                    PatientId.Add(item.Id);
-
-            }
-            comboBoxPatientID.DataSource = PatientId;
-
-            //for Services Combo box
-            comboBoxServices.DataSource=layer.loadAppointmentServices();
-            comboBoxServices.DisplayMember = "Description";
-            comboBoxServices.ValueMember = "id";
-
-            //for Location combo box
-            comboBoxLocation.DataSource = layer.LoadListForVisitTypeCoboBox();
-            comboBoxLocation.DisplayMember = "Description";
-            comboBoxLocation.ValueMember = "id";
-            ///for appointment summary 
-            summary=layer.loadAppointmentSummary();
-            gridControlAppointmentList.DataSource = summary.OrderByDescending(x => x.AppointmentDate.Date == DateTime.Today).ThenBy(x => x.AppointmentDate);
         }
 
-
-
-        //action for register button
-
+        #endregion
+        #region Save and Update Patient 
+        //outer by Habtish
+        //it takes all registration requirment and saves the patient
+        //but if the patient is already exit and comes from the patient document, it also performs update action for that patient
         private void btnSave_Click(object sender, EventArgs e)
         {
-           
-         
-            //constant values
-            var dateregistered = System.DateTime.Now;
-            int typeid = 1;
-            var active = true;
-            var remark = "registered";
-            string personId;
-
-            ///check the validation
-
-
+            string personId;//takes the next id value when registration success                  
 
             // Validate First Name
             string firstname = txtFirstName.Text.Trim();
@@ -152,7 +139,7 @@ namespace Patient_Managment_System
                 return;
             }
 
-            // Validate Middle Name
+            // Validate last Name
             string lastname = txtLastName.Text.Trim();
             if (!validationHelper.isLastNameValid(lastname))
             {
@@ -160,7 +147,7 @@ namespace Patient_Managment_System
                 return;
             }
 
-            // Validate Middle Name
+            // Validate age Name
             string age = txtAge.Text.Trim();
             if (!validationHelper.isAgeValid(age))
             {
@@ -169,7 +156,7 @@ namespace Patient_Managment_System
                 return;
             }
 
-            // Validate Middle Name
+            // Validate gender Name
             string gender = cBoxGeneder.Text.Trim();
             if (!validationHelper.isGenderValid(gender))
             {
@@ -178,7 +165,7 @@ namespace Patient_Managment_System
                 return;
             }
 
-            // Validate Middle Name
+            // Validate phone Name
             string phone = txtPhone.Text.Trim();
 
             if (!validationHelper.isPhoneNumberValid(phone))
@@ -188,10 +175,7 @@ namespace Patient_Managment_System
                 return;
             }
 
-            //////////////////////////////////////////////////////////////////////////////////
-
-
-       
+            // Validate Registration Fee type
             string feeType = cBoxRegType.Text.Trim();
             if (!validationHelper.isRegistrationFeeTypeValid(feeType))
             {
@@ -202,7 +186,7 @@ namespace Patient_Managment_System
             }
 
 
-            // Validate Middle Name
+            // Validate registration fee amount
             string feeAmount = txtRegAmount.Text.Trim();
             if (!validationHelper.isRegistrationFeeAmountValid(feeAmount))
             {
@@ -211,7 +195,7 @@ namespace Patient_Managment_System
                 return;
             }
 
-            // Validate Middle Name
+            // Validate finance type
             string financeType = cBoxFinanceType.Text.Trim();
             if (!validationHelper.isFinanceTypeValid(financeType))
             {
@@ -221,7 +205,7 @@ namespace Patient_Managment_System
             }
 
 
-            // Validate Middle Name
+            // Validate finance amount
             string financeAmount = txtFinanceAmount.Text.Trim();
             if (!validationHelper.isFinanceAmountValid(financeAmount))
             {
@@ -229,7 +213,7 @@ namespace Patient_Managment_System
                 txtFinanceAmount.Focus();                
                 return;
             }
-
+            //validate assign type
             string assignType = cBoxAssignType.Text.Trim();
             if (!validationHelper.isDoctorAssignmentTypeValid(assignType))
             {
@@ -237,7 +221,7 @@ namespace Patient_Managment_System
                 cBoxAssignType.Focus();                 
                 return;
             }
-
+            //validate asignment value
             string assignValue = cBoxAssignValue.Text.Trim();
             if (!validationHelper.isDoctorAssignmentValueValid(assignValue))
             {
@@ -247,7 +231,7 @@ namespace Patient_Managment_System
             }
 
            
-            
+           //creating person object for that patient to save in the person table 
             Person person=new Person();
             person.Id =txtId.Text.Trim();    
             person.FirstName = txtFirstName.Text.Trim();  
@@ -293,19 +277,36 @@ namespace Patient_Managment_System
             ComoBoxList selectedListValue = (ComoBoxList)cBoxAssignValue.SelectedItem;
            
 
-
+            //checks the person exist or not
             if (!layer.checkPersonExistance(person.Id))
             {
-                var isPatientInserted = layer.InsertPerson(person);
+                var isPatientInserted = layer.InsertPerson(person);//calls save the patient query
                 address.PatientId = layer.getPatientID(person.Id);
                 var isAddressRegistered = layer.InsertAddress(address);
-                //call the data acess layer
-
+                
+                // if sucess , make all fields empty and generate the next patient Id value
                 if (isPatientInserted && isAddressRegistered)
                 {
                     personId = acess.idNo();
-                    btnStart.Enabled = true;
-                    //btnSave.Enabled = false;
+                   
+                    txtFirstName.Text = string.Empty;
+                    txtMiddleName.Text = string.Empty;
+                    txtLastName.Text = string.Empty;
+                    txtAge.Text = string.Empty;
+                    txtPhone.Text = string.Empty;
+                    cBoxGeneder.Text = string.Empty;
+                    txtSubCity.Text = string.Empty;
+                    txtCity.Text = string.Empty;
+                    txtKebele.Text = string.Empty;
+                    txtHouseNo.Text = string.Empty;
+                    cBoxRegType.Text = string.Empty;
+                    txtRegAmount.Text = string.Empty;
+                    txtFinanceAmount.Text = string.Empty;
+                    cBoxFinanceType.Text = string.Empty;
+                    cBoxAssignType.Text = string.Empty;
+                    cBoxAssignValue.Text = string.Empty;
+                    cBoxVisitType.Text = string.Empty;
+                    
                     MessageBox.Show("Registration Success", "Sucess", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     txtId.Text = personId;
                     persons.Add(person);
@@ -325,7 +326,7 @@ namespace Patient_Managment_System
             {
                 if (layer.isAddressExist(address.PatientId))
                 {
-                    var isAddressUpdated = layer.UpdateAddress(address);
+                    var isAddressUpdated = layer.UpdateAddress(address);//calls upadte query,
                     var isPatientUpdated = layer.UpdatePatient(person);
                     if (isPatientUpdated && isAddressUpdated)
                     {
@@ -371,7 +372,8 @@ namespace Patient_Managment_System
             }
             
         }
-
+        #endregion
+        #region TextChanged Methods for Fields
         private void txtFirstName_TextChanged(object sender, EventArgs e)
         {
             txtFirstName.BackColor = SystemColors.Window; // Change the background color
@@ -433,64 +435,7 @@ namespace Patient_Managment_System
         {
             txtRegAmount.BackColor = SystemColors.Window;
         }
-
-
-
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            var SearchBy = cBoxSearchBy.Text.Trim();
-            if (String.IsNullOrWhiteSpace(SearchBy))
-            {
-                cBoxSearchBy.BackColor = Color.LightPink;
-                cBoxSearchBy.Focus();
-                return;
-            }
-
-            var searchText = txtSearch.Text.Trim();
-            if (String.IsNullOrWhiteSpace(searchText))
-            {
-                txtSearch.BackColor = Color.LightPink;
-                txtSearch.Focus();
-                return;
-            }
-            //searchPatient(SearchBy, searchText);
-          
-
-            if (SearchBy == "Phone Number")
-            {
-                searchedPatient = DataGridPatients.Where(member => member.PhoneNumber.Contains(searchText.TrimStart()));
-                gridControlPatient.DataSource=searchedPatient.ToList();
-                
-            }
-            else if(SearchBy=="Name")
-            {
-                searchedPatient = DataGridPatients.Where(member => member.FirstName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0 || member.MiddleName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0 || member.LastName.IndexOf(searchText) >= 0);
-                gridControlPatient.DataSource=searchedPatient.ToList() ;
-            }
-            else
-            {
-                gridControlPatient.DataSource = DataGridPatients;
-            }
-
-
-        }
-
-        private void cBoxSearchBy_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            cBoxSearchBy.BackColor = SystemColors.Window;
-        }
-
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            txtSearch.BackColor = SystemColors.Window;
-        }
-
-        private void IdLabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
+      
         private void cBoxFinanceType_SelectedIndexChanged(object sender, EventArgs e)
         {
             cBoxFinanceType.BackColor = SystemColors.Window;
@@ -510,13 +455,26 @@ namespace Patient_Managment_System
         {
             cBoxAssignValue.BackColor = SystemColors.Window;
         }
+        private void txtId_TextChanged(object sender, EventArgs e)
+        {
+            txtId.BackColor = SystemColors.Window;
+        }
+        private void searchLookUpEditOrgnaization_EditValueChanged(object sender, EventArgs e)
+        {
 
-        
+        }
+        private void cBoxVisitType_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
+        }
+
+        #endregion      
+        #region Upload Profile Picture Method
         private void pictureBoxPatientProfile_Click(object sender, EventArgs e)
         {
            
         }
+      
 
         private void btnUploadPhoto_Click(object sender, EventArgs e)
         {
@@ -543,19 +501,12 @@ namespace Patient_Managment_System
                 }
             }
         }
-
-        private void txtId_TextChanged(object sender, EventArgs e)
-        {
-            
-            
-                txtId.BackColor = SystemColors.Window;
-               
-            
-        }
-
+        #endregion
+        #region Reset Method For New Registration
         private void btnNew_Click(object sender, EventArgs e)
         {
-       
+            var id=acess.idGeneration();
+            txtId.Text = id.ToString();
             txtFirstName.Text = string.Empty;
             txtMiddleName.Text = string.Empty;
             txtLastName.Text = string.Empty;
@@ -574,15 +525,19 @@ namespace Patient_Managment_System
             cBoxAssignValue.Text = string.Empty;    
             cBoxVisitType.Text = string.Empty;  
         }
-
-       
-
-        private void btnExit_Click_2(object sender, EventArgs e)
+        #endregion
+        #region Exit App Method
+        private void btnExitt_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
+        #endregion
+        #region Start Visit Method
 
-     
+        /*outer by habtish
+          the method below used for to start visit for the registered patient 
+        it takes the visit type and saves the visit data for that patient
+        */
         private void btnStart_Click(object sender, EventArgs e)
         {
 
@@ -594,7 +549,9 @@ namespace Patient_Managment_System
                 return;
             }
             ComoBoxList selectedListItem = (ComoBoxList)cBoxVisitType.SelectedItem;
-             var id=txtId.Text.Trim();  
+             var id=txtId.Text.Trim(); 
+            //calls the   database context to excute the query to save the visit 
+
             DataAccessLayer layer = new DataAccessLayer();
             if (layer.checkVisitExistanceForPatient(id))
             {
@@ -635,7 +592,8 @@ namespace Patient_Managment_System
 
 
         }
-
+        #endregion
+        #region Close Visit Method
         private void btnClose_Click(object sender, EventArgs e)
         {
             var id = txtId.Text.Trim();
@@ -654,25 +612,16 @@ namespace Patient_Managment_System
             }
 
         }
-
-        private void PatientsDataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void gridControlPatient_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        #endregion
+        #region Refresh Patient Document Method
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             var patients = layer.GetPatients();
 
             gridControlPatient.DataSource = patients;
         }
-
-       
+        #endregion
+        #region KeyPress Methods for Fields
         private void txtFirstName_KeyPress(object sender, KeyPressEventArgs e)
         {
             char ch = e.KeyChar;
@@ -693,7 +642,7 @@ namespace Patient_Managment_System
        
       
 
-        private void txtLastName_KeyPress_1(object sender, KeyPressEventArgs e)
+        private void txtLastName_KeyPress(object sender, KeyPressEventArgs e)
         {
             char ch = e.KeyChar;
             if (!char.IsLetter(ch)&& ch!=8)
@@ -755,7 +704,52 @@ namespace Patient_Managment_System
                 e.Handled = true;
             }
         }
+        private void cBoxAssignType_KeyPress(object sender, KeyPressEventArgs e)
+        {
 
+        }
+        private void cBoxAssignValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+
+        private void cBoxVisitType_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+        private void cBoxGeneder_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+        private void txtKebele_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+
+        private void txtHouseNo_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+
+        private void cBoxFinanceType_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+
+
+
+
+
+        #endregion
+        #region Row Click Method in Patient Document
+        /*
+         * outer by habtish
+         * the method called when the row in the patient document clicked 
+         * to update patient data
+         * to sart or close the visit data for the patient
+         * to delete the patient from the active patients data
+         * it navigates to the general tab to see all information of the patient
+         * */
         private void gridViewPatients_RowClick(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
         {
           rowData = (Patient)gridViewPatients.GetRow(e.RowHandle);
@@ -790,15 +784,21 @@ namespace Patient_Managment_System
             //cBoxVisitType.Text = string.Empty;
 
             cBoxVisitType.SelectedValue = location_id;
-            
 
-            PatienRegTab.SelectedTab = tabPage1;
+
+            xtraTabControlRegistration.SelectedTabPage = xtraTabPageGeneral;
             btnSave.Enabled = true;
             btnClose.Enabled = true;
             btnStart.Enabled = true;
             btnDelete.Enabled = true;   
         }
-
+        #endregion
+        #region Soft Delete Patient Method
+        /*
+         * outer by habtish
+         * delets the patient from active patient lists
+         * it is soft delete to keep the patient history
+         */
         private void btnDelete_Click(object sender, EventArgs e)
         {
             var id = txtId.Text.Trim(); 
@@ -815,146 +815,60 @@ namespace Patient_Managment_System
             }
         }
 
-        private void comboBoxSortby_SelectedIndexChanged(object sender, EventArgs e)
+        #endregion
+        #region Load Appointments
+        public void loadAppointments()
         {
-           var value= comboBoxSortby.Text.Trim();
-            if(value=="Name")
-            gridControlPatient.DataSource=DataGridPatients.OrderBy(x => x.FirstName).ToList();
-            else if(value=="ID")
-            gridControlPatient.DataSource=DataGridPatients.OrderBy(x => x.Id).ToList();
-            else if(value=="Phone Number")
-            gridControlPatient.DataSource=DataGridPatients.OrderBy(x => x.PhoneNumber).ToList();
-            else if(value=="Gender")
-            gridControlPatient.DataSource=DataGridPatients.OrderBy(x => x.Gender).ToList();
+            var appointmentSummaries=layer.loadAppointmentSummary();    
 
-        }
-
-        private void simpleButton1_Click(object sender, EventArgs e)
-        {
-            Appointment appointment = new Appointment();
-            AppointmentSummary appointment1 = new AppointmentSummary();  
-           
-            if (string.IsNullOrEmpty(comboBoxPatientID.Text.Trim()))
-            {
-                comboBoxPatientID.BackColor = Color.LightPink;
-                comboBoxPatientID.Focus();
-                return;
-            }
-            if(string.IsNullOrEmpty(comboBoxServices.Text.Trim()))
-            {
-                comboBoxServices.BackColor = Color.LightPink;   
-                comboBoxServices.Focus(); return;   
-            }
-            if (string.IsNullOrEmpty(comboBoxLocation.Text.Trim()))
-            {
-                comboBoxLocation.BackColor = Color.LightPink;
-                comboBoxLocation.Focus();   return;
-            }
-            if(appointmentDate.DateTime <= DateTime.Now)
-            {
-                appointmentDate.BackColor = Color.LightPink;    
-                appointmentDate.Focus(); return;    
-            }
-            if (string.IsNullOrEmpty(appointmentNote.Text.Trim()))
-            {
-                appointmentNote.BackColor = Color.LightPink;
-                appointmentNote.Focus(); return;
-            }
-            //if(!(checkBoxRecurring.Checked || checkBoxWalkIn.Checked)){
-            //    checkBoxWalkIn.BackColor= Color.LightPink;  
-            //    checkBoxWalkIn.Focus();
-            //    checkBoxRecurring.BackColor= Color.LightPink;   
-            //    checkBoxRecurring.Focus();  
-            //    return; 
-
-            //}
-            ComoBoxList selectedListValueforLocation = (ComoBoxList)comboBoxLocation.SelectedItem;
-            ComoBoxList selectedListValueforService = (ComoBoxList)comboBoxServices.SelectedItem;
-
-            appointment.PateintId = comboBoxPatientID.Text.Trim();
-            appointment.LocationId = selectedListValueforLocation.Id;
-            appointment.ServiceId = selectedListValueforService.Id;
-            appointment.Date = appointmentDate.DateTime;
-            appointment.Note= appointmentNote.Text.Trim();
-            appointment.Provider = "Habtish";
-            appointment.Status = true;
-            ///for summary list
-            appointment1.PatientId = appointment.PateintId;
-            appointment1.VisitLocation = selectedListValueforLocation.Description;
-            appointment1.ServiceType = selectedListValueforService.Description;
-            appointment1.Note=appointment.Note.Trim();
-            appointment1.Status = appointment.Status == true ? "On Time" : "Late";
-            appointment1.AppointmentDate = appointmentDate.DateTime;
-            appointment1.Provider = appointment.Provider;
-
-            appointment.Status = true;
-            if(layer.createNewAppointment(appointment)){
-                summary.Add(appointment1 );
-                gridControlAppointmentList.DataSource = summary.OrderByDescending(x => x.AppointmentDate.Date == DateTime.Today).ThenBy(x => x.AppointmentDate);
-                MessageBox.Show("Appointement Successfully Created", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-               
-            }
-            else
-            {
-                MessageBox.Show("Appointment Creating Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-           
-
-            }
-        }
-
-        private void appointmentDate_Click(object sender, EventArgs e)
-        {
-            appointmentDate.BackColor = SystemColors.Window;
-            dateLabel.Text=appointmentDate.DateTime.ToString("yyyy-MM-dd");   
-        }
-
-        private void appointmentNote_TextChanged(object sender, EventArgs e)
-        {
-            appointmentNote.BackColor = SystemColors.Window;    
-        }
-
-        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
-        {
-           if(comboBox3.Text.Trim()=="Patient ID")
-            {
-                gridControlAppointmentList.DataSource=summary.OrderBy(x => x.PatientId);
-            }
-            else if (comboBox3.Text.Trim() == "Visit Location")
-            {
-                gridControlAppointmentList.DataSource = summary.OrderBy(x => x.VisitLocation);
-            }
-            else if (comboBox3.Text.Trim() == "Service Type")
-            {
-                gridControlAppointmentList.DataSource = summary.OrderBy(x => x.ServiceType);
-            }
-        }
+            gridControlAppointmentDocument.DataSource = appointmentSummaries;
+        }    
 
         private void btnAppointmentRefresh_Click(object sender, EventArgs e)
         {
-            summary = layer.loadAppointmentSummary();
-            gridControlAppointmentList.DataSource = summary.OrderByDescending(x => x.AppointmentDate.Date==DateTime.Today).ThenBy(x=>x.AppointmentDate);
-
+            loadAppointments();
         }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        #endregion
+        #region Appointment Row Color Modification Based on Appointment Date
+        private void gridViewAppointmentdocument_RowStyle(object sender, DevExpress.XtraGrid.Views.Grid.RowStyleEventArgs e)
         {
-            if(checkBoxRecurring.Checked)
+
+
+            DevExpress.XtraGrid.Views.Grid.GridView view = sender as DevExpress.XtraGrid.Views.Grid.GridView;
+
+            if (e.RowHandle >= 0)
             {
-                checkBoxWalkIn.BackColor = SystemColors.Window; 
-                checkBoxRecurring.BackColor = SystemColors.Window;
-                checkBoxWalkIn.Checked = false;
+
+                DateTime cellValue = DateTime.Parse(view.GetRowCellValue(e.RowHandle,
+                                                        "OrderedDate").ToString());
+
+
+                if (cellValue > DateTime.Now)
+                {
+                    e.Appearance.BackColor =Color.LightGray;
+                    
+                }
+                if (cellValue < DateTime.Now)
+                {
+                    e.Appearance.BackColor = Color.LightPink;
+                }
+
+                if (cellValue == DateTime.Now)
+                    {
+                        e.Appearance.BackColor = Color.Blue;
+                        e.HighPriority = true;
+                    }
+
             }
         }
 
-        private void checkBoxWalkIn_CheckedChanged(object sender, EventArgs e)
+        #endregion
+        private void btnAccept_Click(object sender, EventArgs e)
         {
-            if (checkBoxWalkIn.Checked)
-            {
-                checkBoxWalkIn.BackColor = SystemColors.Window;
-                checkBoxRecurring.BackColor = SystemColors.Window;
-                checkBoxRecurring.Checked = false;    
-            }
+
         }
+
+       
     }
-    }
+}
 
