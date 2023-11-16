@@ -33,6 +33,9 @@
             this.xtraTabControlRegistration = new DevExpress.XtraTab.XtraTabControl();
             this.xtraTabPageGeneral = new DevExpress.XtraTab.XtraTabPage();
             this.panelGeneral = new System.Windows.Forms.Panel();
+            this.groupBoxInvoiceType = new System.Windows.Forms.GroupBox();
+            this.comboBoxInvoiceTypes = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -43,15 +46,10 @@
             this.cBoxAssignType = new System.Windows.Forms.ComboBox();
             this.label34 = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.txtFinanceAmount = new System.Windows.Forms.TextBox();
-            this.cBoxFinanceType = new System.Windows.Forms.ComboBox();
-            this.label42 = new System.Windows.Forms.Label();
-            this.label43 = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.searchLookUpEditOrgnaization = new DevExpress.XtraEditors.SearchLookUpEdit();
-            this.gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.btnAccept = new DevExpress.XtraEditors.SimpleButton();
+            this.groupBoxPatientType = new System.Windows.Forms.GroupBox();
+            this.comboBoxOrgnization = new System.Windows.Forms.ComboBox();
+            this.comboBoxPatientType = new System.Windows.Forms.ComboBox();
+            this.lblOrganization = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.panel9 = new System.Windows.Forms.Panel();
             this.btnUploadPhoto = new System.Windows.Forms.Button();
@@ -93,18 +91,23 @@
             this.txtId = new System.Windows.Forms.TextBox();
             this.IdLabel = new System.Windows.Forms.Label();
             this.panelforButtons = new System.Windows.Forms.Panel();
-            this.btnDelete = new DevExpress.XtraEditors.SimpleButton();
             this.btnSave = new DevExpress.XtraEditors.SimpleButton();
-            this.btnStart = new DevExpress.XtraEditors.SimpleButton();
-            this.btnClose = new DevExpress.XtraEditors.SimpleButton();
             this.btnNew = new DevExpress.XtraEditors.SimpleButton();
             this.xtraTabPagePatientDocument = new DevExpress.XtraTab.XtraTabPage();
             this.panelPatientDocument = new System.Windows.Forms.Panel();
-            this.panelPatientDocumentHeader = new System.Windows.Forms.Panel();
-            this.btnRefresh = new System.Windows.Forms.Button();
             this.gridControlPatient = new DevExpress.XtraGrid.GridControl();
             this.gridViewPatients = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.gridView4 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.panelPatientDocumentHeader = new System.Windows.Forms.Panel();
+            this.lblcheck = new System.Windows.Forms.Label();
+            this.panelDateCriteria = new System.Windows.Forms.Panel();
+            this.lblDateFilterTitle = new System.Windows.Forms.Label();
+            this.comboBoxFilterBy = new System.Windows.Forms.ComboBox();
+            this.panelFilterCriteria = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblFilterBy = new System.Windows.Forms.Label();
+            this.btnShowSearch = new DevExpress.XtraEditors.SimpleButton();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.xtraTabPageAppointmentDocument = new DevExpress.XtraTab.XtraTabPage();
             this.panelAppointmentDocument = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -130,12 +133,10 @@
             this.xtraTabControlRegistration.SuspendLayout();
             this.xtraTabPageGeneral.SuspendLayout();
             this.panelGeneral.SuspendLayout();
+            this.groupBoxInvoiceType.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEditOrgnaization.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView2)).BeginInit();
+            this.groupBoxPatientType.SuspendLayout();
             this.panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPatientProfile)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -144,10 +145,11 @@
             this.panelforButtons.SuspendLayout();
             this.xtraTabPagePatientDocument.SuspendLayout();
             this.panelPatientDocument.SuspendLayout();
-            this.panelPatientDocumentHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridControlPatient)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewPatients)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView4)).BeginInit();
+            this.panelPatientDocumentHeader.SuspendLayout();
+            this.panelDateCriteria.SuspendLayout();
+            this.panelFilterCriteria.SuspendLayout();
             this.xtraTabPageAppointmentDocument.SuspendLayout();
             this.panelAppointmentDocument.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -196,19 +198,19 @@
             // 
             this.xtraTabPageGeneral.Controls.Add(this.panelGeneral);
             this.xtraTabPageGeneral.Name = "xtraTabPageGeneral";
-            this.xtraTabPageGeneral.Size = new System.Drawing.Size(1407, 662);
+            this.xtraTabPageGeneral.Size = new System.Drawing.Size(1407, 656);
             this.xtraTabPageGeneral.Text = "General";
             // 
             // panelGeneral
             // 
             this.panelGeneral.BackColor = System.Drawing.Color.White;
             this.panelGeneral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelGeneral.Controls.Add(this.groupBoxInvoiceType);
             this.panelGeneral.Controls.Add(this.label5);
             this.panelGeneral.Controls.Add(this.label6);
             this.panelGeneral.Controls.Add(this.groupBox5);
             this.panelGeneral.Controls.Add(this.groupBox4);
-            this.panelGeneral.Controls.Add(this.groupBox3);
-            this.panelGeneral.Controls.Add(this.groupBox6);
+            this.panelGeneral.Controls.Add(this.groupBoxPatientType);
             this.panelGeneral.Controls.Add(this.panel9);
             this.panelGeneral.Controls.Add(this.groupBox1);
             this.panelGeneral.Controls.Add(this.basicGroupBox);
@@ -217,8 +219,45 @@
             this.panelGeneral.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panelGeneral.Location = new System.Drawing.Point(0, 0);
             this.panelGeneral.Name = "panelGeneral";
-            this.panelGeneral.Size = new System.Drawing.Size(1407, 662);
+            this.panelGeneral.Size = new System.Drawing.Size(1407, 656);
             this.panelGeneral.TabIndex = 1;
+            // 
+            // groupBoxInvoiceType
+            // 
+            this.groupBoxInvoiceType.Controls.Add(this.comboBoxInvoiceTypes);
+            this.groupBoxInvoiceType.Controls.Add(this.label2);
+            this.groupBoxInvoiceType.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxInvoiceType.Location = new System.Drawing.Point(451, 490);
+            this.groupBoxInvoiceType.Name = "groupBoxInvoiceType";
+            this.groupBoxInvoiceType.Size = new System.Drawing.Size(247, 139);
+            this.groupBoxInvoiceType.TabIndex = 34;
+            this.groupBoxInvoiceType.TabStop = false;
+            this.groupBoxInvoiceType.Text = "Invoice Type";
+            // 
+            // comboBoxInvoiceTypes
+            // 
+            this.comboBoxInvoiceTypes.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxInvoiceTypes.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxInvoiceTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxInvoiceTypes.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxInvoiceTypes.FormattingEnabled = true;
+            this.comboBoxInvoiceTypes.Items.AddRange(new object[] {
+            "Cash",
+            "Credit"});
+            this.comboBoxInvoiceTypes.Location = new System.Drawing.Point(10, 75);
+            this.comboBoxInvoiceTypes.Name = "comboBoxInvoiceTypes";
+            this.comboBoxInvoiceTypes.Size = new System.Drawing.Size(273, 30);
+            this.comboBoxInvoiceTypes.TabIndex = 15;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(6, 49);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(125, 23);
+            this.label2.TabIndex = 24;
+            this.label2.Text = "Invoice Type:";
             // 
             // label5
             // 
@@ -230,7 +269,7 @@
             this.label5.Location = new System.Drawing.Point(49, 91);
             this.label5.Margin = new System.Windows.Forms.Padding(0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(112, 17);
+            this.label5.Size = new System.Drawing.Size(132, 19);
             this.label5.TabIndex = 36;
             this.label5.Text = "means Required.";
             this.label5.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -245,7 +284,7 @@
             this.label6.Location = new System.Drawing.Point(18, 91);
             this.label6.Margin = new System.Windows.Forms.Padding(0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(29, 17);
+            this.label6.Size = new System.Drawing.Size(34, 19);
             this.label6.TabIndex = 35;
             this.label6.Text = "(*) ";
             this.label6.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -255,21 +294,24 @@
             this.groupBox5.Controls.Add(this.cBoxVisitType);
             this.groupBox5.Controls.Add(this.label30);
             this.groupBox5.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox5.Location = new System.Drawing.Point(1069, 498);
+            this.groupBox5.Location = new System.Drawing.Point(1088, 490);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(314, 151);
+            this.groupBox5.Size = new System.Drawing.Size(314, 139);
             this.groupBox5.TabIndex = 34;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Assign Visit Type";
             // 
             // cBoxVisitType
             // 
+            this.cBoxVisitType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cBoxVisitType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cBoxVisitType.DisplayMember = "description";
+            this.cBoxVisitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBoxVisitType.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cBoxVisitType.FormattingEnabled = true;
             this.cBoxVisitType.Location = new System.Drawing.Point(124, 73);
             this.cBoxVisitType.Name = "cBoxVisitType";
-            this.cBoxVisitType.Size = new System.Drawing.Size(169, 27);
+            this.cBoxVisitType.Size = new System.Drawing.Size(169, 30);
             this.cBoxVisitType.TabIndex = 15;
             this.cBoxVisitType.ValueMember = "description";
             this.cBoxVisitType.SelectedIndexChanged += new System.EventHandler(this.cBoxVisitType_SelectedIndexChanged);
@@ -281,7 +323,7 @@
             this.label30.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label30.Location = new System.Drawing.Point(16, 75);
             this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(81, 19);
+            this.label30.Size = new System.Drawing.Size(102, 23);
             this.label30.TabIndex = 24;
             this.label30.Text = "Visit Type:";
             // 
@@ -292,21 +334,24 @@
             this.groupBox4.Controls.Add(this.label34);
             this.groupBox4.Controls.Add(this.label41);
             this.groupBox4.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(686, 498);
+            this.groupBox4.Location = new System.Drawing.Point(730, 490);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(351, 151);
+            this.groupBox4.Size = new System.Drawing.Size(351, 139);
             this.groupBox4.TabIndex = 33;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Patient Assignment";
             // 
             // cBoxAssignValue
             // 
+            this.cBoxAssignValue.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cBoxAssignValue.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cBoxAssignValue.DisplayMember = "description";
+            this.cBoxAssignValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBoxAssignValue.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cBoxAssignValue.FormattingEnabled = true;
-            this.cBoxAssignValue.Location = new System.Drawing.Point(114, 106);
+            this.cBoxAssignValue.Location = new System.Drawing.Point(114, 96);
             this.cBoxAssignValue.Name = "cBoxAssignValue";
-            this.cBoxAssignValue.Size = new System.Drawing.Size(197, 27);
+            this.cBoxAssignValue.Size = new System.Drawing.Size(197, 30);
             this.cBoxAssignValue.TabIndex = 25;
             this.cBoxAssignValue.ValueMember = "description";
             this.cBoxAssignValue.SelectedIndexChanged += new System.EventHandler(this.cBoxAssignValue_SelectedIndexChanged);
@@ -314,14 +359,14 @@
             // 
             // cBoxAssignType
             // 
+            this.cBoxAssignType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cBoxAssignType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cBoxAssignType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBoxAssignType.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cBoxAssignType.FormattingEnabled = true;
-            this.cBoxAssignType.Items.AddRange(new object[] {
-            "Doctor",
-            "Room Number"});
             this.cBoxAssignType.Location = new System.Drawing.Point(114, 49);
             this.cBoxAssignType.Name = "cBoxAssignType";
-            this.cBoxAssignType.Size = new System.Drawing.Size(197, 27);
+            this.cBoxAssignType.Size = new System.Drawing.Size(197, 30);
             this.cBoxAssignType.TabIndex = 15;
             this.cBoxAssignType.SelectedIndexChanged += new System.EventHandler(this.cBoxAssignType_SelectedIndexChanged);
             this.cBoxAssignType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cBoxAssignType_KeyPress);
@@ -330,9 +375,9 @@
             // 
             this.label34.AutoSize = true;
             this.label34.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label34.Location = new System.Drawing.Point(45, 109);
+            this.label34.Location = new System.Drawing.Point(45, 99);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(52, 19);
+            this.label34.Size = new System.Drawing.Size(64, 23);
             this.label34.TabIndex = 23;
             this.label34.Text = "Value:";
             // 
@@ -342,127 +387,75 @@
             this.label41.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label41.Location = new System.Drawing.Point(50, 57);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(47, 19);
+            this.label41.Size = new System.Drawing.Size(59, 23);
             this.label41.TabIndex = 24;
             this.label41.Text = "Type:";
             // 
-            // groupBox3
+            // groupBoxPatientType
             // 
-            this.groupBox3.Controls.Add(this.txtFinanceAmount);
-            this.groupBox3.Controls.Add(this.cBoxFinanceType);
-            this.groupBox3.Controls.Add(this.label42);
-            this.groupBox3.Controls.Add(this.label43);
-            this.groupBox3.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(367, 498);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(311, 151);
-            this.groupBox3.TabIndex = 32;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Finance Type";
+            this.groupBoxPatientType.Controls.Add(this.comboBoxOrgnization);
+            this.groupBoxPatientType.Controls.Add(this.comboBoxPatientType);
+            this.groupBoxPatientType.Controls.Add(this.lblOrganization);
+            this.groupBoxPatientType.Controls.Add(this.label4);
+            this.groupBoxPatientType.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxPatientType.Location = new System.Drawing.Point(18, 485);
+            this.groupBoxPatientType.Name = "groupBoxPatientType";
+            this.groupBoxPatientType.Size = new System.Drawing.Size(358, 144);
+            this.groupBoxPatientType.TabIndex = 31;
+            this.groupBoxPatientType.TabStop = false;
+            this.groupBoxPatientType.Text = "Patient Type";
+            this.groupBoxPatientType.Enter += new System.EventHandler(this.groupBox6_Enter);
             // 
-            // txtFinanceAmount
+            // comboBoxOrgnization
             // 
-            this.txtFinanceAmount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtFinanceAmount.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFinanceAmount.Location = new System.Drawing.Point(137, 96);
-            this.txtFinanceAmount.Multiline = true;
-            this.txtFinanceAmount.Name = "txtFinanceAmount";
-            this.txtFinanceAmount.Size = new System.Drawing.Size(135, 35);
-            this.txtFinanceAmount.TabIndex = 22;
-            this.txtFinanceAmount.TextChanged += new System.EventHandler(this.txtFinanceAmount_TextChanged);
-            this.txtFinanceAmount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFinanceAmount_KeyPress);
+            this.comboBoxOrgnization.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxOrgnization.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxOrgnization.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxOrgnization.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxOrgnization.FormattingEnabled = true;
+            this.comboBoxOrgnization.Items.AddRange(new object[] {
+            "Cash",
+            "Credit"});
+            this.comboBoxOrgnization.Location = new System.Drawing.Point(127, 97);
+            this.comboBoxOrgnization.Name = "comboBoxOrgnization";
+            this.comboBoxOrgnization.Size = new System.Drawing.Size(202, 30);
+            this.comboBoxOrgnization.TabIndex = 30;
             // 
-            // cBoxFinanceType
+            // comboBoxPatientType
             // 
-            this.cBoxFinanceType.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cBoxFinanceType.FormattingEnabled = true;
-            this.cBoxFinanceType.Items.AddRange(new object[] {
-            "Deposit",
-            "Pre Payment"});
-            this.cBoxFinanceType.Location = new System.Drawing.Point(137, 49);
-            this.cBoxFinanceType.Name = "cBoxFinanceType";
-            this.cBoxFinanceType.Size = new System.Drawing.Size(135, 27);
-            this.cBoxFinanceType.TabIndex = 15;
-            this.cBoxFinanceType.SelectedIndexChanged += new System.EventHandler(this.cBoxFinanceType_SelectedIndexChanged);
-            this.cBoxFinanceType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cBoxFinanceType_KeyPress);
+            this.comboBoxPatientType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboBoxPatientType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxPatientType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxPatientType.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxPatientType.FormattingEnabled = true;
+            this.comboBoxPatientType.Items.AddRange(new object[] {
+            "Cash",
+            "Credit"});
+            this.comboBoxPatientType.Location = new System.Drawing.Point(127, 59);
+            this.comboBoxPatientType.Name = "comboBoxPatientType";
+            this.comboBoxPatientType.Size = new System.Drawing.Size(202, 30);
+            this.comboBoxPatientType.TabIndex = 29;
+            this.comboBoxPatientType.SelectedIndexChanged += new System.EventHandler(this.comboBoxPatientType_SelectedIndexChanged);
             // 
-            // label42
+            // lblOrganization
             // 
-            this.label42.AutoSize = true;
-            this.label42.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label42.Location = new System.Drawing.Point(51, 109);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(66, 19);
-            this.label42.TabIndex = 23;
-            this.label42.Text = "Amount:";
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label43.Location = new System.Drawing.Point(73, 57);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(47, 19);
-            this.label43.TabIndex = 24;
-            this.label43.Text = "Type:";
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.searchLookUpEditOrgnaization);
-            this.groupBox6.Controls.Add(this.btnAccept);
-            this.groupBox6.Controls.Add(this.label4);
-            this.groupBox6.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox6.Location = new System.Drawing.Point(18, 498);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(311, 151);
-            this.groupBox6.TabIndex = 31;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Organaization Name";
-            // 
-            // searchLookUpEditOrgnaization
-            // 
-            this.searchLookUpEditOrgnaization.EditValue = "--Name---";
-            this.searchLookUpEditOrgnaization.Location = new System.Drawing.Point(78, 59);
-            this.searchLookUpEditOrgnaization.Name = "searchLookUpEditOrgnaization";
-            this.searchLookUpEditOrgnaization.Properties.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.searchLookUpEditOrgnaization.Properties.Appearance.Options.UseFont = true;
-            this.searchLookUpEditOrgnaization.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.searchLookUpEditOrgnaization.Properties.DisplayMember = "--Name---";
-            this.searchLookUpEditOrgnaization.Properties.PopupView = this.gridView2;
-            this.searchLookUpEditOrgnaization.Size = new System.Drawing.Size(207, 26);
-            this.searchLookUpEditOrgnaization.TabIndex = 26;
-            this.searchLookUpEditOrgnaization.EditValueChanged += new System.EventHandler(this.searchLookUpEditOrgnaization_EditValueChanged);
-            // 
-            // gridView2
-            // 
-            this.gridView2.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus;
-            this.gridView2.Name = "gridView2";
-            this.gridView2.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.gridView2.OptionsView.ShowGroupPanel = false;
-            // 
-            // btnAccept
-            // 
-            this.btnAccept.Appearance.BackColor = System.Drawing.Color.DarkTurquoise;
-            this.btnAccept.Appearance.Font = new System.Drawing.Font("Times New Roman", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAccept.Appearance.Options.UseBackColor = true;
-            this.btnAccept.Appearance.Options.UseFont = true;
-            this.btnAccept.Location = new System.Drawing.Point(191, 96);
-            this.btnAccept.Name = "btnAccept";
-            this.btnAccept.Size = new System.Drawing.Size(94, 29);
-            this.btnAccept.TabIndex = 25;
-            this.btnAccept.Text = "Accept";
-            this.btnAccept.Click += new System.EventHandler(this.btnAccept_Click);
+            this.lblOrganization.AutoSize = true;
+            this.lblOrganization.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOrganization.Location = new System.Drawing.Point(9, 103);
+            this.lblOrganization.Name = "lblOrganization";
+            this.lblOrganization.Size = new System.Drawing.Size(128, 23);
+            this.lblOrganization.TabIndex = 28;
+            this.lblOrganization.Text = "Organization:";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(6, 57);
+            this.label4.Location = new System.Drawing.Point(73, 61);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(54, 19);
+            this.label4.Size = new System.Drawing.Size(59, 23);
             this.label4.TabIndex = 24;
-            this.label4.Text = "Name:";
+            this.label4.Text = "Type:";
             // 
             // panel9
             // 
@@ -512,7 +505,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(532, 121);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(544, 358);
+            this.groupBox1.Size = new System.Drawing.Size(447, 358);
             this.groupBox1.TabIndex = 29;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Address";
@@ -523,7 +516,7 @@
             this.label44.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label44.Location = new System.Drawing.Point(28, 168);
             this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(81, 19);
+            this.label44.Size = new System.Drawing.Size(99, 23);
             this.label44.TabIndex = 21;
             this.label44.Text = "House No:";
             // 
@@ -569,7 +562,7 @@
             this.label45.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label45.Location = new System.Drawing.Point(67, 40);
             this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(42, 19);
+            this.label45.Size = new System.Drawing.Size(53, 23);
             this.label45.TabIndex = 17;
             this.label45.Text = "City:";
             // 
@@ -579,7 +572,7 @@
             this.label46.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label46.Location = new System.Drawing.Point(49, 126);
             this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(62, 19);
+            this.label46.Size = new System.Drawing.Size(76, 23);
             this.label46.TabIndex = 16;
             this.label46.Text = "Kebele:";
             // 
@@ -592,7 +585,7 @@
             this.groupBox2.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(1, 215);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(541, 143);
+            this.groupBox2.Size = new System.Drawing.Size(444, 143);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Registration Fee";
@@ -604,20 +597,20 @@
             this.txtRegAmount.Location = new System.Drawing.Point(135, 96);
             this.txtRegAmount.Multiline = true;
             this.txtRegAmount.Name = "txtRegAmount";
-            this.txtRegAmount.Size = new System.Drawing.Size(280, 35);
+            this.txtRegAmount.Size = new System.Drawing.Size(201, 35);
             this.txtRegAmount.TabIndex = 22;
             this.txtRegAmount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtRegAmount_KeyPress);
             // 
             // cBoxRegType
             // 
+            this.cBoxRegType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cBoxRegType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cBoxRegType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBoxRegType.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cBoxRegType.FormattingEnabled = true;
-            this.cBoxRegType.Items.AddRange(new object[] {
-            "Specialist",
-            "Doctor"});
             this.cBoxRegType.Location = new System.Drawing.Point(135, 49);
             this.cBoxRegType.Name = "cBoxRegType";
-            this.cBoxRegType.Size = new System.Drawing.Size(280, 27);
+            this.cBoxRegType.Size = new System.Drawing.Size(201, 31);
             this.cBoxRegType.TabIndex = 15;
             this.cBoxRegType.SelectedIndexChanged += new System.EventHandler(this.cBoxRegType_SelectedIndexChanged);
             // 
@@ -627,7 +620,7 @@
             this.label47.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label47.Location = new System.Drawing.Point(49, 109);
             this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(66, 19);
+            this.label47.Size = new System.Drawing.Size(83, 23);
             this.label47.TabIndex = 23;
             this.label47.Text = "Amount:";
             // 
@@ -637,7 +630,7 @@
             this.label48.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label48.Location = new System.Drawing.Point(71, 57);
             this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(47, 19);
+            this.label48.Size = new System.Drawing.Size(59, 23);
             this.label48.TabIndex = 24;
             this.label48.Text = "Type:";
             // 
@@ -647,7 +640,7 @@
             this.label49.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label49.Location = new System.Drawing.Point(38, 85);
             this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(71, 19);
+            this.label49.Size = new System.Drawing.Size(89, 23);
             this.label49.TabIndex = 15;
             this.label49.Text = "Sub City:";
             // 
@@ -704,7 +697,7 @@
             this.label50.Location = new System.Drawing.Point(112, 263);
             this.label50.Margin = new System.Windows.Forms.Padding(0);
             this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(17, 19);
+            this.label50.Size = new System.Drawing.Size(20, 23);
             this.label50.TabIndex = 21;
             this.label50.Text = "*";
             this.label50.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -719,7 +712,7 @@
             this.label51.Location = new System.Drawing.Point(116, 305);
             this.label51.Margin = new System.Windows.Forms.Padding(0);
             this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(17, 19);
+            this.label51.Size = new System.Drawing.Size(20, 23);
             this.label51.TabIndex = 20;
             this.label51.Text = "*";
             this.label51.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -734,7 +727,7 @@
             this.label52.Location = new System.Drawing.Point(116, 87);
             this.label52.Margin = new System.Windows.Forms.Padding(0);
             this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(17, 19);
+            this.label52.Size = new System.Drawing.Size(20, 23);
             this.label52.TabIndex = 18;
             this.label52.Text = "*";
             this.label52.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -749,7 +742,7 @@
             this.label53.Location = new System.Drawing.Point(116, 131);
             this.label53.Margin = new System.Windows.Forms.Padding(0);
             this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(17, 19);
+            this.label53.Size = new System.Drawing.Size(20, 23);
             this.label53.TabIndex = 17;
             this.label53.Text = "*";
             this.label53.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -764,7 +757,7 @@
             this.label54.Location = new System.Drawing.Point(116, 175);
             this.label54.Margin = new System.Windows.Forms.Padding(0);
             this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(17, 19);
+            this.label54.Size = new System.Drawing.Size(20, 23);
             this.label54.TabIndex = 16;
             this.label54.Text = "*";
             this.label54.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -779,7 +772,7 @@
             this.label55.Location = new System.Drawing.Point(112, 216);
             this.label55.Margin = new System.Windows.Forms.Padding(0);
             this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(17, 19);
+            this.label55.Size = new System.Drawing.Size(20, 23);
             this.label55.TabIndex = 15;
             this.label55.Text = "*";
             this.label55.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -794,7 +787,7 @@
             this.label56.Location = new System.Drawing.Point(123, 40);
             this.label56.Margin = new System.Windows.Forms.Padding(0);
             this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(17, 19);
+            this.label56.Size = new System.Drawing.Size(20, 23);
             this.label56.TabIndex = 10;
             this.label56.Text = "*";
             this.label56.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -805,12 +798,15 @@
             this.label57.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label57.Location = new System.Drawing.Point(9, 314);
             this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(113, 19);
+            this.label57.Size = new System.Drawing.Size(141, 23);
             this.label57.TabIndex = 14;
             this.label57.Text = "Phone Number:";
             // 
             // cBoxGeneder
             // 
+            this.cBoxGeneder.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cBoxGeneder.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cBoxGeneder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBoxGeneder.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cBoxGeneder.FormattingEnabled = true;
             this.cBoxGeneder.Items.AddRange(new object[] {
@@ -818,7 +814,7 @@
             "Female"});
             this.cBoxGeneder.Location = new System.Drawing.Point(150, 260);
             this.cBoxGeneder.Name = "cBoxGeneder";
-            this.cBoxGeneder.Size = new System.Drawing.Size(135, 27);
+            this.cBoxGeneder.Size = new System.Drawing.Size(135, 31);
             this.cBoxGeneder.TabIndex = 13;
             this.cBoxGeneder.SelectedIndexChanged += new System.EventHandler(this.cBoxGeneder_SelectedIndexChanged);
             this.cBoxGeneder.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cBoxGeneder_KeyPress);
@@ -829,7 +825,7 @@
             this.label58.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label58.Location = new System.Drawing.Point(55, 268);
             this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(64, 19);
+            this.label58.Size = new System.Drawing.Size(81, 23);
             this.label58.TabIndex = 12;
             this.label58.Text = "Gender:";
             // 
@@ -839,7 +835,7 @@
             this.label59.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label59.Location = new System.Drawing.Point(81, 222);
             this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(41, 19);
+            this.label59.Size = new System.Drawing.Size(51, 23);
             this.label59.TabIndex = 11;
             this.label59.Text = "Age:";
             // 
@@ -849,7 +845,7 @@
             this.firstNameLbl.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.firstNameLbl.Location = new System.Drawing.Point(32, 94);
             this.firstNameLbl.Name = "firstNameLbl";
-            this.firstNameLbl.Size = new System.Drawing.Size(89, 19);
+            this.firstNameLbl.Size = new System.Drawing.Size(110, 23);
             this.firstNameLbl.TabIndex = 10;
             this.firstNameLbl.Text = "First Name:";
             // 
@@ -859,7 +855,7 @@
             this.label60.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label60.Location = new System.Drawing.Point(15, 139);
             this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(106, 19);
+            this.label60.Size = new System.Drawing.Size(129, 23);
             this.label60.TabIndex = 9;
             this.label60.Text = "Middle Name:";
             // 
@@ -869,7 +865,7 @@
             this.label61.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label61.Location = new System.Drawing.Point(33, 180);
             this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(88, 19);
+            this.label61.Size = new System.Drawing.Size(109, 23);
             this.label61.TabIndex = 8;
             this.label61.Text = "Last Name:";
             // 
@@ -952,7 +948,7 @@
             this.IdLabel.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.IdLabel.Location = new System.Drawing.Point(46, 45);
             this.IdLabel.Name = "IdLabel";
-            this.IdLabel.Size = new System.Drawing.Size(95, 19);
+            this.IdLabel.Size = new System.Drawing.Size(119, 23);
             this.IdLabel.TabIndex = 0;
             this.IdLabel.Text = "Patient ID:   ";
             // 
@@ -960,34 +956,13 @@
             // 
             this.panelforButtons.BackColor = System.Drawing.Color.White;
             this.panelforButtons.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelforButtons.Controls.Add(this.btnDelete);
             this.panelforButtons.Controls.Add(this.btnSave);
-            this.panelforButtons.Controls.Add(this.btnStart);
-            this.panelforButtons.Controls.Add(this.btnClose);
             this.panelforButtons.Controls.Add(this.btnNew);
             this.panelforButtons.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelforButtons.Location = new System.Drawing.Point(0, 0);
             this.panelforButtons.Name = "panelforButtons";
             this.panelforButtons.Size = new System.Drawing.Size(1405, 78);
             this.panelforButtons.TabIndex = 27;
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.btnDelete.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Appearance.Options.UseBackColor = true;
-            this.btnDelete.Appearance.Options.UseFont = true;
-            this.btnDelete.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.btnDelete.AppearanceHovered.Options.UseBackColor = true;
-            this.btnDelete.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDelete.ImageOptions.Image")));
-            this.btnDelete.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.TopCenter;
-            this.btnDelete.Location = new System.Drawing.Point(542, 8);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.PaintStyle = DevExpress.XtraEditors.Controls.PaintStyles.Light;
-            this.btnDelete.Size = new System.Drawing.Size(59, 62);
-            this.btnDelete.TabIndex = 9;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // btnSave
             // 
@@ -1007,42 +982,6 @@
             this.btnSave.TabIndex = 8;
             this.btnSave.Text = "Save";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnStart
-            // 
-            this.btnStart.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.btnStart.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStart.Appearance.Options.UseBackColor = true;
-            this.btnStart.Appearance.Options.UseFont = true;
-            this.btnStart.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.btnStart.AppearanceHovered.Options.UseBackColor = true;
-            this.btnStart.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnStart.ImageOptions.Image")));
-            this.btnStart.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.TopCenter;
-            this.btnStart.Location = new System.Drawing.Point(289, 8);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.PaintStyle = DevExpress.XtraEditors.Controls.PaintStyles.Light;
-            this.btnStart.Size = new System.Drawing.Size(59, 62);
-            this.btnStart.TabIndex = 7;
-            this.btnStart.Text = "Start";
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-            // 
-            // btnClose
-            // 
-            this.btnClose.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.btnClose.Appearance.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Appearance.Options.UseBackColor = true;
-            this.btnClose.Appearance.Options.UseFont = true;
-            this.btnClose.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.btnClose.AppearanceHovered.Options.UseBackColor = true;
-            this.btnClose.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnClose.ImageOptions.Image")));
-            this.btnClose.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.TopCenter;
-            this.btnClose.Location = new System.Drawing.Point(425, 8);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.PaintStyle = DevExpress.XtraEditors.Controls.PaintStyles.Light;
-            this.btnClose.Size = new System.Drawing.Size(59, 62);
-            this.btnClose.TabIndex = 6;
-            this.btnClose.Text = "Close";
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // btnNew
             // 
@@ -1066,35 +1005,147 @@
             // 
             this.xtraTabPagePatientDocument.Controls.Add(this.panelPatientDocument);
             this.xtraTabPagePatientDocument.Name = "xtraTabPagePatientDocument";
-            this.xtraTabPagePatientDocument.Size = new System.Drawing.Size(1407, 662);
+            this.xtraTabPagePatientDocument.Size = new System.Drawing.Size(1407, 656);
             this.xtraTabPagePatientDocument.Text = "Patient Document";
             // 
             // panelPatientDocument
             // 
             this.panelPatientDocument.BackColor = System.Drawing.Color.White;
             this.panelPatientDocument.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelPatientDocument.Controls.Add(this.panelPatientDocumentHeader);
             this.panelPatientDocument.Controls.Add(this.gridControlPatient);
+            this.panelPatientDocument.Controls.Add(this.panelPatientDocumentHeader);
             this.panelPatientDocument.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPatientDocument.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panelPatientDocument.Location = new System.Drawing.Point(0, 0);
             this.panelPatientDocument.Name = "panelPatientDocument";
-            this.panelPatientDocument.Size = new System.Drawing.Size(1407, 662);
+            this.panelPatientDocument.Size = new System.Drawing.Size(1407, 656);
             this.panelPatientDocument.TabIndex = 1;
+            // 
+            // gridControlPatient
+            // 
+            this.gridControlPatient.Location = new System.Drawing.Point(0, 141);
+            this.gridControlPatient.MainView = this.gridViewPatients;
+            this.gridControlPatient.Name = "gridControlPatient";
+            this.gridControlPatient.Size = new System.Drawing.Size(1405, 513);
+            this.gridControlPatient.TabIndex = 26;
+            this.gridControlPatient.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridViewPatients});
+            // 
+            // gridViewPatients
+            // 
+            this.gridViewPatients.GridControl = this.gridControlPatient;
+            this.gridViewPatients.Name = "gridViewPatients";
+            this.gridViewPatients.OptionsView.ShowGroupPanel = false;
+            this.gridViewPatients.PopupMenuShowing += new DevExpress.XtraGrid.Views.Grid.PopupMenuShowingEventHandler(this.gridViewPatients_PopupMenuShowing);
             // 
             // panelPatientDocumentHeader
             // 
+            this.panelPatientDocumentHeader.BackColor = System.Drawing.Color.AliceBlue;
+            this.panelPatientDocumentHeader.Controls.Add(this.lblcheck);
+            this.panelPatientDocumentHeader.Controls.Add(this.panelDateCriteria);
+            this.panelPatientDocumentHeader.Controls.Add(this.comboBoxFilterBy);
+            this.panelPatientDocumentHeader.Controls.Add(this.panelFilterCriteria);
+            this.panelPatientDocumentHeader.Controls.Add(this.lblFilterBy);
+            this.panelPatientDocumentHeader.Controls.Add(this.btnShowSearch);
             this.panelPatientDocumentHeader.Controls.Add(this.btnRefresh);
             this.panelPatientDocumentHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelPatientDocumentHeader.Location = new System.Drawing.Point(0, 0);
             this.panelPatientDocumentHeader.Name = "panelPatientDocumentHeader";
-            this.panelPatientDocumentHeader.Size = new System.Drawing.Size(1405, 64);
+            this.panelPatientDocumentHeader.Size = new System.Drawing.Size(1405, 135);
             this.panelPatientDocumentHeader.TabIndex = 25;
+            // 
+            // lblcheck
+            // 
+            this.lblcheck.AutoSize = true;
+            this.lblcheck.Location = new System.Drawing.Point(569, 22);
+            this.lblcheck.Name = "lblcheck";
+            this.lblcheck.Size = new System.Drawing.Size(91, 21);
+            this.lblcheck.TabIndex = 31;
+            this.lblcheck.Text = "xxxxxxxxx";
+            // 
+            // panelDateCriteria
+            // 
+            this.panelDateCriteria.Controls.Add(this.lblDateFilterTitle);
+            this.panelDateCriteria.Location = new System.Drawing.Point(930, 0);
+            this.panelDateCriteria.Name = "panelDateCriteria";
+            this.panelDateCriteria.Size = new System.Drawing.Size(340, 129);
+            this.panelDateCriteria.TabIndex = 29;
+            // 
+            // lblDateFilterTitle
+            // 
+            this.lblDateFilterTitle.AutoSize = true;
+            this.lblDateFilterTitle.Location = new System.Drawing.Point(56, 1);
+            this.lblDateFilterTitle.Name = "lblDateFilterTitle";
+            this.lblDateFilterTitle.Size = new System.Drawing.Size(91, 21);
+            this.lblDateFilterTitle.TabIndex = 32;
+            this.lblDateFilterTitle.Text = "xxxxxxxxx";
+            // 
+            // comboBoxFilterBy
+            // 
+            this.comboBoxFilterBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFilterBy.FormattingEnabled = true;
+            this.comboBoxFilterBy.Location = new System.Drawing.Point(355, 19);
+            this.comboBoxFilterBy.Name = "comboBoxFilterBy";
+            this.comboBoxFilterBy.Size = new System.Drawing.Size(195, 29);
+            this.comboBoxFilterBy.TabIndex = 30;
+            this.comboBoxFilterBy.SelectedIndexChanged += new System.EventHandler(this.comboBoxFilterBy_SelectedIndexChanged);
+            // 
+            // panelFilterCriteria
+            // 
+            this.panelFilterCriteria.Controls.Add(this.label3);
+            this.panelFilterCriteria.Controls.Add(this.label1);
+            this.panelFilterCriteria.Location = new System.Drawing.Point(667, 3);
+            this.panelFilterCriteria.Name = "panelFilterCriteria";
+            this.panelFilterCriteria.Size = new System.Drawing.Size(262, 129);
+            this.panelFilterCriteria.TabIndex = 28;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(236, 72);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(35, 21);
+            this.label3.TabIndex = 33;
+            this.label3.Text = "To:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(216, 21);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(55, 21);
+            this.label1.TabIndex = 32;
+            this.label1.Text = "From:";
+            // 
+            // lblFilterBy
+            // 
+            this.lblFilterBy.AutoSize = true;
+            this.lblFilterBy.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFilterBy.Location = new System.Drawing.Point(265, 19);
+            this.lblFilterBy.Name = "lblFilterBy";
+            this.lblFilterBy.Size = new System.Drawing.Size(84, 23);
+            this.lblFilterBy.TabIndex = 26;
+            this.lblFilterBy.Text = "Filter By";
+            // 
+            // btnShowSearch
+            // 
+            this.btnShowSearch.Appearance.Font = new System.Drawing.Font("Times New Roman", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnShowSearch.Appearance.Options.UseFont = true;
+            this.btnShowSearch.AppearanceHovered.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.btnShowSearch.AppearanceHovered.Options.UseBackColor = true;
+            this.btnShowSearch.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnShowSearch.ImageOptions.Image")));
+            this.btnShowSearch.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.TopCenter;
+            this.btnShowSearch.Location = new System.Drawing.Point(34, 13);
+            this.btnShowSearch.Name = "btnShowSearch";
+            this.btnShowSearch.Size = new System.Drawing.Size(57, 61);
+            this.btnShowSearch.TabIndex = 25;
+            this.btnShowSearch.Text = "Show";
+            this.btnShowSearch.Click += new System.EventHandler(this.btnShowSearch_Click);
             // 
             // btnRefresh
             // 
             this.btnRefresh.BackColor = System.Drawing.Color.LightSeaGreen;
-            this.btnRefresh.Location = new System.Drawing.Point(1278, 13);
+            this.btnRefresh.Location = new System.Drawing.Point(1280, 3);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(123, 45);
             this.btnRefresh.TabIndex = 24;
@@ -1102,53 +1153,11 @@
             this.btnRefresh.UseVisualStyleBackColor = false;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
-            // gridControlPatient
-            // 
-            this.gridControlPatient.Location = new System.Drawing.Point(1, 64);
-            this.gridControlPatient.MainView = this.gridViewPatients;
-            this.gridControlPatient.Name = "gridControlPatient";
-            this.gridControlPatient.Size = new System.Drawing.Size(1403, 595);
-            this.gridControlPatient.TabIndex = 10;
-            this.gridControlPatient.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridViewPatients,
-            this.gridView4});
-            // 
-            // gridViewPatients
-            // 
-            this.gridViewPatients.Appearance.EvenRow.BackColor = System.Drawing.Color.White;
-            this.gridViewPatients.Appearance.EvenRow.Options.UseBackColor = true;
-            this.gridViewPatients.Appearance.FocusedCell.BorderColor = System.Drawing.Color.Transparent;
-            this.gridViewPatients.Appearance.FocusedCell.Options.UseBorderColor = true;
-            this.gridViewPatients.Appearance.GroupPanel.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gridViewPatients.Appearance.GroupPanel.Options.UseFont = true;
-            this.gridViewPatients.Appearance.HeaderPanel.BackColor = System.Drawing.Color.Silver;
-            this.gridViewPatients.Appearance.HeaderPanel.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gridViewPatients.Appearance.HeaderPanel.Options.UseBackColor = true;
-            this.gridViewPatients.Appearance.HeaderPanel.Options.UseFont = true;
-            this.gridViewPatients.Appearance.OddRow.BackColor = System.Drawing.Color.Silver;
-            this.gridViewPatients.Appearance.OddRow.Options.UseBackColor = true;
-            this.gridViewPatients.Appearance.Row.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gridViewPatients.Appearance.Row.Options.UseFont = true;
-            this.gridViewPatients.Appearance.SelectedRow.BackColor = System.Drawing.Color.LightGray;
-            this.gridViewPatients.Appearance.SelectedRow.Options.UseBackColor = true;
-            this.gridViewPatients.GridControl = this.gridControlPatient;
-            this.gridViewPatients.Name = "gridViewPatients";
-            this.gridViewPatients.OptionsBehavior.Editable = false;
-            this.gridViewPatients.OptionsBehavior.ReadOnly = true;
-            this.gridViewPatients.OptionsFind.FindNullPrompt = "Enter patient\'s Information to search...";
-            this.gridViewPatients.OptionsSelection.EnableAppearanceFocusedCell = false;
-            this.gridViewPatients.RowClick += new DevExpress.XtraGrid.Views.Grid.RowClickEventHandler(this.gridViewPatients_RowClick);
-            // 
-            // gridView4
-            // 
-            this.gridView4.GridControl = this.gridControlPatient;
-            this.gridView4.Name = "gridView4";
-            // 
             // xtraTabPageAppointmentDocument
             // 
             this.xtraTabPageAppointmentDocument.Controls.Add(this.panelAppointmentDocument);
             this.xtraTabPageAppointmentDocument.Name = "xtraTabPageAppointmentDocument";
-            this.xtraTabPageAppointmentDocument.Size = new System.Drawing.Size(1407, 662);
+            this.xtraTabPageAppointmentDocument.Size = new System.Drawing.Size(1407, 656);
             this.xtraTabPageAppointmentDocument.Text = "Appointment Document";
             // 
             // panelAppointmentDocument
@@ -1161,7 +1170,7 @@
             this.panelAppointmentDocument.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panelAppointmentDocument.Location = new System.Drawing.Point(0, 0);
             this.panelAppointmentDocument.Name = "panelAppointmentDocument";
-            this.panelAppointmentDocument.Size = new System.Drawing.Size(1407, 662);
+            this.panelAppointmentDocument.Size = new System.Drawing.Size(1407, 656);
             this.panelAppointmentDocument.TabIndex = 1;
             // 
             // panel2
@@ -1238,7 +1247,7 @@
             // 
             this.xtraTabPageOrder.Controls.Add(this.panelOrder);
             this.xtraTabPageOrder.Name = "xtraTabPageOrder";
-            this.xtraTabPageOrder.Size = new System.Drawing.Size(1407, 662);
+            this.xtraTabPageOrder.Size = new System.Drawing.Size(1407, 656);
             this.xtraTabPageOrder.Text = "Order";
             // 
             // panelOrder
@@ -1249,7 +1258,7 @@
             this.panelOrder.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panelOrder.Location = new System.Drawing.Point(0, 0);
             this.panelOrder.Name = "panelOrder";
-            this.panelOrder.Size = new System.Drawing.Size(1407, 662);
+            this.panelOrder.Size = new System.Drawing.Size(1407, 656);
             this.panelOrder.TabIndex = 0;
             // 
             // footerPanel
@@ -1268,7 +1277,7 @@
             this.label15.ForeColor = System.Drawing.Color.LimeGreen;
             this.label15.Location = new System.Drawing.Point(423, 20);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(522, 22);
+            this.label15.Size = new System.Drawing.Size(658, 26);
             this.label15.TabIndex = 15;
             this.label15.Text = "@CopyWrite Heal Aafrica Health City S.C. All Right Reserved";
             // 
@@ -1289,7 +1298,7 @@
             this.HeaderPanel.Location = new System.Drawing.Point(0, 0);
             this.HeaderPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.HeaderPanel.Name = "HeaderPanel";
-            this.HeaderPanel.Size = new System.Drawing.Size(1540, 114);
+            this.HeaderPanel.Size = new System.Drawing.Size(1855, 114);
             this.HeaderPanel.TabIndex = 23;
             // 
             // btnExitt
@@ -1321,7 +1330,7 @@
             this.LoggedUser.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LoggedUser.Location = new System.Drawing.Point(183, 55);
             this.LoggedUser.Name = "LoggedUser";
-            this.LoggedUser.Size = new System.Drawing.Size(153, 21);
+            this.LoggedUser.Size = new System.Drawing.Size(199, 27);
             this.LoggedUser.TabIndex = 6;
             this.LoggedUser.Text = "Habtamu Esubalew";
             // 
@@ -1331,7 +1340,7 @@
             this.LogoName.Font = new System.Drawing.Font("Times New Roman", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LogoName.Location = new System.Drawing.Point(668, 84);
             this.LogoName.Name = "LogoName";
-            this.LogoName.Size = new System.Drawing.Size(341, 24);
+            this.LogoName.Size = new System.Drawing.Size(451, 31);
             this.LogoName.TabIndex = 7;
             this.LogoName.Text = "Heal Africa Health City EMR System";
             // 
@@ -1349,20 +1358,20 @@
             // pictureBoxLogedUser
             // 
             this.pictureBoxLogedUser.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxLogedUser.Image")));
-            this.pictureBoxLogedUser.Location = new System.Drawing.Point(65, 11);
+            this.pictureBoxLogedUser.Location = new System.Drawing.Point(65, 4);
             this.pictureBoxLogedUser.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBoxLogedUser.Name = "pictureBoxLogedUser";
-            this.pictureBoxLogedUser.Size = new System.Drawing.Size(112, 97);
+            this.pictureBoxLogedUser.Size = new System.Drawing.Size(112, 106);
             this.pictureBoxLogedUser.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxLogedUser.TabIndex = 5;
             this.pictureBoxLogedUser.TabStop = false;
             // 
             // PatientMSystem
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1540, 845);
+            this.ClientSize = new System.Drawing.Size(1855, 1055);
             this.Controls.Add(this.HeaderPanel);
             this.Controls.Add(this.footerPanel);
             this.Controls.Add(this.BodyPanel);
@@ -1380,16 +1389,14 @@
             this.xtraTabPageGeneral.ResumeLayout(false);
             this.panelGeneral.ResumeLayout(false);
             this.panelGeneral.PerformLayout();
+            this.groupBoxInvoiceType.ResumeLayout(false);
+            this.groupBoxInvoiceType.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.searchLookUpEditOrgnaization.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView2)).EndInit();
+            this.groupBoxPatientType.ResumeLayout(false);
+            this.groupBoxPatientType.PerformLayout();
             this.panel9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPatientProfile)).EndInit();
             this.groupBox1.ResumeLayout(false);
@@ -1401,10 +1408,14 @@
             this.panelforButtons.ResumeLayout(false);
             this.xtraTabPagePatientDocument.ResumeLayout(false);
             this.panelPatientDocument.ResumeLayout(false);
-            this.panelPatientDocumentHeader.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridControlPatient)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewPatients)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView4)).EndInit();
+            this.panelPatientDocumentHeader.ResumeLayout(false);
+            this.panelPatientDocumentHeader.PerformLayout();
+            this.panelDateCriteria.ResumeLayout(false);
+            this.panelDateCriteria.PerformLayout();
+            this.panelFilterCriteria.ResumeLayout(false);
+            this.panelFilterCriteria.PerformLayout();
             this.xtraTabPageAppointmentDocument.ResumeLayout(false);
             this.panelAppointmentDocument.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
@@ -1442,10 +1453,7 @@
         private DevExpress.XtraTab.XtraTabPage xtraTabPageGeneral;
         private System.Windows.Forms.Panel panelGeneral;
         private System.Windows.Forms.Panel panelforButtons;
-        private DevExpress.XtraEditors.SimpleButton btnDelete;
         private DevExpress.XtraEditors.SimpleButton btnSave;
-        private DevExpress.XtraEditors.SimpleButton btnStart;
-        private DevExpress.XtraEditors.SimpleButton btnClose;
         private DevExpress.XtraEditors.SimpleButton btnNew;
         private System.Windows.Forms.Panel panelPatientDocument;
         private System.Windows.Forms.Panel panelAppointmentDocument;
@@ -1460,15 +1468,7 @@
         private System.Windows.Forms.ComboBox cBoxAssignType;
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.Label label41;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.TextBox txtFinanceAmount;
-        private System.Windows.Forms.ComboBox cBoxFinanceType;
-        private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.Label label43;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private DevExpress.XtraEditors.SearchLookUpEdit searchLookUpEditOrgnaization;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
-        private DevExpress.XtraEditors.SimpleButton btnAccept;
+        private System.Windows.Forms.GroupBox groupBoxPatientType;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Panel panel9;
         private System.Windows.Forms.Button btnUploadPhoto;
@@ -1511,9 +1511,6 @@
         private System.Windows.Forms.Label IdLabel;
         private System.Windows.Forms.Panel panelPatientDocumentHeader;
         private System.Windows.Forms.Button btnRefresh;
-        private DevExpress.XtraGrid.GridControl gridControlPatient;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridViewPatients;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridView4;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnAppointmentRefresh;
@@ -1521,6 +1518,24 @@
         private DevExpress.XtraGrid.GridControl gridControlAppointmentDocument;
         private DevExpress.XtraGrid.Views.Grid.GridView gridViewAppointmentdocument;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView5;
+        private System.Windows.Forms.Label lblOrganization;
+        private DevExpress.XtraGrid.GridControl gridControlPatient;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridViewPatients;
+        private DevExpress.XtraEditors.SimpleButton btnShowSearch;
+        private System.Windows.Forms.Label lblFilterBy;
+        private System.Windows.Forms.Panel panelFilterCriteria;
+       
+        private System.Windows.Forms.ComboBox comboBoxFilterBy;
+        private System.Windows.Forms.Panel panelDateCriteria;
+        private System.Windows.Forms.GroupBox groupBoxInvoiceType;
+        private System.Windows.Forms.ComboBox comboBoxInvoiceTypes;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comboBoxOrgnization;
+        private System.Windows.Forms.ComboBox comboBoxPatientType;
+        private System.Windows.Forms.Label lblcheck;
+        private System.Windows.Forms.Label lblDateFilterTitle;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label1;
     }
 }
 

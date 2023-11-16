@@ -415,7 +415,7 @@ namespace Patient_Managment_System.Data_Access_Layer
             connection.Open();
             List<Patient> PatientdataList = new List<Patient>();
 
-            string query = "SELECT id,first_name,middile_name,last_name,gender,phone FROM general.person where type_id=@id and active=@active ORDER BY id";
+            string query = "SELECT id,first_name,middile_name,last_name,gender,phone,date_registered FROM general.person where type_id=@id and active=@active ORDER BY id";
             using (SqlCommand command = new SqlCommand(query, connection))
             {
                 
@@ -434,7 +434,7 @@ namespace Patient_Managment_System.Data_Access_Layer
                             LastName = reader["last_name"].ToString(),
                             Gender = reader["gender"].ToString(),
                             PhoneNumber = reader["phone"].ToString(),
-
+                            DateRegistered = DateTime.Parse(reader["date_registered"].ToString())
                         };
                         PatientdataList.Add(patient);
                     }

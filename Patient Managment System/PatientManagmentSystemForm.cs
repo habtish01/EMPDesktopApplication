@@ -31,6 +31,8 @@ using DevExpress.XtraGrid.Views.Grid;
 
 
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using TextBox = System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace Patient_Managment_System
 {
@@ -48,8 +50,16 @@ namespace Patient_Managment_System
         patientInfo patientInfo =new patientInfo();
         List<patientInfo> allPatients=new List<patientInfo>();
         patientInfo selectedPatient;
-      
-      
+        List<string> genders = new List<string> {"Male","Female"};
+        List<string> invoiceTypes = new List<string> {"Cash","Credit"};
+        List<string> registrationFees = new List<string> {"Doctor","Specialist"};
+        List<string> patientAssignments = new List<string> {"Doctor","Room Number"};
+        List<string> roomNumbers = new List<string> {"Room 1","Room 2","Room 3","Room 4"};
+        List<string> doctors = new List<string> {"Dr xxxx","Dr yyyyy","Dr zzzzzz"};
+        List<string> patienttypes = new List<string> {"Individual","Organization"};
+        List<string> organizations = new List<string> {"Heal Africa 1", "Heal Africa 2", "Heal Africa 3", "Heal Africa 4", "Heal Africa 5" };
+        
+
         #endregion
 
         public PatientMSystem()
@@ -63,15 +73,16 @@ namespace Patient_Managment_System
         #region Application On Load Method
         private void PatientMSystem_Load(object sender, EventArgs e)
         {
-           
-            btnStart.Enabled = false;
-            btnClose.Enabled = false;
-            btnDelete.Enabled = false;
-            /*
-             * outer by habtish
-             * combo box data for Visit Location
-             */
-            var dataList = layer.LoadListForVisitTypeCoboBox();
+            cBoxGeneder.DataSource = genders;
+            comboBoxInvoiceTypes.DataSource= invoiceTypes;
+            cBoxAssignType.DataSource = patientAssignments;
+            cBoxRegType.DataSource = registrationFees;
+            comboBoxPatientType.DataSource = patienttypes;
+             /*
+              * outer by habtish
+              * combo box data for Visit Location
+              */
+             var dataList = layer.LoadListForVisitTypeCoboBox();
            
             cBoxVisitType.DataSource = dataList;
             cBoxVisitType.ValueMember = "Id";
@@ -80,11 +91,7 @@ namespace Patient_Managment_System
             * outer by habtish
             * combo box data for Finance Type
             */
-            
-            var dataList1 = layer.LoadListForFinanceTypeCoboBox();
-            cBoxFinanceType.DataSource = dataList1;
-            cBoxFinanceType.ValueMember = "Id";
-            cBoxFinanceType.DisplayMember = "Description";
+          
             /*
             * outer by habtish
             * combo box data for Patient Assignment type
@@ -108,8 +115,11 @@ namespace Patient_Managment_System
              * load all appointment list to view 
              */
             loadAppointments();
+            ///
+            comboBoxFilterBy.DataSource=filterByList;
 
-            
+
+
         }
 
         #endregion
@@ -195,24 +205,8 @@ namespace Patient_Managment_System
                 return;
             }
 
-            // Validate finance type
-            string financeType = cBoxFinanceType.Text.Trim();
-            if (!validationHelper.isFinanceTypeValid(financeType))
-            {
-                cBoxFinanceType.BackColor = Color.LightPink; 
-                cBoxFinanceType.Focus();                
-                return;
-            }
 
 
-            // Validate finance amount
-            string financeAmount = txtFinanceAmount.Text.Trim();
-            if (!validationHelper.isFinanceAmountValid(financeAmount))
-            {
-                txtFinanceAmount.BackColor = Color.LightPink; 
-                txtFinanceAmount.Focus();                
-                return;
-            }
             //validate assign type
             string assignType = cBoxAssignType.Text.Trim();
             if (!validationHelper.isDoctorAssignmentTypeValid(assignType))
@@ -301,8 +295,7 @@ namespace Patient_Managment_System
                     txtHouseNo.Text = string.Empty;
                     cBoxRegType.Text = string.Empty;
                     txtRegAmount.Text = string.Empty;
-                    txtFinanceAmount.Text = string.Empty;
-                    cBoxFinanceType.Text = string.Empty;
+                   
                     cBoxAssignType.Text = string.Empty;
                     cBoxAssignValue.Text = string.Empty;
                     cBoxVisitType.Text = string.Empty;
@@ -330,7 +323,7 @@ namespace Patient_Managment_System
                     var isPatientUpdated = layer.UpdatePatient(person);
                     if (isPatientUpdated && isAddressUpdated)
                     {
-                        btnStart.Enabled = true;
+                       
                         btnSave.Enabled = false;
                         MessageBox.Show("Patient Update Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         //txtId.Text = personId;
@@ -350,7 +343,7 @@ namespace Patient_Managment_System
 
                     if (isPatientUpdated && isAddressUpdated)
                     {
-                        btnStart.Enabled = true;
+                       
                         btnSave.Enabled = false;
                         MessageBox.Show("Patient Update Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         //txtId.Text = personId;
@@ -436,19 +429,19 @@ namespace Patient_Managment_System
             txtRegAmount.BackColor = SystemColors.Window;
         }
       
-        private void cBoxFinanceType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            cBoxFinanceType.BackColor = SystemColors.Window;
-        }
-
-        private void txtFinanceAmount_TextChanged(object sender, EventArgs e)
-        {
-            txtFinanceAmount.BackColor = SystemColors.Window;
-        }
-
+       
+       
         private void cBoxAssignType_SelectedIndexChanged(object sender, EventArgs e)
         {
             cBoxAssignType.BackColor = SystemColors.Window;
+            if (cBoxAssignType.SelectedIndex == 0)
+            {
+                cBoxAssignValue.DataSource = doctors;
+            }
+            if (cBoxAssignType.SelectedIndex == 1)
+            {
+                cBoxAssignValue.DataSource = roomNumbers;
+            }
         }
 
         private void cBoxAssignValue_SelectedIndexChanged(object sender, EventArgs e)
@@ -519,8 +512,7 @@ namespace Patient_Managment_System
             txtHouseNo.Text = string.Empty;
             cBoxRegType.Text = string.Empty;
             txtRegAmount.Text = string.Empty;
-            txtFinanceAmount.Text = string.Empty;
-            cBoxFinanceType.Text = string.Empty; 
+           
             cBoxAssignType.Text = string.Empty; 
             cBoxAssignValue.Text = string.Empty;    
             cBoxVisitType.Text = string.Empty;  
@@ -537,7 +529,7 @@ namespace Patient_Managment_System
         /*outer by habtish
           the method below used for to start visit for the registered patient 
         it takes the visit type and saves the visit data for that patient
-        */
+        
         private void btnStart_Click(object sender, EventArgs e)
         {
 
@@ -587,14 +579,15 @@ namespace Patient_Managment_System
 
 
 
-
+        
 
 
 
         }
+        */
         #endregion
         #region Close Visit Method
-        private void btnClose_Click(object sender, EventArgs e)
+        /*private void btnClose_Click(object sender, EventArgs e)
         {
             var id = txtId.Text.Trim();
 
@@ -612,6 +605,7 @@ namespace Patient_Managment_System
             }
 
         }
+        */
         #endregion
         #region Refresh Patient Document Method
         private void btnRefresh_Click(object sender, EventArgs e)
@@ -776,9 +770,7 @@ namespace Patient_Managment_System
                 txtHouseNo.Text = adrress.HouseNo != null ? adrress.HouseNo : "";
             }
             cBoxRegType.Text = string.Empty;
-            txtRegAmount.Text = string.Empty;
-            txtFinanceAmount.Text = string.Empty;
-            cBoxFinanceType.Text = string.Empty;
+            txtRegAmount.Text = string.Empty;           
             cBoxAssignType.Text = string.Empty;
             cBoxAssignValue.Text = string.Empty;
             //cBoxVisitType.Text = string.Empty;
@@ -788,9 +780,7 @@ namespace Patient_Managment_System
 
             xtraTabControlRegistration.SelectedTabPage = xtraTabPageGeneral;
             btnSave.Enabled = true;
-            btnClose.Enabled = true;
-            btnStart.Enabled = true;
-            btnDelete.Enabled = true;   
+             
         }
         #endregion
         #region Soft Delete Patient Method
@@ -799,21 +789,21 @@ namespace Patient_Managment_System
          * delets the patient from active patient lists
          * it is soft delete to keep the patient history
          */
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            var id = txtId.Text.Trim(); 
-            if (layer.DeletePatient(id))
-            {
-                MessageBox.Show("Patient Deleted Successfully","Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
-                btnDelete.Enabled = false;  
-            }
-            else
-            {
-                MessageBox.Show("Patient Deleting Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                btnDelete.Enabled=true;
+        //private void btnDelete_Click(object sender, EventArgs e)
+        //{
+        //    var id = txtId.Text.Trim(); 
+        //    if (layer.DeletePatient(id))
+        //    {
+        //        MessageBox.Show("Patient Deleted Successfully","Success",MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        btnDelete.Enabled = false;  
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Patient Deleting Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        btnDelete.Enabled=true;
 
-            }
-        }
+        //    }
+        //}
 
         #endregion
         #region Load Appointments
@@ -868,7 +858,499 @@ namespace Patient_Managment_System
 
         }
 
-       
+        private void groupBox6_Enter(object sender, EventArgs e)
+        {
+
+        }
+        System.Windows.Forms.ComboBox dateFilterCombo = new System.Windows.Forms.ComboBox();
+        System.Windows.Forms.TextBox txtBoxPhoneNumber = new System.Windows.Forms.TextBox();
+        System.Windows.Forms.TextBox txtBoxPatientName = new System.Windows.Forms.TextBox();
+        List<string> lists = new List<string> {"Daily","Weakly","Monthly","Yearly","Date Range","Day Off" };
+        List<string> filterByList = new List<string> { "Phone Number", "Patient Name", "Registered Date" };
+        
+        private void comboBoxEditFilterBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+           
+        }
+
+        private void comboBoxFilterBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxFilterBy.SelectedIndex == 0)//phone number
+            {
+
+                txtBoxPhoneNumber.Location = new Point(3, 16);
+                txtBoxPhoneNumber.Size = new Size(220, 29);
+                txtBoxPhoneNumber.Multiline = true;
+                lblcheck.Text = comboBoxFilterBy.Text.Trim();
+                panelFilterCriteria.Controls.Remove(dateFilterCombo);
+                panelFilterCriteria.Controls.Remove(txtBoxPatientName);
+                panelFilterCriteria.Controls.Add(txtBoxPhoneNumber);
+
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+               
+            }
+            if (comboBoxFilterBy.SelectedIndex == 1)//name
+            {
+
+                txtBoxPatientName.Location = new Point(3, 16);
+                txtBoxPatientName.Size = new Size(220, 29);
+                lblcheck.Text = comboBoxFilterBy.Text.Trim();
+                txtBoxPatientName.Multiline = true;
+                panelFilterCriteria.Controls.Remove(txtBoxPhoneNumber);
+                panelFilterCriteria.Controls.Remove(dateFilterCombo);
+                panelFilterCriteria.Controls.Add(txtBoxPatientName);
+
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+            }
+
+            if (comboBoxFilterBy.SelectedIndex == 2)//date
+            {
+
+                dateFilterCombo.Location = new Point(8, 16);
+                dateFilterCombo.Size = new Size(180, 29);
+                lblcheck.Text = comboBoxFilterBy.Text.Trim();
+                dateFilterCombo.SelectedIndexChanged +=Date_SelectedIndexChanged;
+                panelFilterCriteria.Controls.Remove(txtBoxPhoneNumber);
+                panelFilterCriteria.Controls.Remove(txtBoxPatientName);
+                panelFilterCriteria.Controls.Add(dateFilterCombo);
+                dateFilterCombo.DataSource = lists;
+                dateFilterCombo.DropDownStyle = ComboBoxStyle.DropDownList;
+               
+
+
+            }
+
+        }
+        DevExpress.XtraEditors.DateEdit dailyTimePicker=new DateEdit();
+        DevExpress.XtraEditors.DateEdit toWeaklyTimePicker =new DateEdit();
+        DevExpress.XtraEditors.DateEdit fromWeaklyTimePicker =new DateEdit();
+        DevExpress.XtraEditors.DateEdit monthlyTimePicker =new DateEdit();
+        DevExpress.XtraEditors.DateEdit toMonthlyTimePicker = new DateEdit();
+        DevExpress.XtraEditors.DateEdit yearlyTimePicker =new DateEdit();
+        DevExpress.XtraEditors.DateEdit fromTimePicker =new DateEdit();
+        DevExpress.XtraEditors.DateEdit toTimePicker =new DateEdit();
+        DevExpress.XtraEditors.DateEdit anyDateTimePicker =new DateEdit();
+   
+
+        private void Date_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (dateFilterCombo.SelectedIndex == 0)
+            {
+                lblDateFilterTitle.Text = "Today Date";
+                dailyTimePicker.Location = new Point(0, 20);
+                dailyTimePicker.Size = new Size(240, 29);
+                dailyTimePicker.Enabled = false;    
+                panelDateCriteria.Controls.Add(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+               
+
+            }
+            if (dateFilterCombo.SelectedIndex == 1)
+            {
+                lblDateFilterTitle.Text = "Select the Weak";
+                fromWeaklyTimePicker.Location = new Point(0, 20);
+                fromWeaklyTimePicker.Size = new Size(294, 29);
+                fromWeaklyTimePicker.Enabled = false;
+                //fromWeaklyTimePicker.Text = DayOfWeek.Monday.ToString();
+                fromWeaklyTimePicker.DateTime= DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
+
+                toWeaklyTimePicker.Location= new Point(0, fromWeaklyTimePicker.Location.Y+ fromWeaklyTimePicker.Height+20);
+                toWeaklyTimePicker.Size = new Size(294,29);
+                toWeaklyTimePicker.Enabled = false;
+                //toWeaklyTimePicker.Text=DateTime.Today.DayOfWeek.ToString();
+                toWeaklyTimePicker.DateTime=DateTime.Today;
+
+                panelDateCriteria.Controls.Add(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Add(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+
+            }
+            if (dateFilterCombo.SelectedIndex == 2)
+            {
+                lblDateFilterTitle.Text = "Select the Month";
+                //from
+                monthlyTimePicker.Location = new Point(0, 20);
+                monthlyTimePicker.Size = new Size(294, 29);
+                monthlyTimePicker.Enabled = false;
+                monthlyTimePicker.DateTime= new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).Date;
+                //to
+                toMonthlyTimePicker.Location = new Point(0, monthlyTimePicker.Location.Y+monthlyTimePicker.Height+20);
+                toMonthlyTimePicker.Size = new Size(294, 29);
+                toMonthlyTimePicker.Enabled = false;
+                toMonthlyTimePicker.DateTime = DateTime.Today.Date;
+
+                panelDateCriteria.Controls.Add(monthlyTimePicker);
+                panelDateCriteria.Controls.Add(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+
+            }
+            if (dateFilterCombo.SelectedIndex == 3)
+            {
+                lblDateFilterTitle.Text = "Today Year";
+                yearlyTimePicker.Location = new Point(0, 20);
+                yearlyTimePicker.Size = new Size(294, 29);
+                yearlyTimePicker.Enabled = false;
+                yearlyTimePicker.Text= DateTime.Today.Year.ToString(); 
+
+                panelDateCriteria.Controls.Add(yearlyTimePicker); 
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+
+            }
+            if (dateFilterCombo.SelectedIndex == 4)
+            {
+                lblDateFilterTitle.Text = "Select Range of Date";
+                fromTimePicker.Location = new Point(0, 20);
+                fromTimePicker.Size = new Size(294, 29);
+                panelDateCriteria.Controls.Add(fromTimePicker);
+                toTimePicker.Location = new Point(0, fromTimePicker.Location.Y+fromTimePicker.Height+20);
+                toTimePicker.Size = new Size(294, 29);
+                panelDateCriteria.Controls.Add(toTimePicker);
+
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+
+
+            }
+            if (dateFilterCombo.SelectedIndex == 5)
+            {
+                lblDateFilterTitle.Text = "Select Any Date";
+                anyDateTimePicker.Location = new Point(0, 20);
+                anyDateTimePicker.Size = new Size(294, 29);
+
+                panelDateCriteria.Controls.Add(anyDateTimePicker);
+
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+
+
+            }
+
+        }
+        #region Patient Document Menu
+        private void gridViewPatients_PopupMenuShowing(object sender, PopupMenuShowingEventArgs e)
+        {
+            if (e.HitInfo.InRow)
+            {
+                // Show the context menu only when right-clicking on a row
+                e.Menu.Items.Clear();
+                Patient rowData = gridViewPatients.GetRow(e.HitInfo.RowHandle) as Patient;
+
+                var updateItem=new DevExpress.Utils.Menu.DXMenuItem("UPDATE",
+                                             (s, args)=>OnCustomActionUpdate( rowData));
+
+                var startVisit = new DevExpress.Utils.Menu.DXMenuItem("START VISIT",
+                                             (s, args) => OnCustomActionStartVisit(rowData));
+                var closeVisit = new DevExpress.Utils.Menu.DXMenuItem("CLOSE VISIT",
+                                             (s, args) => OnCustomActionCloseVisit(rowData));
+
+                var patientAssign = new DevExpress.Utils.Menu.DXMenuItem("PATEINT ASSIGN",
+                                             (s, args) => OnCustomActionPatientAssign(rowData));
+
+                // showRowDataItem.ImageOptions.Image = Properties.Resources.;
+                SuperToolTip superToolTip = new SuperToolTip();
+                superToolTip.Items.Add("Click to show detailed row data");
+                updateItem.SuperTip = superToolTip;
+
+                //add to the menu items
+                e.Menu.Items.Add(updateItem);
+                e.Menu.Items.Add(startVisit);
+                e.Menu.Items.Add(closeVisit);
+                e.Menu.Items.Add(patientAssign);
+            }
+        }
+        private void OnCustomActionUpdate(Patient patient)
+        {
+            // Custom action logic goes here
+            DevExpress.XtraEditors.XtraMessageBox.Show("Update Item clicked!"+ "\n" + patient.Id+" "+
+                                               patient.FirstName + " " +patient.MiddleName+" "+patient.LastName);
+        }
+        private void OnCustomActionStartVisit(Patient patient)
+        {
+            // Custom action logic goes here
+            DevExpress.XtraEditors.XtraMessageBox.Show("Start Visit Item clicked!"+"\n" + patient.PhoneNumber + " " + patient.Gender);
+        }
+        private void OnCustomActionCloseVisit(Patient patient)
+        {
+            // Custom action logic goes here
+            DevExpress.XtraEditors.XtraMessageBox.Show("Close Visit Item clicked!"+ "\n" + patient.PhoneNumber + " " + patient.Gender);
+        }
+        private void OnCustomActionPatientAssign(Patient patient)
+        {
+            // Custom action logic goes here
+            DevExpress.XtraEditors.XtraMessageBox.Show("Patient Assignent Item Clicked!"+ "\n" + patient.PhoneNumber + " " + patient.Gender);
+        }
+        #endregion
+        private void comboBoxPatientType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(comboBoxPatientType.SelectedIndex == 0)
+            {
+                groupBoxPatientType.Controls.Remove(comboBoxOrgnization);
+                groupBoxPatientType.Controls.Remove(lblOrganization);
+
+            }
+            if(comboBoxPatientType.SelectedIndex == 1)
+            {
+                groupBoxPatientType.Controls.Add(comboBoxOrgnization);
+                groupBoxPatientType.Controls.Add(lblOrganization);
+                comboBoxOrgnization.DataSource = organizations;
+
+            }
+        }
+
+      
+
+        private void btnShowSearch_Click(object sender, EventArgs e)
+        {
+            //search by phone 
+            if (comboBoxFilterBy.SelectedIndex == 0)
+            {
+                if (string.IsNullOrWhiteSpace(txtBoxPhoneNumber.Text.Trim()))
+                {
+                    txtBoxPhoneNumber.BackColor = Color.LightPink;
+                    txtBoxPhoneNumber.Focus();
+                    return;
+                }
+                var phoneNumber = txtBoxPhoneNumber.Text.Trim();
+                var searchedresult= listofPatientDocument.Where(x=>x.PhoneNumber.Contains(phoneNumber.TrimStart('0'))).ToList(); 
+                if(searchedresult.Count == 0)
+                {
+                    MessageBox.Show("Patient Not Found","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    gridControlPatient.DataSource = listofPatientDocument;
+                }
+                else if(searchedresult.Count >=1)
+                {
+                    gridControlPatient.DataSource = searchedresult;
+                }
+            }
+            //search by name 
+            if (comboBoxFilterBy.SelectedIndex == 1)
+            {
+                if (string.IsNullOrWhiteSpace(txtBoxPatientName.Text.Trim()))
+                {
+                    txtBoxPatientName.BackColor = Color.LightPink;
+                    txtBoxPatientName.Focus();
+                    return;
+                }
+                var name = txtBoxPatientName.Text.Trim().ToLower();
+                var searchedresult = listofPatientDocument.Where(x => 
+                                               x.FirstName.ToLower().Contains(name)||
+                                               x.MiddleName.ToLower().Contains(name)||
+                                               x.LastName.ToLower().Contains(name)).ToList();
+
+                if (searchedresult.Count == 0)
+                {
+                    MessageBox.Show("Patient Not Found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    gridControlPatient.DataSource = listofPatientDocument;
+
+                }
+                else if (searchedresult.Count >=1)
+                {
+                    gridControlPatient.DataSource = searchedresult;
+                }
+            }
+            //search by Date 
+            if(comboBoxFilterBy.SelectedIndex == 2)
+            {
+                //filter today registered patients
+                if(dateFilterCombo.SelectedIndex == 0)
+                {
+                    if (string.IsNullOrEmpty(dailyTimePicker.DateTime.ToString()))
+                    {
+                        dailyTimePicker.BackColor = Color.LightPink;    
+                        dailyTimePicker.Focus();    
+                        return;
+                    }
+                    var dailyDate = DateTime.Today.ToString();
+                    var searchedResult = listofPatientDocument.Where(x =>
+                                                         x.DateRegistered.Date.ToString().Contains(dailyDate)).ToList();
+                    if (searchedResult.Count == 0)
+                    {
+                        MessageBox.Show("Patient Not Found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        gridControlPatient.DataSource = listofPatientDocument;
+                    }
+                    else if(searchedResult.Count>=1)
+                    {
+                        gridControlPatient.DataSource = searchedResult;
+                    }
+                }
+                //filter in this weak registered patients
+                if (dateFilterCombo.SelectedIndex == 1)
+                {
+                    
+                    var dayOfaWeak = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday).Date;
+                    var today=DateTime.Today.Date;
+                   
+                    var searchedResult = listofPatientDocument.Where(x =>
+                                                         x.DateRegistered.Date>=dayOfaWeak && x.DateRegistered.Date<=today).ToList();
+                    if (searchedResult.Count == 0)
+                    {
+                        MessageBox.Show("Patient Not Found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        gridControlPatient.DataSource = listofPatientDocument;
+                    }
+                    else if (searchedResult.Count >= 1)
+                    {
+                        gridControlPatient.DataSource = searchedResult;
+                    }
+                }
+                //filter in this month registered patients
+                if (dateFilterCombo.SelectedIndex == 2)
+                {
+
+
+                    var today = DateTime.Today.Date;
+                    DateTime firstDayOfMonth = new DateTime(today.Year, today.Month, 1).Date;
+
+                    
+
+                    var searchedResult = listofPatientDocument.Where(x =>
+                                                         x.DateRegistered.Date >= firstDayOfMonth && x.DateRegistered.Date <= today).ToList();
+                    if (searchedResult.Count == 0)
+                    {
+                        MessageBox.Show("Patient Not Found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        gridControlPatient.DataSource = listofPatientDocument;
+                    }
+                    else if (searchedResult.Count >= 1)
+                    {
+                        gridControlPatient.DataSource = searchedResult;
+                    }
+                }
+                //filter in this year registered patients
+                if (dateFilterCombo.SelectedIndex == 3)
+                {
+
+
+                    var todayYear = DateTime.Today.Year.ToString();               
+
+
+
+                    var searchedResult = listofPatientDocument.Where(x =>
+                                                         x.DateRegistered.Year.ToString().Contains(todayYear)).ToList();
+                    if (searchedResult.Count == 0)
+                    {
+                        MessageBox.Show("Patient Not Found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        gridControlPatient.DataSource = listofPatientDocument;
+                    }
+                    else if (searchedResult.Count >= 1)
+                    {
+                        gridControlPatient.DataSource = searchedResult;
+                    }
+                }
+                //filter in selected date Range registered patients
+                if (dateFilterCombo.SelectedIndex == 4)
+                {
+                    if(string.IsNullOrEmpty(fromTimePicker.Text.Trim()))
+                    {
+                        fromTimePicker.BackColor = Color.LightPink;
+                        fromTimePicker.Focus();
+                        return;
+
+                    }
+                    if (string.IsNullOrEmpty(toTimePicker.Text.Trim()))
+                    {
+                        toTimePicker.BackColor = Color.LightPink;
+                        toTimePicker.Focus();
+                        return;
+
+                    }
+                    var fromDate=fromTimePicker.DateTime.Date;    
+                    var toDate=toTimePicker.DateTime.Date;  
+
+
+                    var searchedResult = listofPatientDocument.Where(x =>
+                                                         x.DateRegistered.Date>=fromDate && x.DateRegistered.Date<=toDate).ToList();
+                    if (searchedResult.Count == 0)
+                    {
+                        MessageBox.Show("Patient Not Found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        gridControlPatient.DataSource = listofPatientDocument;
+                    }
+                    else if (searchedResult.Count >= 1)
+                    {
+                        gridControlPatient.DataSource = searchedResult;
+                    }
+                }
+                //filter in selected date Range registered patients
+                if (dateFilterCombo.SelectedIndex == 5)
+                {
+                    if (string.IsNullOrEmpty(anyDateTimePicker.Text.Trim()))
+                    {
+                        fromTimePicker.BackColor = Color.LightPink;
+                        fromTimePicker.Focus();
+                        return;
+                    }
+               
+                    var anyDate = anyDateTimePicker.DateTime.Date.ToString();                
+
+
+                    var searchedResult = listofPatientDocument.Where(x =>
+                                                         x.DateRegistered.Date.ToString().Contains(anyDate)).ToList();
+                    if (searchedResult.Count == 0)
+                    {
+                        MessageBox.Show("Patient Not Found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        gridControlPatient.DataSource = listofPatientDocument;
+                    }
+                    else if (searchedResult.Count >= 1)
+                    {
+                        gridControlPatient.DataSource = searchedResult;
+                    }
+                }
+
+            }
+
+        }
     }
 }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Patient_Managment_System.Models
 {
+    #region Appointment Model
     public class Appointmentt
     {
         public string FirstName { get; set; }
@@ -19,7 +20,7 @@ namespace Patient_Managment_System.Models
         public bool Status { get; set; }
         public string Remark { get; set; }
     }
-   
+    #endregion
 
-   
+
 }

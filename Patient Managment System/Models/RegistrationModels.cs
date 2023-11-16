@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Patient_Managment_System.Models
 {
+    #region Patient Registration Models
     public class Person
     {
         public string Id { get; set; }
@@ -27,6 +28,7 @@ namespace Patient_Managment_System.Models
         public string LastName { get; set; }
         public string Gender { get; set; }
         public string PhoneNumber { get; set; }
+        public DateTime DateRegistered { get; set; }
     }
 
     public class Address
@@ -83,5 +85,6 @@ namespace Patient_Managment_System.Models
         public int AssignmentType { get; set; }
         public int AssignmentValue { get; set; }
     }
+    #endregion
 
 }
