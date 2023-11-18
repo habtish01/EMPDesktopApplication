@@ -30,6 +30,14 @@ namespace Patient_Managment_System.Models
         public string PhoneNumber { get; set; }
         public DateTime DateRegistered { get; set; }
     }
+    public class PatientDocument
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Gender { get; set; }
+        public string PhoneNumber { get; set; }
+        public DateTime DateRegistered { get; set; }
+    }
 
     public class Address
     {
@@ -71,7 +79,7 @@ namespace Patient_Managment_System.Models
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         public int Age { get; set; }
-        public int Phone { get; set; }
+        public string Phone { get; set; }
         public string Gender { get; set; }
         public DateTime RegistrationDate { get; set; }
         public string City { get; set; }

@@ -107,13 +107,6 @@ namespace Patient_Managment_System.Validation
             return true;
         }
 
-        public bool isVisitTypeValueValid(string type)
-        {
-            if (string.IsNullOrEmpty(type))
-            {
-                return false;
-            }
-            return true;
-        }
+      
     }
 }

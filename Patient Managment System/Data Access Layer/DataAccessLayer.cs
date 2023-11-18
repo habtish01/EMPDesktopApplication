@@ -208,65 +208,51 @@ namespace Patient_Managment_System.Data_Access_Layer
             }
             return -1;
             }
-        public bool checkVisitExistanceForPatient(string personId)
+        public int checkVisitExistanceForPatient(int patientId)
         {
+            int status = 0;
             SqlConnection connection = new SqlConnection(connectionString);
-            string filterId = "select id from general.patient where person_id=@id";
-            string query = "select patient_id from general.visit where patient_id=@id and status_id=@status_id";
-            SqlCommand sqlCommand = new SqlCommand(filterId, connection);
             connection.Open();
-            sqlCommand.Parameters.AddWithValue("@id", personId);
+            string query = "select status_id from general.visit where patient_id=@id";   
            
-            SqlDataReader reader = sqlCommand.ExecuteReader();
-            if (reader.HasRows)
-            {
-                reader.Read();
-                var Id = int.Parse(reader["id"].ToString());
-                reader.Close();
+            
                SqlCommand command=new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@id", Id);
-                command.Parameters.AddWithValue("@status_id", 1);
+                command.Parameters.AddWithValue("@id", patientId);            
                 SqlDataReader reader1 = command.ExecuteReader();
-                while (reader1.HasRows)
+                while (reader1.Read())
                 {
-                    return true;    
+                status = int.Parse(reader1["status_id"].ToString().Trim());   
+                return status;  
                 }
                
-            }
+            
            
-            return false;
+            return status;
         }
-        public bool InsertVisitType(ComoBoxList type,string id)
-        {
-            var selectedId = type.Id;
-            //var selectedVisitType = type.Description;
-            var start_date=DateTime.Now;
+        public bool InsertVisitType(int visttLocationId,int patientId)
+        {           
+           
+            var start_date=DateTime.Today;
             SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            string filterId = "select id from general.patient where person_id=@id";
-            SqlCommand sqlCommand = new SqlCommand(filterId, connection);
-            sqlCommand.Parameters.AddWithValue("@id", id);
-            SqlDataReader reader = sqlCommand.ExecuteReader();
-            if (reader.HasRows)
-            {
-                reader.Read();
-                var Id = reader["id"].ToString();
-                reader.Close();
+            connection.Open();        
 
 
                 string InsertVisit = "insert into general.visit ([patient_id],[location_id],[start_date],[status_id]) values (@id,@location_id,@start_date,@status_id)";
                 SqlCommand sqlCommand1 = new SqlCommand(InsertVisit, connection);
-                sqlCommand1.Parameters.AddWithValue("@id", Convert.ToInt32(Id));
-                sqlCommand1.Parameters.AddWithValue("@location_id", selectedId);
+                sqlCommand1.Parameters.AddWithValue("@id", patientId);
+                sqlCommand1.Parameters.AddWithValue("@location_id", visttLocationId);
                 sqlCommand1.Parameters.AddWithValue("@start_date", start_date);
                 sqlCommand1.Parameters.AddWithValue("@status_id", 1);
                 int rowsAffected = sqlCommand1.ExecuteNonQuery();
                 connection.Close();
-                if (rowsAffected > 0) return true; return false;
-            }
+                if (rowsAffected > 0)
+                return true; 
+
             return false;
+          
 
         }
+
         public bool updateVisitType(ComoBoxList type, string personId)
         {
             var selectedId = type.Id;
