@@ -17,6 +17,7 @@ namespace Patient_Managment_System
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new PatientMSystem());
+            //Application.Run(new VisitTypePopUp());
         }
     }
 }

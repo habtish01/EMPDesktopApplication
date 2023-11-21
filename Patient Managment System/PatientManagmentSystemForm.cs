@@ -40,6 +40,20 @@ namespace Patient_Managment_System
     public partial class PatientMSystem : Form
     {
         #region Global Variables and Instances
+        DevExpress.XtraEditors.DateEdit dailyTimePicker = new DateEdit();
+        DevExpress.XtraEditors.DateEdit toWeaklyTimePicker = new DateEdit();
+        DevExpress.XtraEditors.DateEdit fromWeaklyTimePicker = new DateEdit();
+        DevExpress.XtraEditors.DateEdit monthlyTimePicker = new DateEdit();
+        DevExpress.XtraEditors.DateEdit toMonthlyTimePicker = new DateEdit();
+        DevExpress.XtraEditors.DateEdit yearlyTimePicker = new DateEdit();
+        DevExpress.XtraEditors.DateEdit fromTimePicker = new DateEdit();
+        DevExpress.XtraEditors.DateEdit toTimePicker = new DateEdit();
+        DevExpress.XtraEditors.DateEdit anyDateTimePicker = new DateEdit();
+        System.Windows.Forms.ComboBox dateFilterCombo = new System.Windows.Forms.ComboBox();
+        System.Windows.Forms.TextBox txtBoxPhoneNumber = new System.Windows.Forms.TextBox();
+        System.Windows.Forms.TextBox txtBoxPatientName = new System.Windows.Forms.TextBox();
+        List<string> lists = new List<string> { "Daily", "Weakly", "Monthly", "Yearly", "Date Range", "Day Off" };
+        List<string> filterByList = new List<string> { "Phone Number", "Patient Name", "Registered Date" };
         bool collapseSidePanel = true;
         private patientRegistration validationHelper = new patientRegistration();
      
@@ -61,10 +75,9 @@ namespace Patient_Managment_System
         List<string> doctors = new List<string> {"Dr xxxx","Dr yyyyy","Dr zzzzzz"};
         List<string> patienttypes = new List<string> {"Individual","Organization"};
         List<string> organizations = new List<string> {"Heal Africa 1", "Heal Africa 2", "Heal Africa 3", "Heal Africa 4", "Heal Africa 5" };
-        
 
+        public Patient updatedPatient;
         #endregion
-
         public PatientMSystem()
         {
             InitializeComponent();
@@ -72,7 +85,6 @@ namespace Patient_Managment_System
             txtId.Text = id.ToString();
             txtId.Enabled = false;
         }
-
         #region Application On Load Method
         private void PatientMSystem_Load(object sender, EventArgs e)
         {
@@ -81,11 +93,11 @@ namespace Patient_Managment_System
             collapseSidePanel = false;
             gridControlPatient.Dock = DockStyle.Fill;
             /////////////////////////////////////////
-            cBoxGeneder.DataSource = genders;
-            comboBoxInvoiceTypes.DataSource= invoiceTypes;
-            cBoxAssignType.DataSource = patientAssignments;
-            cBoxRegType.DataSource = registrationFees;
-            comboBoxPatientType.DataSource = patienttypes;
+            
+            cBoxGeneder.DataSource = genders;//combo box for Gender
+            comboBoxInvoiceTypes.DataSource= invoiceTypes;//combo box for Invoice Type
+            cBoxRegType.DataSource = registrationFees;//combo box for Registration fee Type
+            comboBoxPatientType.DataSource = patienttypes;//combo box for Patient Type
              /*
               * outer by habtish
               * combo box data for Visit Location
@@ -95,10 +107,7 @@ namespace Patient_Managment_System
             cBoxVisitType.DataSource = dataList;
             cBoxVisitType.ValueMember = "Id";
             cBoxVisitType.DisplayMember = "Description";
-            /*
-            * outer by habtish
-            * combo box data for Finance Type
-            */
+          
           
             /*
             * outer by habtish
@@ -117,12 +126,21 @@ namespace Patient_Managment_System
             patientDocuments = layer.GetPatients();
             listofPatientDocument = patientDocuments.Select(x=> new PatientDocument
             {
-                Id=x.Id,
+                Id=x.PersonID,
                 Name=x.FirstName+" "+ x.MiddleName+" "+ x.LastName,
+                Age=x.Age,
                 Gender=x.Gender,
                 PhoneNumber=x.PhoneNumber,
-                DateRegistered=x.DateRegistered
-            }).ToList();
+                VisitType=x.VisitType,  
+                DateRegistered=x.DateRegistered,
+                City=x.City,    
+                SubCity=x.SubCity,  
+                Kebele=x.Kebele,    
+                HouseNo=x.HouseNo,  
+                Active=x.Active
+               
+            }).Distinct()
+            .ToList();
 
             gridControlPatient.DataSource = listofPatientDocument;
 
@@ -131,8 +149,8 @@ namespace Patient_Managment_System
              * outer by habtish
              * load all appointment list to view 
              */
-            loadAppointments();
-            ///
+                    loadAppointments();
+            ///combo box for Filter By in patient Document
             comboBoxFilterBy.DataSource=filterByList;
 
 
@@ -243,7 +261,6 @@ namespace Patient_Managment_System
                     cBoxAssignValue.Focus();
                     return;
                 }
-                string invoiceType = comboBoxInvoiceTypes.Text.Trim();
                 if (comboBoxInvoiceTypes.SelectedIndex < 0)
                 {
                     comboBoxInvoiceTypes.SelectedIndex = 0;
@@ -303,9 +320,11 @@ namespace Patient_Managment_System
                 //checks the person exist or not
                 if (!layer.checkPersonExistance(person.Id))
                 {
-                    var isPatientInserted = layer.InsertPerson(person);//calls save the patient query
+                    var response = layer.InsertPerson(person);//calls save the patient query
+
                     var patientId = layer.getPatientID(person.Id);
-                    address.PatientId = patientId;
+                   address.PatientId = patientId;
+
                     //insert its visit location
                     var visitLocationId = selectedVisitLocationItem.Id;
                     var isVisitInserted = layer.InsertVisitType(visitLocationId, patientId);
@@ -314,12 +333,11 @@ namespace Patient_Managment_System
                     var isAddressRegistered = layer.InsertAddress(address);
 
                     // if sucess , make all fields empty and generate the next patient Id value
-                    if (isPatientInserted && isAddressRegistered)//add address check
+                    if (response.IsPassed && isAddressRegistered)//add address check
                     {
 
                         ////////next patient id////////
                         personId = acess.idNo();
-
                         txtFirstName.Text = string.Empty;
                         txtMiddleName.Text = string.Empty;
                         txtLastName.Text = string.Empty;
@@ -332,7 +350,6 @@ namespace Patient_Managment_System
                         txtHouseNo.Text = string.Empty;
                         cBoxRegType.Text = string.Empty;
                         txtRegAmount.Text = string.Empty;
-
                         cBoxAssignType.Text = string.Empty;
                         cBoxAssignValue.Text = string.Empty;
                         cBoxVisitType.Text = string.Empty;
@@ -354,19 +371,16 @@ namespace Patient_Managment_System
 
                 else
                 {
+                    address.PatientId = updatedPatient.PatientID;
                     if (layer.isAddressExist(address.PatientId))
                     {
                         var isAddressUpdated = layer.UpdateAddress(address);//calls upadte query,
                         var isPatientUpdated = layer.UpdatePatient(person);
                         if (isPatientUpdated && isAddressUpdated)
                         {
-
-                            btnSave.Enabled = false;
+                    
                             MessageBox.Show("Patient Update Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            //txtId.Text = personId;
-
-
-
+                       
                         }
                         else
                         {
@@ -375,13 +389,14 @@ namespace Patient_Managment_System
                     }
                     else
                     {
+                        address.PatientId = updatedPatient.PatientID;
                         var isAddressUpdated = layer.InsertAddress(address);
                         var isPatientUpdated = layer.UpdatePatient(person);
 
                         if (isPatientUpdated && isAddressUpdated)
                         {
 
-                            btnSave.Enabled = false;
+                          
                             MessageBox.Show("Patient Update Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             //txtId.Text = personId;
 
@@ -396,12 +411,7 @@ namespace Patient_Managment_System
 
                 }
             }
-            //call the data acess layer
-
-
-
-
-
+            
             catch (Exception ex)
             {
                 MessageBox.Show($"Something UnExcepected Happened.Please Try Again\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -506,6 +516,20 @@ namespace Patient_Managment_System
         private void cBoxVisitType_SelectedIndexChanged(object sender, EventArgs e)
         {
             cBoxVisitType.BackColor = SystemColors.Window;  
+        }
+        private void comboBoxOrgnization_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            comboBoxOrgnization.BackColor = Color.White;
+        }
+
+        private void comboBoxInvoiceTypes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            comboBoxInvoiceTypes.BackColor = Color.White;
+        }
+
+        private void txtRegAmount_TextChanged_1(object sender, EventArgs e)
+        {
+            txtRegAmount.BackColor = Color.White;
         }
 
         #endregion      
@@ -657,9 +681,24 @@ namespace Patient_Managment_System
         #region Refresh Patient Document Method
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            var patients = layer.GetPatients();
-
-            gridControlPatient.DataSource = patients;
+            patientDocuments = layer.GetPatients();
+            listofPatientDocument = patientDocuments.Select(x => new PatientDocument
+            {
+                Id = x.PersonID,
+                Name = x.FirstName + " " + x.MiddleName + " " + x.LastName,
+                Age = x.Age,
+                Gender = x.Gender,
+                PhoneNumber = x.PhoneNumber,
+                VisitType = x.VisitType,
+                DateRegistered = x.DateRegistered,
+                City = x.City,
+                SubCity = x.SubCity,
+                Kebele = x.Kebele,
+                HouseNo = x.HouseNo,
+                Active = x.Active
+            }).Distinct().ToList();
+            gridControlPatient.DataSource = listofPatientDocument;
+            gridViewPatients.RefreshData();     
         }
         #endregion
         #region KeyPress Methods for Fields
@@ -728,108 +767,8 @@ namespace Patient_Managment_System
             }
         }
 
-        private void txtCity_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            char ch = e.KeyChar;
-            if (!char.IsLetter(ch) && ch != 8)
-            {
-                e.Handled = true;
-            }
-        }
 
-        private void txtSubCity_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            char ch = e.KeyChar;
-            if (!char.IsLetter(ch) && ch != 8)
-            {
-                e.Handled = true;
-            }
-        }
-        private void cBoxAssignType_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
-        private void cBoxAssignValue_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
-
-        private void cBoxVisitType_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
-        private void cBoxGeneder_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
-        private void txtKebele_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
-
-        private void txtHouseNo_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
-
-        private void cBoxFinanceType_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
-
-
-
-
-
-        #endregion
-        #region Row Click Method in Patient Document
-        /*
-         * outer by habtish
-         * the method called when the row in the patient document clicked 
-         * to update patient data
-         * to sart or close the visit data for the patient
-         * to delete the patient from the active patients data
-         * it navigates to the general tab to see all information of the patient
-         * */
-        private void gridViewPatients_RowClick(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
-        {
-          rowData = (Patient)gridViewPatients.GetRow(e.RowHandle);
-            var id = rowData.Id;
-           
-            selectedPatient = allPatients.FirstOrDefault(patient => patient.PersonId==id);
-            var patientId=layer.getPatientId(rowData.Id);
-            var adrress = layer.getPatientAdrressInfo(patientId);
-            var patienttInfo=layer.getPatientInfo(rowData.Id);
-            var location_id = layer.getVisitLocation(patientId);
-
-            txtId.Text = rowData.Id;
-            txtFirstName.Text = rowData.FirstName;
-            txtMiddleName.Text =rowData.MiddleName;
-            txtLastName.Text = rowData.LastName;
-            txtAge.Text = patienttInfo.Age.ToString();
-            txtPhone.Text = rowData.PhoneNumber;
-            cBoxGeneder.Text = rowData.Gender;
-            if (adrress != null)
-            {
-                txtSubCity.Text = adrress.SubCity != null ? adrress.SubCity : "";
-                txtCity.Text = adrress.City != null ? adrress.City : "";
-                txtKebele.Text = adrress.Kebele != null ? adrress.Kebele : "";
-                txtHouseNo.Text = adrress.HouseNo != null ? adrress.HouseNo : "";
-            }
-            cBoxRegType.Text = string.Empty;
-            txtRegAmount.Text = string.Empty;           
-            cBoxAssignType.Text = string.Empty;
-            cBoxAssignValue.Text = string.Empty;
-            //cBoxVisitType.Text = string.Empty;
-
-            cBoxVisitType.SelectedValue = location_id;
-
-
-            xtraTabControlRegistration.SelectedTabPage = xtraTabPageGeneral;
-            btnSave.Enabled = true;
-             
-        }
-        #endregion
+        #endregion       
         #region Soft Delete Patient Method
         /*
          * outer by habtish
@@ -858,7 +797,7 @@ namespace Patient_Managment_System
         {
             var appointmentSummaries=layer.loadAppointmentSummary();    
 
-            gridControlAppointmentDocument.DataSource = appointmentSummaries;
+            gridControlAppointmentdocument.DataSource = appointmentSummaries;
         }    
 
         private void btnAppointmentRefresh_Click(object sender, EventArgs e)
@@ -867,7 +806,7 @@ namespace Patient_Managment_System
         }
         #endregion
         #region Appointment Row Color Modification Based on Appointment Date
-        private void gridViewAppointmentdocument_RowStyle(object sender, DevExpress.XtraGrid.Views.Grid.RowStyleEventArgs e)
+        private void gridViewAppointmentDocument_RowStyle(object sender, DevExpress.XtraGrid.Views.Grid.RowStyleEventArgs e)
         {
 
 
@@ -880,282 +819,26 @@ namespace Patient_Managment_System
                                                         "OrderedDate").ToString());
 
 
-                if (cellValue > DateTime.Now)
+                if (cellValue.Date > DateTime.Today)
                 {
                     e.Appearance.BackColor =Color.LightGray;
                     
                 }
-                if (cellValue < DateTime.Now)
+                if (cellValue.Date < DateTime.Today)
                 {
                     e.Appearance.BackColor = Color.LightPink;
                 }
 
-                if (cellValue == DateTime.Now)
+                if (cellValue.Date == DateTime.Today)
                     {
-                        e.Appearance.BackColor = Color.Blue;
+                        e.Appearance.BackColor = Color.LightBlue;
                         e.HighPriority = true;
                     }
 
             }
         }
 
-        #endregion
-        private void btnAccept_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void groupBox6_Enter(object sender, EventArgs e)
-        {
-
-        }
-        System.Windows.Forms.ComboBox dateFilterCombo = new System.Windows.Forms.ComboBox();
-        System.Windows.Forms.TextBox txtBoxPhoneNumber = new System.Windows.Forms.TextBox();
-        System.Windows.Forms.TextBox txtBoxPatientName = new System.Windows.Forms.TextBox();
-        List<string> lists = new List<string> {"Daily","Weakly","Monthly","Yearly","Date Range","Day Off" };
-        List<string> filterByList = new List<string> { "Phone Number", "Patient Name", "Registered Date" };
-        
-    
-
-        private void comboBoxFilterBy_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBoxFilterBy.SelectedIndex == 0)//phone number
-            {
-
-                txtBoxPhoneNumber.Location = new Point(3, 25);
-                txtBoxPhoneNumber.Size = new Size(200, 30);
-                txtBoxPhoneNumber.Multiline = true;               
-                panelFilterCriteria.Controls.Remove(dateFilterCombo);
-                panelFilterCriteria.Controls.Remove(txtBoxPatientName);
-                panelFilterCriteria.Controls.Add(txtBoxPhoneNumber);
-
-                panelDateCriteria.Controls.Remove(dailyTimePicker);
-                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(monthlyTimePicker);
-                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
-                panelDateCriteria.Controls.Remove(yearlyTimePicker);
-                panelDateCriteria.Controls.Remove(fromTimePicker);
-                panelDateCriteria.Controls.Remove(toTimePicker);
-                panelDateCriteria.Controls.Remove(anyDateTimePicker);
-                //label managing
-                lblFilterrName.Text = comboBoxFilterBy.Text.Trim()+":";
-                lblDateFilterTitle.Text=string.Empty;
-                lblFromDate.Text=string.Empty;
-                lblToDate.Text=string.Empty;    
-            }
-            if (comboBoxFilterBy.SelectedIndex == 1)//name
-            {
-
-                txtBoxPatientName.Location = new Point(3, 25);
-                txtBoxPatientName.Size = new Size(200, 30);         
-                txtBoxPatientName.Multiline = true;
-                panelFilterCriteria.Controls.Remove(txtBoxPhoneNumber);
-                panelFilterCriteria.Controls.Remove(dateFilterCombo);
-                panelFilterCriteria.Controls.Add(txtBoxPatientName);
-
-                panelDateCriteria.Controls.Remove(dailyTimePicker);
-                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(monthlyTimePicker);
-                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
-                panelDateCriteria.Controls.Remove(yearlyTimePicker);
-                panelDateCriteria.Controls.Remove(fromTimePicker);
-                panelDateCriteria.Controls.Remove(toTimePicker);
-                panelDateCriteria.Controls.Remove(anyDateTimePicker);
-                //label managing
-                lblFilterrName.Text = comboBoxFilterBy.Text.Trim()+":";
-                lblDateFilterTitle.Text = string.Empty;
-                lblFromDate.Text = string.Empty;    
-                lblToDate.Text = string.Empty;  
-
-            }
-
-            if (comboBoxFilterBy.SelectedIndex == 2)//date
-            {
-
-                dateFilterCombo.Location = new Point(8, 25);
-                dateFilterCombo.Size = new Size(150, 30);              
-                dateFilterCombo.SelectedIndexChanged +=Date_SelectedIndexChanged;
-                panelFilterCriteria.Controls.Remove(txtBoxPhoneNumber);
-                panelFilterCriteria.Controls.Remove(txtBoxPatientName);
-                panelFilterCriteria.Controls.Add(dateFilterCombo);
-                dateFilterCombo.DataSource = lists;
-                dateFilterCombo.DropDownStyle = ComboBoxStyle.DropDownList;
-                //lable managing
-                lblFilterrName.Text = comboBoxFilterBy.Text.Trim()+":";
-                //lblToDate.Text= string.Empty;   
-                //lblFromDate.Text = string.Empty;
-                //lblDateFilterTitle.Text = string.Empty;    
-
-
-            }
-
-        }
-        DevExpress.XtraEditors.DateEdit dailyTimePicker=new DateEdit();
-        DevExpress.XtraEditors.DateEdit toWeaklyTimePicker =new DateEdit();
-        DevExpress.XtraEditors.DateEdit fromWeaklyTimePicker =new DateEdit();
-        DevExpress.XtraEditors.DateEdit monthlyTimePicker =new DateEdit();
-        DevExpress.XtraEditors.DateEdit toMonthlyTimePicker = new DateEdit();
-        DevExpress.XtraEditors.DateEdit yearlyTimePicker =new DateEdit();
-        DevExpress.XtraEditors.DateEdit fromTimePicker =new DateEdit();
-        DevExpress.XtraEditors.DateEdit toTimePicker =new DateEdit();
-        DevExpress.XtraEditors.DateEdit anyDateTimePicker =new DateEdit();
-   
-
-        private void Date_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (dateFilterCombo.SelectedIndex == 0)
-            {
-                dailyTimePicker.Location = new Point(0, 30);
-                dailyTimePicker.Size = new Size(150, 30);
-                dailyTimePicker.Font = new Font("Times New Roman", 11);
-                dailyTimePicker.Enabled = false;    
-                panelDateCriteria.Controls.Add(dailyTimePicker);
-                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(monthlyTimePicker);
-                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
-                panelDateCriteria.Controls.Remove(yearlyTimePicker);
-                panelDateCriteria.Controls.Remove(fromTimePicker);
-                panelDateCriteria.Controls.Remove(toTimePicker);
-                panelDateCriteria.Controls.Remove(anyDateTimePicker);
-                //label managing
-                lblDateFilterTitle.Text = "Today's Date";
-                lblToDate.Text = string.Empty;  
-                lblFromDate.Text = string.Empty;    
-               
-
-            }
-            if (dateFilterCombo.SelectedIndex == 1)
-            {
-                fromWeaklyTimePicker.Location = new Point(0, 30);
-                fromWeaklyTimePicker.Size = new Size(150, 30);
-                fromWeaklyTimePicker.Font = new Font("Times New Roman", 11);
-                fromWeaklyTimePicker.Enabled = false;
-                fromWeaklyTimePicker.DateTime= DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
-
-                toWeaklyTimePicker.Location= new Point(0, fromWeaklyTimePicker.Location.Y+ fromWeaklyTimePicker.Height+20);
-                toWeaklyTimePicker.Size = new Size(150,30);
-                toWeaklyTimePicker.Font = new Font("Times New Roman", 11);
-                toWeaklyTimePicker.Enabled = false;
-                toWeaklyTimePicker.DateTime=DateTime.Today;
-
-                panelDateCriteria.Controls.Add(fromWeaklyTimePicker);
-                panelDateCriteria.Controls.Add(toWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(dailyTimePicker);
-                panelDateCriteria.Controls.Remove(monthlyTimePicker);
-                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
-                panelDateCriteria.Controls.Remove(yearlyTimePicker);
-                panelDateCriteria.Controls.Remove(fromTimePicker);
-                panelDateCriteria.Controls.Remove(toTimePicker);
-                panelDateCriteria.Controls.Remove(anyDateTimePicker);
-                //lable managing
-                lblDateFilterTitle.Text = "Today's Weak Range";
-                lblFromDate.Text = "From:";
-                lblToDate.Text = "To:";
-
-            }
-            if (dateFilterCombo.SelectedIndex == 2)
-            {
-                //from
-                monthlyTimePicker.Location = new Point(0, 30);
-                monthlyTimePicker.Size = new Size(150, 30);
-                monthlyTimePicker.Font = new Font("Times New Roman", 11);
-                monthlyTimePicker.Enabled = false;
-                monthlyTimePicker.DateTime= new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).Date;
-                //to
-                toMonthlyTimePicker.Location = new Point(0, monthlyTimePicker.Location.Y+monthlyTimePicker.Height+20);
-                toMonthlyTimePicker.Size = new Size(150, 30);
-                toMonthlyTimePicker.Font = new Font("Times New Roman", 11);
-                toMonthlyTimePicker.Enabled = false;
-                toMonthlyTimePicker.DateTime = DateTime.Today.Date;
-
-                panelDateCriteria.Controls.Add(monthlyTimePicker);
-                panelDateCriteria.Controls.Add(toMonthlyTimePicker);
-                panelDateCriteria.Controls.Remove(dailyTimePicker);
-                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(yearlyTimePicker);
-                panelDateCriteria.Controls.Remove(fromTimePicker);
-                panelDateCriteria.Controls.Remove(toTimePicker);
-                panelDateCriteria.Controls.Remove(anyDateTimePicker);
-                //label managing
-                lblDateFilterTitle.Text = "Today's Month Range";
-                lblFromDate.Text = "From:";
-                lblToDate.Text = "To:";
-
-            }
-            if (dateFilterCombo.SelectedIndex == 3)
-            {
-                yearlyTimePicker.Location = new Point(0, 30);
-                yearlyTimePicker.Size = new Size(150, 30);
-                yearlyTimePicker.Font = new Font("Times New Roman", 11);
-                yearlyTimePicker.Enabled = false;
-                yearlyTimePicker.Text= DateTime.Today.Year.ToString(); 
-
-                panelDateCriteria.Controls.Add(yearlyTimePicker); 
-                panelDateCriteria.Controls.Remove(dailyTimePicker);
-                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(monthlyTimePicker);
-                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
-                panelDateCriteria.Controls.Remove(fromTimePicker);
-                panelDateCriteria.Controls.Remove(toTimePicker);
-                panelDateCriteria.Controls.Remove(anyDateTimePicker);
-                //managing label
-                lblDateFilterTitle.Text = "Today's Year Range";
-                lblFromDate.Text = string.Empty;
-                lblToDate.Text = string.Empty;
-
-
-            }
-            if (dateFilterCombo.SelectedIndex == 4)
-            {
-                fromTimePicker.Location = new Point(0, 30);
-                fromTimePicker.Size = new Size(150, 30);
-                fromTimePicker.Font = new Font("Times New Roman", 11);
-                panelDateCriteria.Controls.Add(fromTimePicker);
-                toTimePicker.Location = new Point(0, fromTimePicker.Location.Y+fromTimePicker.Height+20);
-                toTimePicker.Size = new Size(150, 30);
-                toTimePicker.Font = new Font("Times New Roman", 11);
-                panelDateCriteria.Controls.Add(toTimePicker);
-
-                panelDateCriteria.Controls.Remove(dailyTimePicker);
-                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(monthlyTimePicker);
-                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
-                panelDateCriteria.Controls.Remove(yearlyTimePicker);
-                panelDateCriteria.Controls.Remove(anyDateTimePicker);
-                //managing label
-                lblDateFilterTitle.Text = "Select Any Range of Date:";
-                lblFromDate.Text="From:";
-                lblToDate.Text = "To:";
-
-
-            }
-            if (dateFilterCombo.SelectedIndex == 5)
-            {
-                anyDateTimePicker.Location = new Point(0, 30);
-                anyDateTimePicker.Size = new Size(150, 30);
-                anyDateTimePicker.Font = new Font("Times New Roman", 11);
-                panelDateCriteria.Controls.Add(anyDateTimePicker);
-                panelDateCriteria.Controls.Remove(fromTimePicker);
-                panelDateCriteria.Controls.Remove(toTimePicker);
-                panelDateCriteria.Controls.Remove(dailyTimePicker);
-                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
-                panelDateCriteria.Controls.Remove(monthlyTimePicker);
-                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
-                panelDateCriteria.Controls.Remove(yearlyTimePicker);
-                //label managing
-                lblDateFilterTitle.Text = "Select Any Date";
-                lblToDate.Text = string.Empty;
-                lblFromDate.Text = string.Empty;
-            }
-
-        }
+        #endregion               
         #region Patient Document Menu
         private void gridViewPatients_PopupMenuShowing(object sender, PopupMenuShowingEventArgs e)
         {
@@ -1164,8 +847,9 @@ namespace Patient_Managment_System
                 // Show the context menu only when right-clicking on a row
                 e.Menu.Items.Clear();
                 PatientDocument rowData = gridViewPatients.GetRow(e.HitInfo.RowHandle) as PatientDocument;
-             
-                var updateItem=new DevExpress.Utils.Menu.DXMenuItem("UPDATE",
+                var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == rowData.Id);
+
+                var updateItem =new DevExpress.Utils.Menu.DXMenuItem("UPDATE",
                                              (s, args)=>OnCustomActionUpdate( rowData));
                 
                     var startVisit = new DevExpress.Utils.Menu.DXMenuItem("START VISIT",
@@ -1174,7 +858,23 @@ namespace Patient_Managment_System
                
                     var closeVisit = new DevExpress.Utils.Menu.DXMenuItem("CLOSE VISIT",
                                                  (s, args) => OnCustomActionCloseVisit(rowData));
-                    e.Menu.Items.Add(closeVisit);
+                if (clickedPatient.VisitStatusID == 1)
+                {
+                    closeVisit.Enabled = true;
+         
+                    startVisit.Enabled = false;
+          
+                }
+                if (clickedPatient.VisitStatusID == 2)
+                {
+                    closeVisit.Enabled = false;
+                
+                    startVisit.Enabled = true;
+                  
+                }
+
+
+                e.Menu.Items.Add(closeVisit);
                 
 
                 var patientAssign = new DevExpress.Utils.Menu.DXMenuItem("ASSIGN PATEINT",
@@ -1198,43 +898,71 @@ namespace Patient_Managment_System
 
         private void OnCustomActionPatientDeposit(PatientDocument patient)
         {
-
-            // Custom action logic goes here
-           MessageBox.Show("Patient Deposit Added Successfully!" + "\n" + patient.Id + "\n " +
-                                               patient.Name, "Success",
-                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+            var clickedPatient= patientDocuments.FirstOrDefault(x => x.PersonID == patient.Id);
+            DepositPopUp depositPop=new DepositPopUp();
+            depositPop.patient = clickedPatient;
+            DialogResult result=depositPop.ShowDialog();    
         }
 
         private void OnCustomActionUpdate(PatientDocument patient)
         {
-            // Custom action logic goes here
-          MessageBox.Show("Patient Data Updated Successfully!" + "\n" + patient.Id+"\n "+
-                                               patient.Name,"Success",
-                                               MessageBoxButtons.OK,MessageBoxIcon.Information);
+            var clickedPatient= patientDocuments.FirstOrDefault(x=>x.PersonID==patient.Id);
+            updatedPatient = clickedPatient;
+
+            txtId.Text = patient.Id;
+            txtFirstName.Text = clickedPatient.FirstName;
+            txtMiddleName.Text = clickedPatient.MiddleName;
+            txtLastName.Text = clickedPatient.LastName;
+            txtAge.Text = clickedPatient.Age.ToString();
+            txtPhone.Text = clickedPatient.PhoneNumber;
+            cBoxGeneder.Text = clickedPatient.Gender;
+            txtCity.Text = clickedPatient.City;
+            txtSubCity.Text =clickedPatient.SubCity;
+            txtKebele.Text =clickedPatient.Kebele;
+            txtHouseNo.Text =clickedPatient.HouseNo;
+            
+            cBoxRegType.Text = string.Empty;
+            txtRegAmount.Text = string.Empty;
+            cBoxAssignType.Text = string.Empty;
+            cBoxAssignValue.Text = string.Empty;
+            //cBoxVisitType.Text = string.Empty;
+
+            cBoxVisitType.SelectedValue = clickedPatient.LocationID;
+
+
+            xtraTabControlRegistration.SelectedTabPage = xtraTabPageGeneral;
+            
         }
         private void OnCustomActionStartVisit(PatientDocument patient)
         {
-            // Custom action logic goes here
-            MessageBox.Show("Patient Visit Started!"+"\n" + patient.Id + "\n " +
-                                               patient.Name, "Success",
-                                               MessageBoxButtons.OK, MessageBoxIcon.Information); 
+            var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == patient.Id);
+            VisitTypePopUp visitTypePopUp = new VisitTypePopUp();
+            visitTypePopUp.patient = clickedPatient;          
+            DialogResult result = visitTypePopUp.ShowDialog();
+       
+            
         }
         private void OnCustomActionCloseVisit(PatientDocument patient)
         {
-            // Custom action logic goes here
-           MessageBox.Show("Patient Visit Closed!"+ "\n" + patient.Id + "\n " +
-                                               patient.Name, "Success",
-                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == patient.Id);
+            var closed=layer.UpdateStatus(clickedPatient.PatientID);
+            if (closed)
+            {
+
+                MessageBox.Show("Patient Visit Closed!", "Success",
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
         private void OnCustomActionPatientAssign(PatientDocument patient)
         {
-            // Custom action logic goes here
-            MessageBox.Show("Patient Assigned Successfuly!"+ "\n"+ patient.Id + "\n " +
-                                               patient.Name, "Success",
-                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == patient.Id);
+             PatientAssignPopUp assignPopUp = new PatientAssignPopUp(); 
+            assignPopUp.patient= clickedPatient;
+            DialogResult result=assignPopUp.ShowDialog();
+           
         }
         #endregion
+        #region Patient Type Selected Changed
         private void comboBoxPatientType_SelectedIndexChanged(object sender, EventArgs e)
         {
             comboBoxPatientType.BackColor = Color.White;
@@ -1252,8 +980,7 @@ namespace Patient_Managment_System
 
             }
         }
-
-
+        #endregion
         #region Search Pateints
         private void btnShowSearch_Click(object sender, EventArgs e)
         {
@@ -1451,33 +1178,264 @@ namespace Patient_Managment_System
             }
 
         }
-        #endregion 
-        private void comboBoxOrgnization_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBoxFilterBy_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBoxOrgnization.BackColor = Color.White;
+            if (comboBoxFilterBy.SelectedIndex == 0)//phone number
+            {
+
+                txtBoxPhoneNumber.Location = new Point(3, 25);
+                txtBoxPhoneNumber.Size = new Size(200, 30);
+                txtBoxPhoneNumber.Multiline = true;
+                panelFilterCriteria.Controls.Remove(dateFilterCombo);
+                panelFilterCriteria.Controls.Remove(txtBoxPatientName);
+                panelFilterCriteria.Controls.Add(txtBoxPhoneNumber);
+
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+                //label managing
+                lblFilterrName.Text = comboBoxFilterBy.Text.Trim() + ":";
+                lblDateFilterTitle.Text = string.Empty;
+                lblFromDate.Text = string.Empty;
+                lblToDate.Text = string.Empty;
+            }
+            if (comboBoxFilterBy.SelectedIndex == 1)//name
+            {
+
+                txtBoxPatientName.Location = new Point(3, 25);
+                txtBoxPatientName.Size = new Size(200, 30);
+                txtBoxPatientName.Multiline = true;
+                panelFilterCriteria.Controls.Remove(txtBoxPhoneNumber);
+                panelFilterCriteria.Controls.Remove(dateFilterCombo);
+                panelFilterCriteria.Controls.Add(txtBoxPatientName);
+
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+                //label managing
+                lblFilterrName.Text = comboBoxFilterBy.Text.Trim() + ":";
+                lblDateFilterTitle.Text = string.Empty;
+                lblFromDate.Text = string.Empty;
+                lblToDate.Text = string.Empty;
+
+            }
+
+            if (comboBoxFilterBy.SelectedIndex == 2)//date
+            {
+
+                dateFilterCombo.Location = new Point(8, 25);
+                dateFilterCombo.Size = new Size(150, 30);
+                dateFilterCombo.SelectedIndexChanged += Date_SelectedIndexChanged;
+                panelFilterCriteria.Controls.Remove(txtBoxPhoneNumber);
+                panelFilterCriteria.Controls.Remove(txtBoxPatientName);
+                panelFilterCriteria.Controls.Add(dateFilterCombo);
+                dateFilterCombo.DataSource = lists;
+                dateFilterCombo.DropDownStyle = ComboBoxStyle.DropDownList;
+                //lable managing
+                lblFilterrName.Text = comboBoxFilterBy.Text.Trim() + ":";
+                //lblToDate.Text= string.Empty;   
+                //lblFromDate.Text = string.Empty;
+                //lblDateFilterTitle.Text = string.Empty;    
+
+
+            }
+
         }
 
-        private void comboBoxInvoiceTypes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            comboBoxInvoiceTypes.BackColor = Color.White;
-        }
 
-        private void txtRegAmount_TextChanged_1(object sender, EventArgs e)
+        private void Date_SelectedIndexChanged(object sender, EventArgs e)
         {
-            txtRegAmount.BackColor = Color.White;   
+            if (dateFilterCombo.SelectedIndex == 0)
+            {
+                dailyTimePicker.Location = new Point(0, 30);
+                dailyTimePicker.Size = new Size(150, 30);
+                dailyTimePicker.Font = new Font("Times New Roman", 11);
+                dailyTimePicker.Enabled = false;
+                panelDateCriteria.Controls.Add(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+                //label managing
+                lblDateFilterTitle.Text = "Today's Date";
+                lblToDate.Text = string.Empty;
+                lblFromDate.Text = string.Empty;
+
+
+            }
+            if (dateFilterCombo.SelectedIndex == 1)
+            {
+                fromWeaklyTimePicker.Location = new Point(0, 30);
+                fromWeaklyTimePicker.Size = new Size(150, 30);
+                fromWeaklyTimePicker.Font = new Font("Times New Roman", 11);
+                fromWeaklyTimePicker.Enabled = false;
+                fromWeaklyTimePicker.DateTime = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
+
+                toWeaklyTimePicker.Location = new Point(0, fromWeaklyTimePicker.Location.Y + fromWeaklyTimePicker.Height + 20);
+                toWeaklyTimePicker.Size = new Size(150, 30);
+                toWeaklyTimePicker.Font = new Font("Times New Roman", 11);
+                toWeaklyTimePicker.Enabled = false;
+                toWeaklyTimePicker.DateTime = DateTime.Today;
+
+                panelDateCriteria.Controls.Add(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Add(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+                //lable managing
+                lblDateFilterTitle.Text = "Today's Weak Range";
+                lblFromDate.Text = "From:";
+                lblToDate.Text = "To:";
+
+            }
+            if (dateFilterCombo.SelectedIndex == 2)
+            {
+                //from
+                monthlyTimePicker.Location = new Point(0, 30);
+                monthlyTimePicker.Size = new Size(150, 30);
+                monthlyTimePicker.Font = new Font("Times New Roman", 11);
+                monthlyTimePicker.Enabled = false;
+                monthlyTimePicker.DateTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).Date;
+                //to
+                toMonthlyTimePicker.Location = new Point(0, monthlyTimePicker.Location.Y + monthlyTimePicker.Height + 20);
+                toMonthlyTimePicker.Size = new Size(150, 30);
+                toMonthlyTimePicker.Font = new Font("Times New Roman", 11);
+                toMonthlyTimePicker.Enabled = false;
+                toMonthlyTimePicker.DateTime = DateTime.Today.Date;
+
+                panelDateCriteria.Controls.Add(monthlyTimePicker);
+                panelDateCriteria.Controls.Add(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+                //label managing
+                lblDateFilterTitle.Text = "Today's Month Range";
+                lblFromDate.Text = "From:";
+                lblToDate.Text = "To:";
+
+            }
+            if (dateFilterCombo.SelectedIndex == 3)
+            {
+                yearlyTimePicker.Location = new Point(0, 30);
+                yearlyTimePicker.Size = new Size(150, 30);
+                yearlyTimePicker.Font = new Font("Times New Roman", 11);
+                yearlyTimePicker.Enabled = false;
+                yearlyTimePicker.Text = DateTime.Today.Year.ToString();
+
+                panelDateCriteria.Controls.Add(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+                //managing label
+                lblDateFilterTitle.Text = "Today's Year Range";
+                lblFromDate.Text = string.Empty;
+                lblToDate.Text = string.Empty;
+
+
+            }
+            if (dateFilterCombo.SelectedIndex == 4)
+            {
+                fromTimePicker.Location = new Point(0, 30);
+                fromTimePicker.Size = new Size(150, 30);
+                fromTimePicker.Font = new Font("Times New Roman", 11);
+                panelDateCriteria.Controls.Add(fromTimePicker);
+                toTimePicker.Location = new Point(0, fromTimePicker.Location.Y + fromTimePicker.Height + 20);
+                toTimePicker.Size = new Size(150, 30);
+                toTimePicker.Font = new Font("Times New Roman", 11);
+                panelDateCriteria.Controls.Add(toTimePicker);
+
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                panelDateCriteria.Controls.Remove(anyDateTimePicker);
+                //managing label
+                lblDateFilterTitle.Text = "Select Any Range of Date:";
+                lblFromDate.Text = "From:";
+                lblToDate.Text = "To:";
+
+
+            }
+            if (dateFilterCombo.SelectedIndex == 5)
+            {
+                anyDateTimePicker.Location = new Point(0, 30);
+                anyDateTimePicker.Size = new Size(150, 30);
+                anyDateTimePicker.Font = new Font("Times New Roman", 11);
+                panelDateCriteria.Controls.Add(anyDateTimePicker);
+                panelDateCriteria.Controls.Remove(fromTimePicker);
+                panelDateCriteria.Controls.Remove(toTimePicker);
+                panelDateCriteria.Controls.Remove(dailyTimePicker);
+                panelDateCriteria.Controls.Remove(fromWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(toWeaklyTimePicker);
+                panelDateCriteria.Controls.Remove(monthlyTimePicker);
+                panelDateCriteria.Controls.Remove(toMonthlyTimePicker);
+                panelDateCriteria.Controls.Remove(yearlyTimePicker);
+                //label managing
+                lblDateFilterTitle.Text = "Select Any Date";
+                lblToDate.Text = string.Empty;
+                lblFromDate.Text = string.Empty;
+            }
+
         }
-        List<PatientDocument> patientData=new List<PatientDocument>();  
+        #endregion
+        #region Collapse Side Panel
+        List<PatientDocument> patientData = new List<PatientDocument>();
+        PatientDocument clickedRowData;
         private void gridViewPatients_RowCellClick(object sender, RowCellClickEventArgs e)
         {
             // Check if a cell within a row is clicked (not the header or empty area)
             if (e.RowHandle >= 0 && e.Column != null)
             {
                 // Get the clicked row's data
-                PatientDocument clickedRowData = gridViewPatients.GetRow(e.RowHandle) as PatientDocument;
-                lblArrivalHisttory.Text = clickedRowData.Name+"'s Arrival History:";
-                lblPatientLog.Text = clickedRowData.Name+"'s Log History:";
-                if (patientData.Count > 0) 
-                { 
+               clickedRowData = gridViewPatients.GetRow(e.RowHandle) as PatientDocument;
+                var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == clickedRowData.Id);
+                if (clickedPatient.VisitStatusID == 1)
+                {
+                
+                    btnPatientCloseVisit.Enabled = true;                
+                    btnPatientStartVisit.Enabled = false;
+                }
+                if (clickedPatient.VisitStatusID == 2)
+                {
+                   
+                    btnPatientCloseVisit.Enabled = false;                 
+                    btnPatientStartVisit.Enabled = true;
+                }
+                lblArrivalHisttory.Text = clickedRowData.Name + "'s Arrival History:";
+                lblPatientLog.Text = clickedRowData.Name + "'s Log History:";
+                if (patientData.Count > 0)
+                {
                     patientData.Clear();
                 }
                 if (sidePanelForPatintInfo.Width == 0)
@@ -1490,15 +1448,16 @@ namespace Patient_Managment_System
                 }
                 patientData.Add(clickedRowData);
                 gridControlPatientDataSide.DataSource = patientData;
+                cardViewArrivalHistory.RefreshData();
                 gridControlPatienLog.DataSource = patientData;
+                cardViewPatientLog.RefreshData();   
 
 
 
-                
+
             }
 
         }
-        
         private void btnCollapseSidePanel_Click(object sender, EventArgs e)
         {
             if(collapseSidePanel)
@@ -1516,6 +1475,89 @@ namespace Patient_Managment_System
                 gridControlPatient.Dock = DockStyle.None;
             }
 
+        }
+
+
+        #endregion
+
+        private void btnPatientUpdate_Click(object sender, EventArgs e)
+        {
+            if(clickedRowData is null)
+            {
+                MessageBox.Show("You did not select any Patient");
+                return;
+            }
+            OnCustomActionUpdate(clickedRowData);
+            //MessageBox.Show(clickedRowData.Id + "\n" + clickedRowData.Name);
+        }
+
+        private void btnPatientAssign_Click(object sender, EventArgs e)
+        {
+
+            if (clickedRowData is null)
+            {
+                MessageBox.Show("You did not select any Patient");
+                return;
+            }
+            OnCustomActionPatientAssign(clickedRowData);
+        }
+
+        private void btnPatientDeposit_Click(object sender, EventArgs e)
+        {
+            if (clickedRowData is null)
+            {
+                MessageBox.Show("You did not select any Patient");
+                return;
+            }
+            OnCustomActionPatientDeposit(clickedRowData); 
+
+        }
+        
+        private void btnPatientStartVisit_Click(object sender, EventArgs e)
+        {
+            if (clickedRowData is null)
+            {
+                MessageBox.Show("You did not select any Patient");
+                return;
+            }
+            OnCustomActionStartVisit(clickedRowData);
+        }
+
+        private void btnPatientCloseVisit_Click(object sender, EventArgs e)
+        {
+            if (clickedRowData is null)
+            {
+                MessageBox.Show("You did not select any Patient");
+                return;
+            }
+            OnCustomActionCloseVisit(clickedRowData);
+        }
+
+        private void gridViewPatients_RowStyle(object sender, RowStyleEventArgs e)
+        {
+
+            DevExpress.XtraGrid.Views.Grid.GridView view = sender as DevExpress.XtraGrid.Views.Grid.GridView;
+
+            if (e.RowHandle >= 0)
+            {
+
+                bool active = Boolean.Parse(view.GetRowCellValue(e.RowHandle,
+                                                        "Active").ToString());
+
+
+                if (active)
+                {
+                    e.Appearance.BackColor = Color.LightBlue;
+                    e.HighPriority = true;
+                }
+                if (!active)
+                {
+                    e.Appearance.BackColor = Color.WhiteSmoke;
+                }
+
+
+
+            }
         }
     }
 }

@@ -22,21 +22,40 @@ namespace Patient_Managment_System.Models
     }
     public class Patient
     {
-        public string Id { get; set; }
+       
+        public string PersonID { get; set; }
+        public int PatientID { get; set; }
+        public int LocationID { get; set; }
+        public string VisitType { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
+        public int Age { get; set; }
         public string Gender { get; set; }
         public string PhoneNumber { get; set; }
         public DateTime DateRegistered { get; set; }
+        public int PatientAddressID { get; set; }
+        public string City { get; set; }
+        public string SubCity { get; set; }
+        public string Kebele { get; set; }
+        public string HouseNo { get; set;}
+        public int VisitStatusID { get; set; }
+        public bool Active { get; set; }
     }
     public class PatientDocument
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public int Age { get; set; }
         public string Gender { get; set; }
         public string PhoneNumber { get; set; }
+        public string VisitType { get; set; }
+        public string City { get; set; }
+        public string SubCity { get; set; }
+        public string Kebele { get; set; }
+        public string HouseNo { get; set; }
         public DateTime DateRegistered { get; set; }
+        public bool Active { get; set; }
     }
 
     public class Address

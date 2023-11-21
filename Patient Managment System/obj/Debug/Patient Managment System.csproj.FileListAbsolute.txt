@@ -251,3 +251,8 @@ D:\Projects\Desktop App\EMPDesktopApplication\Patient Managment System\obj\Debug
 D:\Projects\Desktop App\EMPDesktopApplication\Patient Managment System\obj\Debug\Patient Managment System.csproj.CopyComplete
 D:\Projects\Desktop App\EMPDesktopApplication\Patient Managment System\obj\Debug\Patient Managment System.exe
 D:\Projects\Desktop App\EMPDesktopApplication\Patient Managment System\obj\Debug\Patient Managment System.pdb
+D:\Projects\Desktop App\EMPDesktopApplication\Patient Managment System\bin\Debug\Dapper.dll
+D:\Projects\Desktop App\EMPDesktopApplication\Patient Managment System\bin\Debug\Dapper.xml
+D:\Projects\Desktop App\EMPDesktopApplication\Patient Managment System\obj\Debug\Patient_Managment_System.VisitTypePopUp.resources
+D:\Projects\Desktop App\EMPDesktopApplication\Patient Managment System\obj\Debug\Patient_Managment_System.PatientAssignPopUp.resources
+D:\Projects\Desktop App\EMPDesktopApplication\Patient Managment System\obj\Debug\Patient_Managment_System.DepositPopUp.resources

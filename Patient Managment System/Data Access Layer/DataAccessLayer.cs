@@ -13,6 +13,8 @@ using static DevExpress.Utils.Svg.CommonSvgImages;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 using DevExpress.XtraScheduler;
 using System.Windows.Controls.Primitives;
+using Patient_Managment_System.DTO;
+using Dapper;
 
 namespace Patient_Managment_System.Data_Access_Layer
 {
@@ -28,114 +30,143 @@ namespace Patient_Managment_System.Data_Access_Layer
         #region Patient Info
         public bool checkPersonExistance(string id)
         {
-
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            string query = "select Id from general.person where Id=@id";
-            SqlCommand cmd = new SqlCommand(query, connection);
-            cmd.Parameters.Add(new SqlParameter("@id", id));
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.HasRows)
+            try
             {
-                return true;
+                SqlConnection connection = new SqlConnection(connectionString);
+                connection.Open();
+                string query = "select Id from general.person where Id=@id";
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.Parameters.Add(new SqlParameter("@id", id));
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.HasRows)
+                {
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex) 
+            {
+                return false;   
+            }
         }
         public bool UpdatePatient (Person person)
         {
-            string updatePerson = "UPDATE [general].[person] SET [first_name] = @first_name,[middile_name] = @middile_name,[last_name] = @last_name,[gender] = @gender,[age] = @age ,[phone] = @phone WHERE Id=@id";
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            SqlCommand command = new SqlCommand(updatePerson, connection);
-
-            // Add parameters 
-            command.Parameters.AddWithValue("@id", person.Id);
-            command.Parameters.AddWithValue("@first_name", person.FirstName);
-            command.Parameters.AddWithValue("@middile_name", person.MiddleName);
-            command.Parameters.AddWithValue("@last_name", person.LastName);
-            command.Parameters.AddWithValue("@gender", person.Gender);
-            command.Parameters.AddWithValue("@age", person.Age);
-            command.Parameters.AddWithValue("@phone", person.PhoneNumber);
-            int rowsAffected = command.ExecuteNonQuery();
-
-            connection.Close(); 
-            if (rowsAffected > 0 )
+            try
             {
-                return true;
-            }
-            return false;
+                string updatePerson = "UPDATE [general].[person] SET [first_name] = @first_name,[middile_name] = @middile_name,[last_name] = @last_name,[gender] = @gender,[age] = @age ,[phone] = @phone WHERE Id=@id";
+                SqlConnection connection = new SqlConnection(connectionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(updatePerson, connection);
 
+                // Add parameters 
+                command.Parameters.AddWithValue("@id", person.Id);
+                command.Parameters.AddWithValue("@first_name", person.FirstName);
+                command.Parameters.AddWithValue("@middile_name", person.MiddleName);
+                command.Parameters.AddWithValue("@last_name", person.LastName);
+                command.Parameters.AddWithValue("@gender", person.Gender);
+                command.Parameters.AddWithValue("@age", person.Age);
+                command.Parameters.AddWithValue("@phone", person.PhoneNumber);
+                int rowsAffected = command.ExecuteNonQuery();
+
+                connection.Close();
+                if (rowsAffected > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch { return false; } 
         }
         public int getPatientID(string personId)
         {
-            int PatientId = 0;  
-            SqlConnection connection = new SqlConnection(connectionString);
-            string filterId = "select id from general.patient where person_id=@id";
-            connection.Open();
-            SqlCommand sqlCommand1 = new SqlCommand(filterId, connection);
-            sqlCommand1.Parameters.AddWithValue("@id", personId);
-            SqlDataReader reader = sqlCommand1.ExecuteReader();
-            if (reader.HasRows)
+            int PatientId = 0;
+            try
             {
-                reader.Read();
-                 PatientId = int.Parse(reader["id"].ToString());
-                reader.Close();
+                SqlConnection connection = new SqlConnection(connectionString);
+                string filterId = "select id from general.patient where person_id=@id";
+                connection.Open();
+                SqlCommand sqlCommand1 = new SqlCommand(filterId, connection);
+                sqlCommand1.Parameters.AddWithValue("@id", personId);
+                SqlDataReader reader = sqlCommand1.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    PatientId = int.Parse(reader["id"].ToString());
+                    reader.Close();
+                }
+                return PatientId;
             }
-            return PatientId;
+            catch (Exception ex) 
+            {
+                  return PatientId;    
+            }
       }
 
         public bool isAddressExist(int patientId)
         {
-            string isAddressExit = "select patient_id from general.patientaddress where patient_id=@id";
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            SqlCommand cmd = new SqlCommand(isAddressExit, connection);
-            cmd.Parameters.AddWithValue("@id", patientId);
-            SqlDataReader sqlDataReader = cmd.ExecuteReader();
-            if (sqlDataReader.HasRows)
+            try
             {
-                return true;
+                string isAddressExit = "select patient_id from general.patientaddress where patient_id=@id";
+                SqlConnection connection = new SqlConnection(connectionString);
+                connection.Open();
+                SqlCommand cmd = new SqlCommand(isAddressExit, connection);
+                cmd.Parameters.AddWithValue("@id", patientId);
+                SqlDataReader sqlDataReader = cmd.ExecuteReader();
+                if (sqlDataReader.HasRows)
+                {
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch { return false; }
         }
 
 
         public bool UpdateAddress(Address address)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-            string addressQuery = "UPDATE [general].[patientaddress] SET [subcity] = @subcity ,[city] = @city ,[kebele] = @kebele ,[house_no] = @house_no WHERE patient_id=@id";
-            connection.Open();
-            SqlCommand sqlCommand =new SqlCommand(addressQuery,connection);
-           
-                //Add parametres
-                    sqlCommand.Parameters.AddWithValue("@id", address.PatientId);
-                    sqlCommand.Parameters.AddWithValue("@city", address.City);
-                    sqlCommand.Parameters.AddWithValue("@subcity", address.SubCity);
-                    sqlCommand.Parameters.AddWithValue("@kebele", address.Kebele);
-                    sqlCommand.Parameters.AddWithValue("@house_no", address.HouseNo);
+            try
+            {
+                SqlConnection connection = new SqlConnection(connectionString);
+                string addressQuery = "UPDATE [general].[patientaddress] SET [subcity] = @subcity ,[city] = @city ,[kebele] = @kebele ,[house_no] = @house_no WHERE patient_id=@id";
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(addressQuery, connection);
 
-                    int rowsAffected = sqlCommand.ExecuteNonQuery();
-                    connection.Close(); 
-                    if (rowsAffected > 0) return true;
-                   
-                   
-                
-            return false;
+                //Add parametres
+                sqlCommand.Parameters.AddWithValue("@id", address.PatientId);
+                sqlCommand.Parameters.AddWithValue("@city", address.City);
+                sqlCommand.Parameters.AddWithValue("@subcity", address.SubCity);
+                sqlCommand.Parameters.AddWithValue("@kebele", address.Kebele);
+                sqlCommand.Parameters.AddWithValue("@house_no", address.HouseNo);
+
+                int rowsAffected = sqlCommand.ExecuteNonQuery();
+                connection.Close();
+                if (rowsAffected > 0) return true;
+
+
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;   
+            }
         }
 
-        public bool InsertPerson(Person person)
+        public Response InsertPerson(Person person)
         {
-           
-          
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            SqlCommand command1;
-            SqlCommand command;
-            int rowsAffected1=0;
-            int rowsAffected = 0;
-            string PersonRegistration = "INSERT INTO[general].[person] ([Id],[first_name],[middile_name],[last_name],[gender],[age],[date_registered],[type_Id],[phone],[active]) values (@id,@firstname,@middlename,@lastname,@gender,@age,@dateregistered,@typeid,@phone,@active)";
-            string PatientRegistration = "INSERT INTO[general].[patient] ([person_id]) values (@id)";
-            
+            Response response = new Response();
+
+            try
+            {
+                SqlConnection connection = new SqlConnection(connectionString);
+                connection.Open();
+                SqlCommand command1;
+                SqlCommand command;
+                int rowsAffected1 = 0;
+                int rowsAffected = 0;
+                string PersonRegistration = "INSERT INTO[general].[person] ([Id],[first_name],[middile_name],[last_name],[gender],[age],[date_registered],[type_Id],[phone],[active]) values (@id,@firstname,@middlename,@lastname,@gender,@age,@dateregistered,@typeid,@phone,@active)";
+                string PatientRegistration = "INSERT INTO[general].[patient] ([person_id]) values (@id)";
+
                 //insert person registration
                 command = new SqlCommand(PersonRegistration, connection);
                 command.Parameters.AddWithValue("@id", person.Id);
@@ -157,35 +188,46 @@ namespace Patient_Managment_System.Data_Access_Layer
 
                 if (rowsAffected > 0 && rowsAffected1 > 0)
                 {
-                    return true;
+                    response.IsPassed = true;   
+                    return response;
                 }
 
-            
-          
-            return false;
+                response.IsPassed = false;
+
+                return response;
+            }
+            catch (Exception ex) 
+            {
+                response.ErrorMessage = ex.Message; 
+                return response;   
+            }
         }
 
-        public bool InsertAddress(Address address)
+        public bool InsertAddress(Address address)//insert address query
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-            string InsertAddress = "insert into[general].[patientaddress] ([patient_id],[city],[subcity],[kebele],[house_no]) values (@id,@city,@subcity,@kebele,@houseno)";
-            connection.Open();           
-           
+            try
+            {
+                SqlConnection connection = new SqlConnection(connectionString);
+                string InsertAddress = "insert into[general].[patientaddress] ([patient_id],[city],[subcity],[kebele],[house_no]) values (@id,@city,@subcity,@kebele,@houseno)";
+                connection.Open();
+
                 //insert
                 SqlCommand sqlCommand = new SqlCommand(InsertAddress, connection);
-               
-                    //Add parametres
-                    sqlCommand.Parameters.AddWithValue("@id", address.PatientId);
-                    sqlCommand.Parameters.AddWithValue("@city", address.City);
-                    sqlCommand.Parameters.AddWithValue("@subcity", address.SubCity);
-                    sqlCommand.Parameters.AddWithValue("@kebele", address.Kebele);
-                    sqlCommand.Parameters.AddWithValue("@houseno", address.HouseNo);
 
-                    int rowsAffected = sqlCommand.ExecuteNonQuery();
-                    if (rowsAffected > 0) return true;
-                   
-                
-            return false;
+                //Add parametres
+                sqlCommand.Parameters.AddWithValue("@id", address.PatientId);
+                sqlCommand.Parameters.AddWithValue("@city", address.City);
+                sqlCommand.Parameters.AddWithValue("@subcity", address.SubCity);
+                sqlCommand.Parameters.AddWithValue("@kebele", address.Kebele);
+                sqlCommand.Parameters.AddWithValue("@houseno", address.HouseNo);
+
+                int rowsAffected = sqlCommand.ExecuteNonQuery();
+                if (rowsAffected > 0) return true;
+
+
+                return false;
+            }
+            catch { return false; }
         }
 
         #endregion
@@ -229,12 +271,13 @@ namespace Patient_Managment_System.Data_Access_Layer
            
             return status;
         }
-        public bool InsertVisitType(int visttLocationId,int patientId)
-        {           
-           
-            var start_date=DateTime.Today;
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();        
+        public bool InsertVisitType(int visttLocationId,int patientId)//visit query
+        {
+            try
+            {
+                var start_date = DateTime.Today;
+                SqlConnection connection = new SqlConnection(connectionString);
+                connection.Open();
 
 
                 string InsertVisit = "insert into general.visit ([patient_id],[location_id],[start_date],[status_id]) values (@id,@location_id,@start_date,@status_id)";
@@ -246,10 +289,11 @@ namespace Patient_Managment_System.Data_Access_Layer
                 int rowsAffected = sqlCommand1.ExecuteNonQuery();
                 connection.Close();
                 if (rowsAffected > 0)
-                return true; 
+                    return true;
 
-            return false;
-          
+                return false;
+            }
+            catch { return false; }
 
         }
 
@@ -369,83 +413,51 @@ namespace Patient_Managment_System.Data_Access_Layer
 
 
         
-        public bool UpdateStatus(string id)
+        public bool UpdateStatus(int id)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
-            string filterId = "select id from general.patient where person_id=@id";
-            SqlCommand sqlCommand = new SqlCommand(filterId, connection);
-            sqlCommand.Parameters.AddWithValue("@id", id);
-            SqlDataReader reader = sqlCommand.ExecuteReader();
-            if (reader.HasRows)
-            {
-                reader.Read();
-                var PatientId = reader["id"].ToString();
-                reader.Close();
+            
                 string updateQuery = "UPDATE general.visit SET status_id =@status WHERE patient_id = @id";
                 SqlCommand command = new SqlCommand(updateQuery, connection);
                 command.Parameters.AddWithValue("@status", 2);
-                command.Parameters.AddWithValue("@id", Convert.ToInt32(PatientId));
+                command.Parameters.AddWithValue("@id", id);
                 int rowsAffected = command.ExecuteNonQuery();
                 connection.Close();
 
-                if (rowsAffected > 0) return true; else return false;
+                if (rowsAffected > 0) return true; 
 
-            }
+            
+            return false;
+        }
+        public bool StartVisit(int id,int locationId)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+
+            string updateQuery = "UPDATE general.visit SET status_id =@status,location_id=@locationId WHERE patient_id = @id";
+            SqlCommand command = new SqlCommand(updateQuery, connection);
+            command.Parameters.AddWithValue("@status", 1);
+            command.Parameters.AddWithValue("@locationId", locationId);
+            command.Parameters.AddWithValue("@id", id);
+            int rowsAffected = command.ExecuteNonQuery();
+            connection.Close();
+
+            if (rowsAffected > 0) return true;
+
+
             return false;
         }
 
         public List<Patient> GetPatients() 
         {
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            List<Patient> PatientdataList = new List<Patient>();
+            SqlConnection connection = new SqlConnection(connectionString);        
 
-            string query = "SELECT id,first_name,middile_name,last_name,gender,phone,date_registered FROM general.person where type_id=@id and active=@active ORDER BY id";
-            using (SqlCommand command = new SqlCommand(query, connection))
-            {
-                
-                command.Parameters.AddWithValue("@id", 1);
-                command.Parameters.AddWithValue("@active", true);
-                //SqlDataReader reader = command.ExecuteReader();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        Patient patient = new Patient
-                        {
-                            Id= reader["id"].ToString(),    
-                            FirstName = reader["first_name"].ToString(),
-                            MiddleName =reader["middile_name"].ToString(),
-                            LastName = reader["last_name"].ToString(),
-                            Gender = reader["gender"].ToString(),
-                            PhoneNumber = reader["phone"].ToString(),
-                            DateRegistered = DateTime.Parse(reader["date_registered"].ToString())
-                        };
-                        PatientdataList.Add(patient);
-                    }
-                }
-            }
-            connection.Close();
-
+            string query = "SELECT *FROM [dbo].[AllPatientDocuments] where PersonTypeID=@typeID";
+            var PatientdataList = connection.Query<Patient>(query ,new { typeID = 1 }).ToList();
             return PatientdataList;
         }
-        public int getPatientId(string personId)
-        {
-            int patientId=-1;
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-            string query = "select id from general.patient where person_id=@id";
-            SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@id", personId);
-            SqlDataReader reader = command.ExecuteReader(); 
-            while (reader.Read())
-            {
-                patientId = reader.GetInt32(0);    
-            }
-            return patientId;
-
-        }
+     
         public Address getPatientAdrressInfo(int patientID)
         {
           
