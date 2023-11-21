@@ -34,6 +34,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using TextBox = System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using DevExpress.XtraGrid.Views.Card;
+using Patient_Managment_System.DTO;
 
 namespace Patient_Managment_System
 {
@@ -64,8 +65,8 @@ namespace Patient_Managment_System
         List<PatientDocument> listofPatientDocument = new List<PatientDocument>(); 
         IEnumerable<Patient> searchedPatient;
         Patient rowData;
-        patientInfo patientInfo =new patientInfo();
-        List<patientInfo> allPatients=new List<patientInfo>();
+        //patientInfo patientInfo =new patientInfo();
+        //List<patientInfo> allPatients=new List<patientInfo>();
         patientInfo selectedPatient;
         List<string> genders = new List<string> {"Male","Female"};
         List<string> invoiceTypes = new List<string> {"Cash","Credit"};
@@ -166,6 +167,7 @@ namespace Patient_Managment_System
         {
             try
             {
+                #region
                 string personId;//takes the next id value when registration success                  
 
                 // Validate First Name
@@ -273,7 +275,7 @@ namespace Patient_Managment_System
                     return;
                 }
 
-
+                #endregion
 
                 //creating person object for that patient to save in the person table 
                 Person person = new Person();
@@ -284,33 +286,13 @@ namespace Patient_Managment_System
                 person.Gender = cBoxGeneder.Text.Trim();
                 person.Age = Convert.ToInt32(txtAge.Text.Trim());
                 person.PhoneNumber = txtPhone.Text.Trim();
-                person.DateRegistered = DateTime.Now;
-
-                //assign values to patientinfo model class
-                patientInfo.PersonId = person.Id;
-                patientInfo.FirstName = person.FirstName;
-                patientInfo.MiddleName = person.MiddleName;
-                patientInfo.LastName = person.LastName;
-                patientInfo.Age = person.Age;
-                patientInfo.Gender = person.Gender;
-                patientInfo.Phone = person.PhoneNumber;
-                patientInfo.RegistrationDate = person.DateRegistered;
-
-
-                //assign address values to address class
+                person.DateRegistered = DateTime.Now;              
 
                 Address address = new Address();
                 address.City = txtCity.Text.Trim();
                 address.SubCity = txtSubCity.Text.Trim();
                 address.Kebele = txtKebele.Text.Trim();
                 address.HouseNo = txtHouseNo.Text.Trim();
-
-
-
-                patientInfo.City = address.City;
-                patientInfo.subCity = address.SubCity;
-                patientInfo.Kebele = address.Kebele;
-                patientInfo.HouseNo = address.HouseNo;
 
 
                 //for visit Location
@@ -320,10 +302,10 @@ namespace Patient_Managment_System
                 //checks the person exist or not
                 if (!layer.checkPersonExistance(person.Id))
                 {
-                    var response = layer.InsertPerson(person);//calls save the patient query
+                    Response response = layer.InsertPerson(person);//calls save the patient query
 
-                    var patientId = layer.getPatientID(person.Id);
-                   address.PatientId = patientId;
+                    int patientId = layer.getPatientID(person.Id);
+                      address.PatientId = patientId;
 
                     //insert its visit location
                     var visitLocationId = selectedVisitLocationItem.Id;
@@ -357,7 +339,7 @@ namespace Patient_Managment_System
                         MessageBox.Show("Registration Success", "Sucess", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         txtId.Text = personId;
                         persons.Add(person);
-                        allPatients.Add(patientInfo);
+                        
 
 
 
@@ -371,7 +353,7 @@ namespace Patient_Managment_System
 
                 else
                 {
-                    address.PatientId = updatedPatient.PatientID;
+                    address.PatientId = updatedPatient.PatientID;//patient Id
                     if (layer.isAddressExist(address.PatientId))
                     {
                         var isAddressUpdated = layer.UpdateAddress(address);//calls upadte query,
@@ -389,16 +371,15 @@ namespace Patient_Managment_System
                     }
                     else
                     {
-                        address.PatientId = updatedPatient.PatientID;
-                        var isAddressUpdated = layer.InsertAddress(address);
+                        var isAddressInserted = layer.InsertAddress(address);
                         var isPatientUpdated = layer.UpdatePatient(person);
 
-                        if (isPatientUpdated && isAddressUpdated)
+                        if (isPatientUpdated && isAddressInserted)
                         {
 
                           
                             MessageBox.Show("Patient Update Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            //txtId.Text = personId;
+                          
 
 
 
@@ -910,16 +891,16 @@ namespace Patient_Managment_System
             updatedPatient = clickedPatient;
 
             txtId.Text = patient.Id;
-            txtFirstName.Text = clickedPatient.FirstName;
-            txtMiddleName.Text = clickedPatient.MiddleName;
-            txtLastName.Text = clickedPatient.LastName;
-            txtAge.Text = clickedPatient.Age.ToString();
-            txtPhone.Text = clickedPatient.PhoneNumber;
-            cBoxGeneder.Text = clickedPatient.Gender;
-            txtCity.Text = clickedPatient.City;
-            txtSubCity.Text =clickedPatient.SubCity;
-            txtKebele.Text =clickedPatient.Kebele;
-            txtHouseNo.Text =clickedPatient.HouseNo;
+            txtFirstName.Text = clickedPatient.FirstName.Trim();
+            txtMiddleName.Text = clickedPatient.MiddleName.Trim();
+            txtLastName.Text = clickedPatient.LastName.Trim();
+            txtAge.Text = clickedPatient.Age.ToString().Trim();
+            txtPhone.Text = clickedPatient.PhoneNumber.Trim();
+            cBoxGeneder.Text = clickedPatient.Gender.Trim();
+            txtCity.Text = clickedPatient.City.Trim();
+            txtSubCity.Text =clickedPatient.SubCity.Trim();
+            txtKebele.Text =clickedPatient.Kebele.Trim();
+            txtHouseNo.Text =clickedPatient.HouseNo.Trim();
             
             cBoxRegType.Text = string.Empty;
             txtRegAmount.Text = string.Empty;
@@ -1479,7 +1460,7 @@ namespace Patient_Managment_System
 
 
         #endregion
-
+        #region Actions On Patient Document
         private void btnPatientUpdate_Click(object sender, EventArgs e)
         {
             if(clickedRowData is null)
@@ -1532,7 +1513,8 @@ namespace Patient_Managment_System
             }
             OnCustomActionCloseVisit(clickedRowData);
         }
-
+        #endregion
+        #region Row color Modification for Patient Document
         private void gridViewPatients_RowStyle(object sender, RowStyleEventArgs e)
         {
 
@@ -1559,6 +1541,7 @@ namespace Patient_Managment_System
 
             }
         }
+        #endregion
     }
 }
 
