@@ -59,5 +59,15 @@ namespace Patient_Managment_System.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap EMR_system__3_ {
+            get {
+                object obj = ResourceManager.GetObject("EMR system (3)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

@@ -54,7 +54,6 @@
             this.panelPopUp.Name = "panelPopUp";
             this.panelPopUp.Size = new System.Drawing.Size(442, 273);
             this.panelPopUp.TabIndex = 1;
-            this.panelPopUp.Paint += new System.Windows.Forms.PaintEventHandler(this.panelPopUp_Paint);
             // 
             // lblPatientID
             // 

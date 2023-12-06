@@ -28,6 +28,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Forms;
 using DevExpress.XtraGrid.Views.Grid;
+using Clinical_Managment_System;
 
 
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -35,6 +36,11 @@ using TextBox = System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using DevExpress.XtraGrid.Views.Card;
 using Patient_Managment_System.DTO;
+using DevExpress.XtraPrinting.Native.WebClientUIControl;
+using Newtonsoft.Json;
+using DevExpress.XtraLayout.Filtering.Templates;
+using DevExpress.XtraEditors.TextEditController.Win32;
+using static Patient_Managment_System.Constants.EnumCollection;
 
 namespace Patient_Managment_System
 {
@@ -58,73 +64,123 @@ namespace Patient_Managment_System
         bool collapseSidePanel = true;
         private patientRegistration validationHelper = new patientRegistration();
      
-        IdGenerationDataAcess acess = new IdGenerationDataAcess();
-        List<Person> persons = new List<Person>();
-        DataAccessLayer layer = new DataAccessLayer();
-        List<Patient> patientDocuments = new List<Patient>(); 
+        IDGenerationDbContext idDbContext = new IDGenerationDbContext();   
+        DbContext dbContext = new DbContext();
+        List<PatientDto> patientDocuments = new List<PatientDto>(); 
         List<PatientDocument> listofPatientDocument = new List<PatientDocument>(); 
-        IEnumerable<Patient> searchedPatient;
-        Patient rowData;     
-        patientInfo selectedPatient;
+        IEnumerable<PatientDto> searchedPatient;
+        List<ComoBoxList> registrationFeeItems;
+        List<RegistrationItem> DefinitionItems;
+   
         List<string> genders = new List<string> {"Male","Female"};
-        List<string> invoiceTypes = new List<string> {"Cash","Credit"};
-        List<string> registrationFees = new List<string> {"Doctor","Specialist"};
-        List<string> patientAssignments = new List<string> {"Doctor","Room Number"};
-        List<string> roomNumbers = new List<string> {"Room 1","Room 2","Room 3","Room 4"};
-        List<string> doctors = new List<string> {"Dr xxxx","Dr yyyyy","Dr zzzzzz"};
         List<string> patienttypes = new List<string> {"Individual","Organization"};
         List<string> organizations = new List<string> {"Heal Africa 1", "Heal Africa 2", "Heal Africa 3", "Heal Africa 4", "Heal Africa 5" };
 
-        public Patient updatedPatient;
+        public PatientDto updatedPatient;//comes form patient document for updation
+      
+        List<Voucher> menuDefinitions;
+        List<Defination> defination;
+        List<Person> persons;
+        List<Room> rooms;   
+        List<Configurations> configurations;
+        int MaxIdValue;
+        List<IdDefinitionDetail> IdDefinitions;
+        List<ComoBoxList> visitLocations;
+        List<ComoBoxList> patientAssignmentType;
+        int patientDefinationID;
         #endregion
         public PatientMSystem()
         {
             InitializeComponent();
-            var id=acess.idGeneration();
-            txtId.Text = id.ToString();
-            txtId.Enabled = false;
+          
         }
         #region Application On Load Method
         private void PatientMSystem_Load(object sender, EventArgs e)
         {
             try
             {
+              
+                IdDefinitions = idDbContext.getIDDefinitionDetail();
+                menuDefinitions = dbContext.getVouchers();
+                patientDefinationID = generateID();
+                persons =dbContext.getPersons();
+                configurations = dbContext.getConfigurations();
+
+                //load all avialable rooms
+                rooms = dbContext.getRooms();
+
+                //patient Registration Fee Item
+                DefinitionItems = dbContext.getRegistrationfeeItem();
+               registrationFeeItems = DefinitionItems.Where(x => x.value== "Patient Registartion")
+                    .Select(x => new ComoBoxList
+                    {
+                        Id=x.Reference,
+                        Description=x.name
+                    } ).ToList();
+               
+                cBoxRegType.DataSource = registrationFeeItems;//combo box for Registration fee Type
+                cBoxRegType.ValueMember = "Id";
+                cBoxRegType.DisplayMember="Description";
+
+                //all defination from defination table
+                defination = dbContext.getDefinitionDetail();
+
+                patientAssignmentType = defination.Where(x => 
+                                            x.type.Trim()== "EMR" &&
+                                            x.description.Trim()== "registration assignment")
+                     .Select(x => new ComoBoxList
+                     {
+                         Id = x.id,
+                         Description = x.value
+                     }).ToList();
+
+                cBoxAssignType.DataSource = patientAssignmentType;//combo box for Registration fee Type
+                cBoxAssignType.ValueMember = "Id";
+                cBoxAssignType.DisplayMember = "Description";
+                //invoice type
+            
+                var vouchers = menuDefinitions.Where(x => x.parent.Trim().ToLower() == ("EMR").ToLower() &&
+                                                                               x.name.Trim().ToLower()==("Registration").ToLower())
+                    .Select(x => new ComoBoxList
+                    {
+                        Id = x.id,
+                        Description = x.name
+                    }).ToList();
+                comboBoxInvoiceTypes.DataSource = vouchers;
+                comboBoxInvoiceTypes.ValueMember = "Id";    
+                comboBoxInvoiceTypes.DisplayMember = "Description";  
+
                 //collapse the side panel for patient document page at first load
                 sidePanelForPatintInfo.Width = 0;
                 collapseSidePanel = false;
                 gridControlPatient.Dock = DockStyle.Fill;
                 /////////////////////////////////////////
-
+                generateVouchurID();
                 cBoxGeneder.DataSource = genders;//combo box for Gender
-                comboBoxInvoiceTypes.DataSource = invoiceTypes;//combo box for Invoice Type
-                cBoxRegType.DataSource = registrationFees;//combo box for Registration fee Type
+            
+                
                 comboBoxPatientType.DataSource = patienttypes;//combo box for Patient Type
                 /*
                  * outer by habtish
                  * combo box data for Visit Location
                  */
-                var dataList = layer.LoadListForVisitTypeCoboBox();
+                 visitLocations = dbContext.LoadListForVisitTypeCoboBox();
 
-                cBoxVisitType.DataSource = dataList;
+                cBoxVisitType.DataSource = visitLocations;
                 cBoxVisitType.ValueMember = "Id";
                 cBoxVisitType.DisplayMember = "Description";
 
 
-                /*
-                * outer by habtish
-                * combo box data for Patient Assignment type
-                */
-
-                //var datalist = layer.LoadListForAssignmentTypeComboBox();
-                cBoxAssignType.DataSource = patientAssignments;
-                //cBoxAssignType.ValueMember = "Id";
-                //cBoxAssignType.DisplayMember = "Description";
+           
 
                 /*
                  * outer by habtish
                  * patient document grid view 
                  */
-                patientDocuments = layer.GetPatients();
+                patientDocuments = dbContext.GetPatients();
+                patientDocuments = patientDocuments.GroupBy(x=>x.PersonID).
+                                                                            Select(group=>group.OrderByDescending(x=>x.LastArrivalDate).First()).ToList(); 
+
                 listofPatientDocument = patientDocuments.Select(x => new PatientDocument
                 {
                     Id = x.PersonID,
@@ -132,18 +188,23 @@ namespace Patient_Managment_System
                     Age = x.Age,
                     Gender = x.Gender,
                     PhoneNumber = x.PhoneNumber,
-                    VisitType = x.VisitType,
-                    DateRegistered = x.DateRegistered,
+                    VisitLocation = x.VisitLocation,
+                    VisitStartDate = x.VisitStartDate,
+                    VisitEndDate = x.VisitEndDate,
+                    VisitStatus = x.VisitStatus,    
+                    DateRegistered = (x.DateRegistered),
+                    LastInvoiceDate = (x.LastInvoiceDate).ToString(),
+                    LastArrivalDate = (x.LastArrivalDate).ToString(),
+                    DeviceName = x.DeviceName,
                     City = x.City,
                     SubCity = x.SubCity,
                     Kebele = x.Kebele,
                     HouseNo = x.HouseNo,
-                    Active = x.Active
+                 
 
                 }).ToList();
-                listofPatientDocument = listofPatientDocument.GroupBy(x => x.Id).Select(group => group.First()).ToList();
-                gridControlPatient.DataSource = listofPatientDocument;
-                // gridControlPatient.DataSource = listofPatientDocument;
+                 gridControlPatient.DataSource = listofPatientDocument;
+            
 
 
                 /*
@@ -153,13 +214,45 @@ namespace Patient_Managment_System
                 loadAppointments();
                 ///combo box for Filter By in patient Document
                 comboBoxFilterBy.DataSource = filterByList;
-
+             
 
             }
             catch (Exception ex)
             { 
                 MessageBox.Show(ex.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);    
             }
+        }
+        public int generateID()
+        {
+            var patientDefination = menuDefinitions.FirstOrDefault(x => x.parent.Trim().ToLower() == ("EMR").ToLower() &&
+                                                                                 x.name.Trim().ToLower() == ("patient").ToLower());
+            var patientIDDefinationDetail = IdDefinitions.FirstOrDefault(x => x.type == patientDefination.id);
+            MaxIdValue = idDbContext.getMaxIdValue(patientIDDefinationDetail.id);           
+            MaxIdValue=MaxIdValue==0? 1 : MaxIdValue+1;
+           var centerPart = MaxIdValue.ToString().PadLeft(patientIDDefinationDetail.length, '0');
+            var personId = string.Format($"{patientIDDefinationDetail.prefix.Trim()+patientIDDefinationDetail.prefix_separator.Trim()}" + 
+                                               $"{centerPart}" + $"{patientIDDefinationDetail.suffix_separator.Trim()+patientIDDefinationDetail.suffix.Trim()}", MaxIdValue);
+            txtId.Text = personId;
+            return patientIDDefinationDetail.id;
+
+
+
+        }
+        public string generateVouchurID()
+        {
+            var patientDefination = menuDefinitions.FirstOrDefault(x => x.parent.Trim().ToLower() == ("EMR").ToLower() &&
+                                                                                 x.name.Trim().ToLower() == ("Registration").ToLower());
+            var patientIDDefinationDetail = IdDefinitions.FirstOrDefault(x => x.type == patientDefination.id);
+            MaxIdValue = idDbContext.getMaxVouchurID();
+            MaxIdValue = MaxIdValue == 0 ? 1 : MaxIdValue + 1;
+            var centerPart = MaxIdValue.ToString().PadLeft(patientIDDefinationDetail.length, '0');
+            var vouchurId = string.Format($"{patientIDDefinationDetail.prefix.Trim() + patientIDDefinationDetail.prefix_separator.Trim()}" +
+                                               $"{centerPart}" + $"{patientIDDefinationDetail.suffix_separator.Trim() + patientIDDefinationDetail.suffix.Trim()}", MaxIdValue);
+         
+            return vouchurId;
+
+
+
         }
 
         #endregion
@@ -171,9 +264,8 @@ namespace Patient_Managment_System
         {
             try
             {
-                #region
-                string personId;//takes the next id value when registration success                  
-
+                #region Validation
+               
                 // Validate First Name
                 string firstname = txtFirstName.Text.Trim();
                 if (!validationHelper.isFirstNameValid(firstname))
@@ -272,58 +364,243 @@ namespace Patient_Managment_System
                     comboBoxInvoiceTypes.SelectedIndex = 0;
                 }
 
-                if (cBoxVisitType.SelectedIndex <= 0)
+                if (cBoxVisitType.SelectedIndex <0)
                 {
                     cBoxVisitType.BackColor = Color.LightPink;
                     cBoxVisitType.Focus();
                     return;
                 }
 
-                #endregion
+                #endregion          
 
-                //creating person object for that patient to save in the person table 
+                //checking the Registered Operation is Found in Defination or not
+                var OperationType = "EMR";
+                var operationDescription = "Operation";
+                var operationValue = "registered";
+                var RegisterOperation = defination.FirstOrDefault(x => x.type.Trim().ToLower() == OperationType.ToLower() &&
+                                                                          x.description.Trim().ToLower() == operationDescription.ToLower() &&
+                                                                          x.value.Trim().ToLower() == operationValue.ToLower());
+
+                if (RegisterOperation is null)
+                {
+                    MessageBox.Show("No Registered Operation Found! We will Fix it Soon!", "Error", 
+                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                //getting the person type and person category id form defination table
+                var type = "person";
+                var typeDescription = "person type";
+                var categoryDescription = "person category";
+                var personTypeRow = defination.FirstOrDefault(x => x.type.Trim().ToLower() == type.ToLower()&&
+                                                                                  x.description.Trim().ToLower()== typeDescription.ToLower());
+                var personCategoryRow = defination.FirstOrDefault(x => x.type.Trim().ToLower() == type.ToLower() &&
+                                                                                  x.description.Trim().ToLower() == categoryDescription.ToLower());
+
+               //creating objects for all class
                 Person person = new Person();
-                person.Id = txtId.Text.Trim();
-                person.FirstName = txtFirstName.Text.Trim();
-                person.MiddleName = txtMiddleName.Text.Trim();
-                person.LastName = txtLastName.Text.Trim();
-                person.Gender = cBoxGeneder.Text.Trim();
-                person.Age = Convert.ToInt32(txtAge.Text.Trim());
-                person.PhoneNumber = txtPhone.Text.Trim();
-                person.DateRegistered = DateTime.Now;              
-
                 Address address = new Address();
-                address.City = txtCity.Text.Trim();
-                address.SubCity = txtSubCity.Text.Trim();
-                address.Kebele = txtKebele.Text.Trim();
-                address.HouseNo = txtHouseNo.Text.Trim();
+                Operation operation = new Operation();
+                InvoiceOperation invoiceOperation = new InvoiceOperation();
+                Invoice invoice = new Invoice();
+                InvoiceLine invoiceLine = new InvoiceLine();
+                PatientAssignment patientAssignment = new PatientAssignment();
+
+                //assign values for person objects
+                person.Id = txtId.Text.Trim();
+                person.first_name = txtFirstName.Text.Trim();
+                person.middile_name = txtMiddleName.Text.Trim();
+                person.last_name = txtLastName.Text.Trim();
+                person.gender = cBoxGeneder.Text.Trim();
+                person.age = Convert.ToInt32(txtAge.Text.Trim());
+                person.phone = txtPhone.Text.Trim();
+                person.date_registered = DateTime.Now;
+                person.type_Id = personTypeRow.id;
+                person.category = personCategoryRow.id;
+                person.tax = 0;
+                person.active = true;
+                person.remark = "Patient Registered";
+
+                //assign values for Address Object
+                address.city = txtCity.Text.Trim();
+                address.subcity = txtSubCity.Text.Trim();
+                address.kebele = txtKebele.Text.Trim();
+                address.house_no = txtHouseNo.Text.Trim();
+
 
 
                 //for visit Location
                 ComoBoxList selectedVisitLocationItem = (ComoBoxList)cBoxVisitType.SelectedItem;
-
+                //creating visit Object
+                Visit visit = new Visit();
+                visit.location_id = selectedVisitLocationItem.Id;
+                visit.start_date = DateTime.Now;
+                visit.end_date = null;
+                visit.status_id = 1;
 
                 //checks the person exist or not
-                if (!layer.checkPersonExistance(person.Id))
+                if (!dbContext.checkPersonExistance(txtId.Text.Trim()))
                 {
-                    Response response = layer.InsertPerson(person);//calls save the patient query
-
-                    int patientId = layer.getPatientID(person.Id);
-                      address.PatientId = patientId;
-
-                    //insert its visit location
-                    var visitLocationId = selectedVisitLocationItem.Id;
-                    var isVisitInserted = layer.InsertVisitType(visitLocationId, patientId);
-
-                    //                   
-                    var isAddressRegistered = layer.InsertAddress(address);
-
-                    // if sucess , make all fields empty and generate the next patient Id value
-                    if (response.IsPassed && isAddressRegistered)//add address check
+                 
+                //calling the dbContext for person
+                var personResponse=dbContext.insertPerson(person);
+                if (!personResponse.IsPassed)
+                {
+                    MessageBox.Show($"{personResponse.ErrorMessage}", "Error",
+                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                 //creating ID object
+                 ID patientID = new ID();
+                 patientID.current_value = person.Id;
+                 patientID.defination = patientDefinationID;
+                 var saveIdValue = idDbContext.saveID(patientID);
+                 if (saveIdValue.IsPassed)
                     {
+                        generateID();
+                    }
+                //creating patient Object
+                Patient patient = new Patient();
+                patient.person_id = person.Id;
+                //excute the dbContext for patient
+                var patientResponse=dbContext.insertPatient(patient);
+                if (!patientResponse.IsPassed)
+                {
+                    MessageBox.Show($"{patientResponse.ErrorMessage}", "Error",
+                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-                        ////////next patient id////////
-                        personId = acess.idNo();
+                //take the new patient id for address object
+                    address.patient_id=patientResponse.Data;
+                   
+                    //excute the dbContext for Address
+                    var addressResponse = dbContext.insertAddress(address);
+                if (!addressResponse.IsPassed)
+                {
+                    MessageBox.Show($"{addressResponse.ErrorMessage}", "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }               
+
+                //assign values for Operation Object
+                   
+              var RegisterMenudefination = menuDefinitions.FirstOrDefault(x => x.name.Trim().ToLower()== ("EMR").ToLower() &&
+                                                                                              x.parent.Trim().ToLower() == ("EMR").ToLower());              
+                operation.operation = RegisterOperation.id; 
+                operation.type = RegisterMenudefination.id;
+                operation.color = "Blue";
+                operation.manual = false;
+                operation.is_final = true;
+                //excute the dbContext for Operation
+                var saveOperation = dbContext.saveOperation(operation);
+                if(!saveOperation.IsPassed)
+                {
+                    MessageBox.Show($"{saveOperation.ErrorMessage}", "Error", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                    // assign values for invoice Operation Object
+
+                var VochourCode = generateVouchurID();              
+                invoiceOperation.operation_id = saveOperation.Data;
+                invoiceOperation.invoice_id = VochourCode;//need further detail
+                invoiceOperation.operation_datetime = DateTime.Now;
+                invoiceOperation.UserName = 1;
+                invoiceOperation.device=Environment.MachineName;
+                //excute the dbContext for Invoice Operation
+                var saveInvoiceOperation = dbContext.saveInvoiceOperation(invoiceOperation);
+                if(!saveInvoiceOperation.IsPassed)
+                {
+                    MessageBox.Show($"{saveInvoiceOperation.ErrorMessage}", "Error", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                //crating Period
+                Models.Period period = new Models.Period();                
+                period.description = "Registration";
+                period.start_date= DateTime.Now;    
+                period.end_date= DateTime.Now;
+                period.remark = "patient registration";
+                //excute the dbContext for Period
+                var savePeroid = dbContext.savePeriod(period);
+                if (!savePeroid.IsPassed)
+                {
+                    MessageBox.Show($"{savePeroid.ErrorMessage}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                // assign values for Invoice object
+            
+                var invoiceType = (ComoBoxList)comboBoxInvoiceTypes.SelectedItem;
+                invoice.code = VochourCode;
+                invoice.last_operation = saveInvoiceOperation.Data;   
+                invoice.type = invoiceType.Id;
+                invoice.consignee = address.patient_id;
+                invoice.period = savePeroid.Data;
+                invoice.date = DateTime.Now;  
+                invoice.is_final=true;
+                invoice.is_void = false;
+                invoice.subtotal=Decimal.Parse(txtRegAmount.Text.ToString());
+                invoice.tax = 0;
+                invoice.discount = 0;
+                invoice.grand_total = invoice.subtotal;
+                //excute the dbContext for Invoice
+                var saveInvoice=dbContext.saveInvoice(invoice);
+                if (!saveInvoice.IsPassed)
+                {
+                    MessageBox.Show($"{saveInvoice.ErrorMessage}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                //assign values for Invoice Line Object
+               
+                var selectedRegType = (ComoBoxList)cBoxRegType.SelectedItem;
+                var selctedItem = DefinitionItems.FirstOrDefault(x => x.Reference == selectedRegType.Id);
+                invoiceLine.invoice = invoice.code;
+                invoiceLine.itemId = selctedItem.item_Id;
+                invoiceLine.qty = 1;
+                invoiceLine.unit_amount = invoice.subtotal;
+                invoiceLine.total= invoice.subtotal;
+                invoiceLine.taxable_amount = invoice.subtotal;
+                invoiceLine.tax_amount = invoice.tax;
+                //excute the dbContext for InvoiceLine
+                var saveInvoiceLine = dbContext.saveInvoiceLine(invoiceLine);
+                if(!saveInvoiceLine.IsPassed)
+                {
+                    MessageBox.Show($"{saveInvoiceLine.ErrorMessage}", "Error",
+                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                    //assign values for patient assignment object
+               
+                    var selectedAssignentType = (ComoBoxList)cBoxAssignType.SelectedItem;
+                    patientAssignment.patient_id = address.patient_id;
+                    patientAssignment.assignment_type = selectedAssignentType.Id;
+                    patientAssignment.assigned_to = cBoxAssignValue.Text.Trim();
+                    patientAssignment.Invoice = invoice.code;
+                    //excute the dbContext for Patientassignment
+                    var savePatientAssignment=dbContext.savePatientAssignment(patientAssignment);
+                    if (!savePatientAssignment.IsPassed)
+                    {
+                        MessageBox.Show($"{savePatientAssignment.ErrorMessage}", "Error",
+                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    //add the patient_id for vist object
+                    visit.patient_id = address.patient_id;
+
+
+                    var saveVisit = dbContext.insertVisitType(visit);
+                    if (!saveVisit.IsPassed)
+                    {
+                        MessageBox.Show($"{saveVisit.ErrorMessage}", "Error",
+                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+
                         txtFirstName.Text = string.Empty;
                         txtMiddleName.Text = string.Empty;
                         txtLastName.Text = string.Empty;
@@ -340,68 +617,53 @@ namespace Patient_Managment_System
                         cBoxAssignValue.Text = string.Empty;
                         cBoxVisitType.Text = string.Empty;
 
-                        MessageBox.Show("Registration Success", "Sucess", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        txtId.Text = personId;
-                        persons.Add(person);
-                        
-
-
-
-                    }
-                    else
-                    {
-                        MessageBox.Show("Registrationfailed!. No records inserted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                        MessageBox.Show("Registration Success", "Sucess", 
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                       
+                        persons.Add(person);                     
+                                                         
+                    
                 }
-
-
                 else
                 {
-                    address.PatientId = updatedPatient.PatientID;//patient Id
-                    if (layer.isAddressExist(address.PatientId))
-                    {
-                        var isAddressUpdated = layer.UpdateAddress(address);//calls upadte query,
-                        var isPatientUpdated = layer.UpdatePatient(person);
-                        if (isPatientUpdated && isAddressUpdated)
-                        {
-                    
-                            MessageBox.Show("Patient Update Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                       
-                        }
-                        else
-                        {
-                            MessageBox.Show("Patient Update Failed!.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    else
-                    {
-                        var isAddressInserted = layer.InsertAddress(address);
-                        var isPatientUpdated = layer.UpdatePatient(person);
+                    //updating the person data
+                    var updatePatient = dbContext.updatePerson(person);                   
+                    address.patient_id = updatedPatient.PatientID;//patient Id                 
+                    var updatePatientAddress = dbContext.updateAddress(address);
+                     
 
-                        if (isPatientUpdated && isAddressInserted)
+                        if (!(updatePatientAddress.IsPassed && updatePatient.IsPassed))
                         {
 
                           
-                            MessageBox.Show("Patient Update Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                          
-
-
+                            MessageBox.Show(updatePatient.SuccessMessage, "Success", 
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);                       
 
                         }
                         else
                         {
-                            MessageBox.Show("Patient Update Failed!.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(updatePatient.ErrorMessage+updatePatientAddress.ErrorMessage, "Error", 
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-                    }
+                    //updating visit Data                  
+                   
+                    visit.patient_id=updatedPatient.PatientID;                    
+                    var updateVist = dbContext.updateVisit(visit);
+                    //updating invoice data
+                    var invoiceType = (ComoBoxList)comboBoxInvoiceTypes.SelectedItem;                  
+                    invoice.type = invoiceType.Id;
+                    invoice.consignee = address.patient_id;                 
+                    invoice.subtotal = Decimal.Parse(txtRegAmount.Text.ToString());                  
+                    invoice.grand_total = invoice.subtotal;
+                   // var updateInvoice = dbContext.updateRegistrationInvoice();
 
                 }
             }
             
             catch (Exception ex)
             {
-                MessageBox.Show($"Something UnExcepected Happened.Please Try Again\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-
+                MessageBox.Show($"Something UnExcepected Happened.Please Try Again\n{ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             } 
         
 
@@ -463,6 +725,16 @@ namespace Patient_Managment_System
         private void cBoxRegType_SelectedIndexChanged(object sender, EventArgs e)
         {
             cBoxRegType.BackColor = SystemColors.Window;
+            ComoBoxList selectedItem=(ComoBoxList)cBoxRegType.SelectedItem;        
+            
+                var priceItem=DefinitionItems.FirstOrDefault(x => x.Reference == selectedItem.Id);
+               txtRegAmount.Text = priceItem.Price.ToString();
+            var setting = configurations.FirstOrDefault(x =>x.type == 0 && 
+                                                                                   x.description.Trim() == "isFlexiableAmount");
+            if (bool.Parse(setting.value))
+               txtRegAmount.Enabled = true;
+            else txtRegAmount.Enabled = false;   
+            
         }
 
         private void txtRegAmount_TextChanged(object sender, EventArgs e)
@@ -475,14 +747,41 @@ namespace Patient_Managment_System
         private void cBoxAssignType_SelectedIndexChanged(object sender, EventArgs e)
         {
             cBoxAssignType.BackColor = SystemColors.Window;
+           var assignType= defination.Where(x => x.description == "registration assignment" && x.type == "EMR").ToList();
+            var assignDoctor = assignType.FirstOrDefault(x => x.value == "doctor");
+            ComoBoxList selectedItem=(ComoBoxList)cBoxAssignType.SelectedItem;  
+            if (selectedItem.Id== assignDoctor.id)
+            {
+                var doctorTypeDefinition = defination.FirstOrDefault(x =>
+                                                    x.description == "person type" && 
+                                                    x.type == "person" &&
+                                                    x.value=="doctor");
+                var doctorCategoryDefinition = defination.FirstOrDefault(x =>
+                                                 x.description == "person category" &&
+                                                 x.type == "person" &&
+                                                 x.value == "employee");
 
-            if (cBoxAssignType.SelectedIndex == 0)
-            {
+                var doctors = persons.Where(x => x.type_Id == doctorTypeDefinition.id && 
+                                                         x.category== doctorCategoryDefinition.id)
+                                                        .Select(x=>new Doctor
+                                                        {
+                                                            Id=x.Id,
+                                                            Name=x.first_name +" "+ x.middile_name+" "+x.last_name
+                                                        }).ToList();
                 cBoxAssignValue.DataSource = doctors;
+                cBoxAssignValue.DisplayMember = "Name";
+                cBoxAssignValue.ValueMember = "Id";
             }
-            if (cBoxAssignType.SelectedIndex == 1)
+            else 
             {
-                cBoxAssignValue.DataSource = roomNumbers;
+               rooms .Select(x => new ComoBoxList
+                {
+                    Id=x.id,
+                    Description=x.description,
+                }).ToList();
+                cBoxAssignValue.DataSource = rooms;
+                cBoxAssignValue.DisplayMember = "Description";
+                cBoxAssignValue.ValueMember= "Id";
             }
         }
 
@@ -554,8 +853,8 @@ namespace Patient_Managment_System
         #region Reset Method For New Registration
         private void btnNew_Click(object sender, EventArgs e)
         {
-            var id=acess.idGeneration();
-            txtId.Text = id.ToString();
+             generateID();
+
             txtFirstName.Text = string.Empty;
             txtMiddleName.Text = string.Empty;
             txtLastName.Text = string.Empty;
@@ -566,20 +865,12 @@ namespace Patient_Managment_System
             txtCity.Text = string.Empty;
             txtKebele.Text = string.Empty;
             txtHouseNo.Text = string.Empty;
-            cBoxRegType.Text = string.Empty;
-            txtRegAmount.Text = string.Empty;
-           
+            cBoxRegType.Text = string.Empty; 
             cBoxAssignType.Text = string.Empty; 
             cBoxAssignValue.Text = string.Empty;    
             cBoxVisitType.Text = string.Empty;  
         }
-        #endregion
-        #region Exit App Method
-        private void btnExitt_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-        #endregion
+        #endregion      
         #region Start Visit Method
 
         /*outer by habtish
@@ -668,7 +959,10 @@ namespace Patient_Managment_System
         {
             try
             {
-                patientDocuments = layer.GetPatients();
+                patientDocuments = dbContext.GetPatients();
+                patientDocuments = patientDocuments.GroupBy(x => x.PersonID).
+                                                    Select(group => group.OrderByDescending(x => x.LastArrivalDate).First()).ToList();
+
                 listofPatientDocument = patientDocuments.Select(x => new PatientDocument
                 {
                     Id = x.PersonID,
@@ -676,13 +970,19 @@ namespace Patient_Managment_System
                     Age = x.Age,
                     Gender = x.Gender,
                     PhoneNumber = x.PhoneNumber,
-                    VisitType = x.VisitType,
-                    DateRegistered = x.DateRegistered,
+                    VisitLocation = x.VisitLocation,
+                    VisitStartDate = x.VisitStartDate,  
+                    VisitEndDate = x.VisitEndDate,  
+                    VisitStatus = x.VisitStatus,    
+                    DateRegistered = (x.DateRegistered),
+                    LastInvoiceDate = (x.LastInvoiceDate).ToString(),
+                    LastArrivalDate = (x.LastArrivalDate.ToLongTimeString()).ToString(),
+                    DeviceName = x.DeviceName,
                     City = x.City,
                     SubCity = x.SubCity,
                     Kebele = x.Kebele,
                     HouseNo = x.HouseNo,
-                    Active = x.Active
+               
                 }).ToList();
                 listofPatientDocument = listofPatientDocument.GroupBy(x => x.Id).Select(group => group.First()).ToList();
 
@@ -794,7 +1094,7 @@ namespace Patient_Managment_System
         {
             try
             {
-                var appointmentSummaries = layer.loadAppointmentSummary();
+                var appointmentSummaries = dbContext.loadAppointmentSummary();
 
                 gridControlAppointmentdocument.DataSource = appointmentSummaries;
             }
@@ -872,14 +1172,14 @@ namespace Patient_Managment_System
 
                     var closeVisit = new DevExpress.Utils.Menu.DXMenuItem("CLOSE VISIT",
                                                  (s, args) => OnCustomActionCloseVisit(rowData));
-                    if (clickedPatient.VisitStatusID == 1)
+                    if (clickedPatient.VisitStatus.Trim().ToLower() == ("Started").ToLower())
                     {
                         closeVisit.Enabled = true;
 
                         startVisit.Enabled = false;
 
                     }
-                    if (clickedPatient.VisitStatusID == 2)
+                    if (clickedPatient.VisitStatus.Trim().ToLower() == ("closed").ToLower())
                     {
                         closeVisit.Enabled = false;
 
@@ -921,12 +1221,15 @@ namespace Patient_Managment_System
             var clickedPatient= patientDocuments.FirstOrDefault(x => x.PersonID == patient.Id);
             DepositPopUp depositPop=new DepositPopUp();
             depositPop.patient = clickedPatient;
+            depositPop.definations = defination;
+            depositPop.menuDefinitions = menuDefinitions;
+            depositPop.IdDefinitions = IdDefinitions;
             DialogResult result=depositPop.ShowDialog();    
         }
 
         private void OnCustomActionUpdate(PatientDocument patient)
         {
-            var clickedPatient= patientDocuments.FirstOrDefault(x=>x.PersonID==patient.Id);
+            var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == patient.Id);
             updatedPatient = clickedPatient;
 
             txtId.Text = patient.Id;
@@ -937,17 +1240,33 @@ namespace Patient_Managment_System
             txtPhone.Text = clickedPatient.PhoneNumber.Trim();
             cBoxGeneder.Text = clickedPatient.Gender.Trim();
             txtCity.Text = clickedPatient.City.Trim();
-            txtSubCity.Text =clickedPatient.SubCity.Trim();
-            txtKebele.Text =clickedPatient.Kebele.Trim();
-            txtHouseNo.Text =clickedPatient.HouseNo.Trim();
-            
+            txtSubCity.Text = clickedPatient.SubCity.Trim();
+            txtKebele.Text = clickedPatient.Kebele.Trim();
+            txtHouseNo.Text = clickedPatient.HouseNo.Trim();
+
             cBoxRegType.Text = string.Empty;
             txtRegAmount.Text = string.Empty;
             cBoxAssignType.Text = string.Empty;
             cBoxAssignValue.Text = string.Empty;
             //cBoxVisitType.Text = string.Empty;
 
-            cBoxVisitType.SelectedValue = clickedPatient.LocationID;
+         
+            var vistLocation= visitLocations.FirstOrDefault(x => x.Id== clickedPatient.LocationID);
+            cBoxVisitType.SelectedItem=vistLocation;
+            comboBoxInvoiceTypes.Text = clickedPatient.InvoiceType.Trim();
+            RegistrationItem regstrationFeeType = DefinitionItems.FirstOrDefault(x =>
+                                                                 x.item_Id.Trim().ToLower() == clickedPatient.ItemID.Trim().ToLower());
+            ComoBoxList comoBoxList = new ComoBoxList
+            {
+                Description = regstrationFeeType.name,
+                 Id = regstrationFeeType.id
+           }; 
+            txtRegAmount.Text=regstrationFeeType.Price.ToString();  
+            cBoxRegType.SelectedItem = comoBoxList;
+
+            var assignmentType = patientAssignmentType.FirstOrDefault(x => x.Id == clickedPatient.AssignmentType);
+            cBoxAssignType.SelectedItem = assignmentType;
+            cBoxAssignValue.Text = clickedPatient.AssignedValue;
 
 
             xtraTabControlRegistration.SelectedTabPage = xtraTabPageGeneral;
@@ -957,7 +1276,14 @@ namespace Patient_Managment_System
         {
             var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == patient.Id);
             VisitTypePopUp visitTypePopUp = new VisitTypePopUp();
-            visitTypePopUp.patient = clickedPatient;          
+            visitTypePopUp.patient = clickedPatient;
+            visitTypePopUp.configurations = configurations;
+            visitTypePopUp.definations = defination;
+            visitTypePopUp.menuDefinitions= menuDefinitions;    
+            visitTypePopUp.persons= persons;
+            visitTypePopUp.definationItems = DefinitionItems;
+            visitTypePopUp.idDefinations = IdDefinitions;
+            visitTypePopUp.rooms = rooms;
             DialogResult result = visitTypePopUp.ShowDialog();
        
             
@@ -965,19 +1291,88 @@ namespace Patient_Managment_System
         private void OnCustomActionCloseVisit(PatientDocument patient)
         {
             var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == patient.Id);
-            var closed=layer.UpdateStatus(clickedPatient.PatientID);
-            if (closed)
+
+            //access the operation started from defination table
+            var closedOperation = defination.FirstOrDefault(x => x.description.Trim().ToLower() == ("Operation").ToLower() &&
+                                                                                    x.type.Trim().ToLower() == ("EMR").ToLower() &&
+                                                                                    x.value.Trim().ToLower() == ("closed").ToLower());
+            if (closedOperation is null)
             {
 
-                MessageBox.Show("Patient Visit Closed!", "Success",
+                MessageBox.Show("You Can't Perform This Operation Now! Please Contact The Admnistrator!", "Error",
                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            var typeMenudefination = menuDefinitions.FirstOrDefault(x => x.name.Trim().ToLower() == ("EMR").ToLower() &&
+                                                                                              x.parent.Trim().ToLower() == ("EMR").ToLower());
+
+            Operation operation = new Operation();
+            operation.operation = closedOperation.id;
+            operation.color = "LightPink";
+            operation.type = typeMenudefination.id;
+            operation.is_final = true;
+            operation.remark = "Closed Operation";
+            var saveOperation = dbContext.saveOperation(operation);
+            if (!saveOperation.IsPassed)
+            {
+
+                MessageBox.Show(saveOperation.ErrorMessage, "Error",
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            InvoiceOperation invoiceOperation = new InvoiceOperation();
+            invoiceOperation.invoice_id = clickedPatient.VochourCode;
+            invoiceOperation.operation_id = saveOperation.Data;
+            invoiceOperation.operation_datetime = DateTime.Now;
+            invoiceOperation.device = Environment.MachineName;
+            var saveInvoiceOperation = dbContext.saveInvoiceOperation(invoiceOperation);
+            if (!saveInvoiceOperation.IsPassed)
+            {
+
+                MessageBox.Show(saveInvoiceOperation.ErrorMessage, "Error",
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            UpdateInvoice updateInvoice = new UpdateInvoice();
+            updateInvoice.consignee = clickedPatient.PatientID;
+            updateInvoice.code = clickedPatient.VochourCode;
+            updateInvoice.last_operation = saveInvoiceOperation.Data;
+            var updateLastOperation = dbContext.updateInvoice(updateInvoice);
+            if (!updateLastOperation.IsPassed)
+            {
+
+                MessageBox.Show(updateLastOperation.ErrorMessage, "Error",
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            //craete UpdateVist Object
+            UpdateVisit updateVisit = new UpdateVisit();
+            updateVisit.status_id = 2;
+            updateVisit.patient_id= clickedPatient.PatientID;   
+            var closedVisit=dbContext.updateVisitStatus(updateVisit);
+            if (closedVisit.IsPassed)
+            {
+
+                MessageBox.Show(closedVisit.SuccessMessage, "Success",
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+               
+            }
+            else
+            {
+
+                MessageBox.Show(closedVisit.ErrorMessage, "Error",
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+              
             }
         }
         private void OnCustomActionPatientAssign(PatientDocument patient)
         {
             var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == patient.Id);
-             PatientAssignPopUp assignPopUp = new PatientAssignPopUp(); 
+             PatientAssignPopUp assignPopUp = new PatientAssignPopUp();
             assignPopUp.patient= clickedPatient;
+            assignPopUp.persons = persons;
+            assignPopUp.definations = defination;
+            assignPopUp.rooms = rooms;
             DialogResult result=assignPopUp.ShowDialog();
            
         }
@@ -1457,7 +1852,7 @@ namespace Patient_Managment_System
         }
         #endregion
         #region Collapse Side Panel
-        List<PatientDocument> patientData = new List<PatientDocument>();
+        List<PatientHistory> patientData = new List<PatientHistory>();
         PatientDocument clickedRowData;
         private void gridViewPatients_RowCellClick(object sender, RowCellClickEventArgs e)
         {
@@ -1469,13 +1864,13 @@ namespace Patient_Managment_System
                     // Get the clicked row's data
                     clickedRowData = gridViewPatients.GetRow(e.RowHandle) as PatientDocument;
                     var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == clickedRowData.Id);
-                    if (clickedPatient.VisitStatusID == 1)
+                    if (clickedPatient.VisitStatus.Trim().ToLower() == ("Started").ToLower())
                     {
 
                         btnPatientCloseVisit.Enabled = true;
                         btnPatientStartVisit.Enabled = false;
                     }
-                    if (clickedPatient.VisitStatusID == 2)
+                    if (clickedPatient.VisitStatus.Trim().ToLower() == ("Closed").ToLower())
                     {
 
                         btnPatientCloseVisit.Enabled = false;
@@ -1495,7 +1890,18 @@ namespace Patient_Managment_System
                         collapseSidePanel = true;
                         gridControlPatient.Dock = DockStyle.None;
                     }
-                    patientData.Add(clickedRowData);
+                    PatientHistory patientHistory = new PatientHistory
+                    {
+                        Id = clickedPatient.PersonID,
+                        VochourCode = clickedPatient.VochourCode,
+                        Name=clickedPatient.FirstName+" "+clickedPatient.MiddleName+" "+clickedPatient.LastName,
+                        VisitLocation = clickedPatient.VisitLocation,
+                        VisitStatus = clickedPatient.VisitStatus,   
+                        DateRegistered = (clickedPatient.DateRegistered).ToString(),
+                        LastArrivalDate = (clickedPatient.LastArrivalDate).ToString(),
+                        LastInvoiceDate=(clickedPatient.LastInvoiceDate).ToString()
+                    };
+                    patientData.Add(patientHistory);
                     gridControlPatientDataSide.DataSource = patientData;
                     cardViewArrivalHistory.RefreshData();
                     gridControlPatienLog.DataSource = patientData;
@@ -1637,19 +2043,20 @@ namespace Patient_Managment_System
                 if (e.RowHandle >= 0)
                 {
 
-                    bool active = Boolean.Parse(view.GetRowCellValue(e.RowHandle,
-                                                            "Active").ToString());
+                    string Id = (view.GetRowCellValue(e.RowHandle,
+                                                            "Id").ToString());
+                    var patientData = patientDocuments.FirstOrDefault(x => x.PersonID == Id);
 
-
-                    if (active)
+                    if (patientData.VisitStatus.Trim().ToLower()==("started").ToLower())
                     {
-                        e.Appearance.BackColor = Color.LightBlue;
-                        e.HighPriority = true;
+                        e.Appearance.ForeColor = Color.Blue;
+                        //e.HighPriority = true;
                     }
-                    if (!active)
+                    if (patientData.VisitStatus.Trim().ToLower() == ("closed").ToLower())
                     {
-                        e.Appearance.BackColor = Color.WhiteSmoke;
+                        e.Appearance.ForeColor = Color.Red;
                     }
+                   
 
 
 
@@ -1662,6 +2069,38 @@ namespace Patient_Managment_System
             }
         }
         #endregion
+
+        private void simpleButton1_Click(object sender, EventArgs e)
+        {
+            Doctors doctor = new Doctors();
+            HomeClinicalSystem system=new HomeClinicalSystem();
+            doctor.DoctorID = "HEAL0001-2023";
+            doctor.DoctorName = "Habtamu";
+            doctor.DoctorType = "Specialist";
+            doctor.PhoneNumber="1234567890";
+            string json = JsonConvert.SerializeObject(doctor);
+            system.doctor=JsonConvert.DeserializeObject<Clinical_Managment_System.DTOs.Doctor>(json);      
+            system.Show();
+        }
+        private void PatientMSystem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                btnSave_Click(sender,e);
+                //MessageBox.Show("Enter Key is clicked");
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void sidePanelForPatintInfo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
-
