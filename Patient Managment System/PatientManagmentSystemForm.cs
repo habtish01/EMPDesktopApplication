@@ -1282,6 +1282,7 @@ namespace Patient_Managment_System
 
                     var updateItem = new DevExpress.Utils.Menu.DXMenuItem("UPDATE",
                                                  (s, args) => OnCustomActionUpdate(rowData));
+                    updateItem.Enabled = false;
 
                     var startVisit = new DevExpress.Utils.Menu.DXMenuItem("START VISIT",
                                                  (s, args) => OnCustomActionStartVisit(rowData));
@@ -1980,6 +1981,7 @@ namespace Patient_Managment_System
         {
             try
             {
+                btnPatientUpdate.Enabled = false;
                 // Check if a cell within a row is clicked (not the header or empty area)
                 if (e.RowHandle >= 0 && e.Column != null)
                 {
