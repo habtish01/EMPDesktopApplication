@@ -41,6 +41,11 @@ using Newtonsoft.Json;
 using DevExpress.XtraLayout.Filtering.Templates;
 using DevExpress.XtraEditors.TextEditController.Win32;
 using static Patient_Managment_System.Constants.EnumCollection;
+using DevExpress.XtraSpellChecker;
+using System.IO;
+using Grpc.Core;
+using Microsoft.AspNetCore.Hosting.Internal;
+
 
 namespace Patient_Managment_System
 {
@@ -67,27 +72,32 @@ namespace Patient_Managment_System
         IDGenerationDbContext idDbContext = new IDGenerationDbContext();   
         DbContext dbContext = new DbContext();
         List<PatientDto> patientDocuments = new List<PatientDto>(); 
-        List<PatientDocument> listofPatientDocument = new List<PatientDocument>(); 
-        IEnumerable<PatientDto> searchedPatient;
-        List<ComoBoxList> registrationFeeItems;
+        List<PatientDocument> listofPatientDocument = new List<PatientDocument>();       
+        List<ComoBoxList> registrationFeeType= new List<ComoBoxList>();
         List<RegistrationItem> DefinitionItems;
    
         List<string> genders = new List<string> {"Male","Female"};
         List<string> patienttypes = new List<string> {"Individual","Organization"};
-        List<string> organizations = new List<string> {"Heal Africa 1", "Heal Africa 2", "Heal Africa 3", "Heal Africa 4", "Heal Africa 5" };
+        List<Organization> organizations = new List<Organization>();
 
         public PatientDto updatedPatient;//comes form patient document for updation
       
         List<Voucher> menuDefinitions;
+        Voucher patientDefination;
         List<Defination> defination;
         List<Person> persons;
         List<Room> rooms;   
         List<Configurations> configurations;
         int MaxIdValue;
         List<IdDefinitionDetail> IdDefinitions;
-        List<ComoBoxList> visitLocations;
-        List<ComoBoxList> patientAssignmentType;
-        int patientDefinationID;
+        List<ComoBoxList> visitLocations=new List<ComoBoxList>();
+        List<ComoBoxList> patientAssignmentType=new List<ComoBoxList>();
+        List<RegisterationInvoiceHistory> registrationInvoiceHistory = new List<RegisterationInvoiceHistory>();
+        List<DepositHistory> depositHistories = new List<DepositHistory>();
+        List<PatientKinData> patientKinInfos = new List<PatientKinData>();
+        List<PatientRelation> patientOrgRelations = new List<PatientRelation>();
+        Voucher invoiceCategory;
+    int patientDefinationID;
         #endregion
         public PatientMSystem()
         {
@@ -105,27 +115,40 @@ namespace Patient_Managment_System
                 patientDefinationID = generateID();
                 persons =dbContext.getPersons();
                 configurations = dbContext.getConfigurations();
+                patientKinInfos=dbContext.getPatientKinInfo();
+                patientOrgRelations=dbContext.getPatientOrganizationName();
+                //for Registration Invoice Type
+                invoiceCategory = menuDefinitions.FirstOrDefault(x => x.parent.Trim().ToLower().Equals(("EMR").ToLower()) &&
+                                                                                    x.name.Trim().ToLower().Equals(("Registration").ToLower()));
 
+
+              registrationInvoiceHistory= dbContext.getRegistrationInvoiceHistory(invoiceCategory.id);
+                depositHistories = dbContext.getDepositHistory();
                 //load all avialable rooms
                 rooms = dbContext.getRooms();
 
                 //patient Registration Fee Item
                 DefinitionItems = dbContext.getRegistrationfeeItem();
-               registrationFeeItems = DefinitionItems.Where(x => x.value== "Patient Registartion")
+                ComoBoxList comoBoxList = new ComoBoxList();
+                comoBoxList.Id = 0;
+                comoBoxList.Description = "--select--";
+               
+               var getRegistrationFeeItems = DefinitionItems.Where(x => x.value== "Patient Registartion")
                     .Select(x => new ComoBoxList
                     {
                         Id=x.Reference,
                         Description=x.name
                     } ).ToList();
-               
-                cBoxRegType.DataSource = registrationFeeItems;//combo box for Registration fee Type
+                registrationFeeType.Add(comoBoxList);
+                registrationFeeType.AddRange(getRegistrationFeeItems); 
+                cBoxRegType.DataSource = registrationFeeType;//combo box for Registration fee Type
                 cBoxRegType.ValueMember = "Id";
                 cBoxRegType.DisplayMember="Description";
 
                 //all defination from defination table
                 defination = dbContext.getDefinitionDetail();
 
-                patientAssignmentType = defination.Where(x => 
+                var getPatientAssignmentType = defination.Where(x => 
                                             x.type.Trim()== "EMR" &&
                                             x.description.Trim()== "registration assignment")
                      .Select(x => new ComoBoxList
@@ -133,20 +156,20 @@ namespace Patient_Managment_System
                          Id = x.id,
                          Description = x.value
                      }).ToList();
-
+                patientAssignmentType.Add(comoBoxList);
+                patientAssignmentType.AddRange(getPatientAssignmentType);
                 cBoxAssignType.DataSource = patientAssignmentType;//combo box for Registration fee Type
                 cBoxAssignType.ValueMember = "Id";
                 cBoxAssignType.DisplayMember = "Description";
                 //invoice type
-            
-                var vouchers = menuDefinitions.Where(x => x.parent.Trim().ToLower() == ("EMR").ToLower() &&
-                                                                               x.name.Trim().ToLower()==("Registration").ToLower())
+               var invoiceType = configurations.Where(x => x.description.Trim().ToLower() == ("Registration Type").ToLower() &&
+                                                                               x.type== invoiceCategory.id)
                     .Select(x => new ComoBoxList
                     {
                         Id = x.id,
-                        Description = x.name
+                        Description = x.value
                     }).ToList();
-                comboBoxInvoiceTypes.DataSource = vouchers;
+                comboBoxInvoiceTypes.DataSource = invoiceType;
                 comboBoxInvoiceTypes.ValueMember = "Id";    
                 comboBoxInvoiceTypes.DisplayMember = "Description";  
 
@@ -164,15 +187,23 @@ namespace Patient_Managment_System
                  * outer by habtish
                  * combo box data for Visit Location
                  */
-                 visitLocations = dbContext.LoadListForVisitTypeCoboBox();
-
+                var getvisitLocations = dbContext.LoadListForVisitTypeCoboBox();
+                visitLocations.Add(comoBoxList);
+                visitLocations.AddRange(getvisitLocations);
                 cBoxVisitType.DataSource = visitLocations;
                 cBoxVisitType.ValueMember = "Id";
                 cBoxVisitType.DisplayMember = "Description";
 
 
-           
-
+                //for organization list
+                var organizationType = menuDefinitions.FirstOrDefault(x => x.parent.Trim().ToLower().Equals(("Maintain").ToLower()) &&
+                                                                                    x.name.Trim().ToLower().Equals(("Organization Customer").ToLower()));
+              var getOrganizations = dbContext.getOrganization(organizationType.id);
+                Organization organization = new Organization();
+                organization.id = "";
+                organization.brandName = "--select--";
+                organizations.Add(organization);
+                organizations.AddRange(getOrganizations);
                 /*
                  * outer by habtish
                  * patient document grid view 
@@ -183,25 +214,20 @@ namespace Patient_Managment_System
 
                 listofPatientDocument = patientDocuments.Select(x => new PatientDocument
                 {
-                    Id = x.PersonID,
-                    Name = x.FirstName + " " + x.MiddleName + " " + x.LastName,
+                    Id = x.PersonID.Trim(),
+                    Name = x.FirstName.Trim() + " " + x.MiddleName.Trim() + " " + x.LastName.Trim(),
                     Age = x.Age,
-                    Gender = x.Gender,
-                    PhoneNumber = x.PhoneNumber,
-                    VisitLocation = x.VisitLocation,
+                    Gender = x.Gender.Trim(),
+                    PhoneNumber = x.PhoneNumber.Trim(),
+                    VisitLocation = x.VisitLocation.Trim(),
+                    VisitStatus = x.VisitStatus.Trim(),
                     VisitStartDate = x.VisitStartDate,
-                    VisitEndDate = x.VisitEndDate,
-                    VisitStatus = x.VisitStatus,    
+                    VisitEndDate = x.VisitEndDate,            
+                    LastInvoiceDate = (x.LastInvoiceDate).ToString().Trim(),
+                    LastArrivalDate = (x.LastArrivalDate).ToString().Trim(),
                     DateRegistered = (x.DateRegistered),
-                    LastInvoiceDate = (x.LastInvoiceDate).ToString(),
-                    LastArrivalDate = (x.LastArrivalDate).ToString(),
-                    DeviceName = x.DeviceName,
-                    City = x.City,
-                    SubCity = x.SubCity,
-                    Kebele = x.Kebele,
-                    HouseNo = x.HouseNo,
-                 
-
+                    Address = x.City.Trim() != "" ? $"[{x.HouseNo.Trim()}] {x.City.Trim()}, {x.SubCity.Trim()}, {x.Kebele.Trim()}" : "",
+                    DeviceName = x.DeviceName.Trim()
                 }).ToList();
                  gridControlPatient.DataSource = listofPatientDocument;
             
@@ -214,7 +240,10 @@ namespace Patient_Managment_System
                 loadAppointments();
                 ///combo box for Filter By in patient Document
                 comboBoxFilterBy.DataSource = filterByList;
-             
+                //for deposit card hitory in patient Document
+
+                patientDefination = menuDefinitions.FirstOrDefault(x => x.parent.Trim().ToLower() == ("EMR").ToLower() &&
+                                                                                    x.name.Trim().ToLower() == ("Deposit").ToLower());
 
             }
             catch (Exception ex)
@@ -323,7 +352,8 @@ namespace Patient_Managment_System
 
                 // Validate Registration Fee type
                 string feeType = cBoxRegType.Text.Trim();
-                if (!validationHelper.isRegistrationFeeTypeValid(feeType))
+                var selectedItem=(ComoBoxList)cBoxRegType.SelectedItem; 
+                if (!validationHelper.isRegistrationFeeTypeValid(feeType) || selectedItem.Id==0)
                 {
                     cBoxRegType.BackColor = Color.LightPink;
                     cBoxRegType.Focus();
@@ -345,7 +375,8 @@ namespace Patient_Managment_System
 
                 //validate assign type
                 string assignType = cBoxAssignType.Text.Trim();
-                if (!validationHelper.isDoctorAssignmentTypeValid(assignType))
+                var assignTypeItem=(ComoBoxList)cBoxAssignType.SelectedItem;  
+                if (!validationHelper.isDoctorAssignmentTypeValid(assignType)|| assignTypeItem.Id==0)
                 {
                     cBoxAssignType.BackColor = Color.LightPink;
                     cBoxAssignType.Focus();
@@ -359,17 +390,25 @@ namespace Patient_Managment_System
                     cBoxAssignValue.Focus();
                     return;
                 }
-                if (comboBoxInvoiceTypes.SelectedIndex < 0)
-                {
-                    comboBoxInvoiceTypes.SelectedIndex = 0;
-                }
+                
+                var visitType = (ComoBoxList)cBoxVisitType.SelectedItem;
 
-                if (cBoxVisitType.SelectedIndex <0)
+                if (visitType.Id==0||string.IsNullOrEmpty(cBoxVisitType.Text))
                 {
                     cBoxVisitType.BackColor = Color.LightPink;
                     cBoxVisitType.Focus();
                     return;
                 }
+               var selectedOrg=(Organization)comboBoxOrgnization.SelectedItem;
+               
+                if (selectedOrg != null &&selectedOrg.id == "")
+                {
+                     comboBoxOrgnization.BackColor = Color.LightPink;
+                     comboBoxOrgnization.Focus();
+                     return;
+                }
+                
+                 
 
                 #endregion          
 
@@ -430,10 +469,10 @@ namespace Patient_Managment_System
 
 
                 //for visit Location
-                ComoBoxList selectedVisitLocationItem = (ComoBoxList)cBoxVisitType.SelectedItem;
+              
                 //creating visit Object
                 Visit visit = new Visit();
-                visit.location_id = selectedVisitLocationItem.Id;
+                visit.location_id = visitType.Id;
                 visit.start_date = DateTime.Now;
                 visit.end_date = null;
                 visit.status_id = 1;
@@ -470,8 +509,46 @@ namespace Patient_Managment_System
                                      MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-
-                //take the new patient id for address object
+                if(pictureBoxPatientProfile.Image != null)
+                    {
+                        var imageUrl=UploadImage();
+                        SaveImageUrl saveImageUrl=new SaveImageUrl();
+                        saveImageUrl.patient_id = patientResponse.Data;
+                        saveImageUrl.image_url = imageUrl;
+                        var saveImageurl=dbContext.saveImageUrl(saveImageUrl);
+                        if(!saveImageurl.IsPassed)
+                        {
+                            MessageBox.Show($"{saveImageurl.ErrorMessage}", "Error",
+                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    NextofKin nextofKin = new NextofKin();
+                    nextofKin.patient_id = patientResponse.Data;
+                    nextofKin.kin_name=txtBoxKinName.Text.Trim();
+                    nextofKin.kin_phone = txtBoxKinPhone.Text.Trim();
+                    nextofKin.remark = "Next of Kin Added";
+                    var saveNextofKin = dbContext.saveNextOfKin(nextofKin);
+                    if (!saveNextofKin.IsPassed)
+                    {
+                        MessageBox.Show($"{saveNextofKin.ErrorMessage}", "Error",
+                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    if (selectedOrg!=null && selectedOrg.id != "")
+                    {
+                        OrganizationalCustomer organizationalCustomer = new OrganizationalCustomer();
+                        organizationalCustomer.patient_id=nextofKin.patient_id;
+                        organizationalCustomer.organization_id=selectedOrg.id;
+                        var saveOrganizationCustomer = dbContext.saveOrganizationalCustomer(organizationalCustomer);
+                        if (!saveOrganizationCustomer.IsPassed)
+                        {
+                            MessageBox.Show($"{saveOrganizationCustomer.ErrorMessage}", "Error",
+                                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    //take the new patient id for address object
                     address.patient_id=patientResponse.Data;
                    
                     //excute the dbContext for Address
@@ -533,10 +610,10 @@ namespace Patient_Managment_System
                 }
                 // assign values for Invoice object
             
-                var invoiceType = (ComoBoxList)comboBoxInvoiceTypes.SelectedItem;
+                //var invoiceType = (ComoBoxList)comboBoxInvoiceTypes.SelectedItem;
                 invoice.code = VochourCode;
-                invoice.last_operation = saveInvoiceOperation.Data;   
-                invoice.type = invoiceType.Id;
+                invoice.last_operation = saveInvoiceOperation.Data;
+                invoice.type = invoiceCategory.id;
                 invoice.consignee = address.patient_id;
                 invoice.period = savePeroid.Data;
                 invoice.date = DateTime.Now;  
@@ -616,6 +693,8 @@ namespace Patient_Managment_System
                         cBoxAssignType.Text = string.Empty;
                         cBoxAssignValue.Text = string.Empty;
                         cBoxVisitType.Text = string.Empty;
+                    pictureBoxPatientProfile.Image = null;
+                   
 
                         MessageBox.Show("Registration Success", "Sucess", 
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -650,8 +729,8 @@ namespace Patient_Managment_System
                     visit.patient_id=updatedPatient.PatientID;                    
                     var updateVist = dbContext.updateVisit(visit);
                     //updating invoice data
-                    var invoiceType = (ComoBoxList)comboBoxInvoiceTypes.SelectedItem;                  
-                    invoice.type = invoiceType.Id;
+                   // var invoiceType = (ComoBoxList)comboBoxInvoiceTypes.SelectedItem;                  
+                    invoice.type = invoiceCategory.id;
                     invoice.consignee = address.patient_id;                 
                     invoice.subtotal = Decimal.Parse(txtRegAmount.Text.ToString());                  
                     invoice.grand_total = invoice.subtotal;
@@ -725,15 +804,23 @@ namespace Patient_Managment_System
         private void cBoxRegType_SelectedIndexChanged(object sender, EventArgs e)
         {
             cBoxRegType.BackColor = SystemColors.Window;
-            ComoBoxList selectedItem=(ComoBoxList)cBoxRegType.SelectedItem;        
-            
-                var priceItem=DefinitionItems.FirstOrDefault(x => x.Reference == selectedItem.Id);
-               txtRegAmount.Text = priceItem.Price.ToString();
-            var setting = configurations.FirstOrDefault(x =>x.type == 0 && 
-                                                                                   x.description.Trim() == "isFlexiableAmount");
-            if (bool.Parse(setting.value))
-               txtRegAmount.Enabled = true;
-            else txtRegAmount.Enabled = false;   
+            ComoBoxList selectedItem=(ComoBoxList)cBoxRegType.SelectedItem;
+            if (selectedItem.Id == 0)
+            {
+                txtRegAmount.Text = string.Empty;
+                txtRegAmount.Enabled = false;
+                return;
+            }
+            else
+            {
+                var priceItem = DefinitionItems.FirstOrDefault(x => x.Reference == selectedItem.Id);
+                txtRegAmount.Text = priceItem.Price.ToString();
+                var setting = configurations.FirstOrDefault(x => x.type == 0 &&
+                                                                                       x.description.Trim() == "isFlexiableAmount");
+                if (bool.Parse(setting.value))
+                    txtRegAmount.Enabled = true;
+                else txtRegAmount.Enabled = false;
+            }
             
         }
 
@@ -747,9 +834,15 @@ namespace Patient_Managment_System
         private void cBoxAssignType_SelectedIndexChanged(object sender, EventArgs e)
         {
             cBoxAssignType.BackColor = SystemColors.Window;
-           var assignType= defination.Where(x => x.description == "registration assignment" && x.type == "EMR").ToList();
+            ComoBoxList selectedItem = (ComoBoxList)cBoxAssignType.SelectedItem;
+            if (selectedItem.Id== 0)
+            {
+                cBoxAssignValue.Text = string.Empty;
+                return;
+            }
+            var assignType= defination.Where(x => x.description == "registration assignment" && x.type == "EMR").ToList();
             var assignDoctor = assignType.FirstOrDefault(x => x.value == "doctor");
-            ComoBoxList selectedItem=(ComoBoxList)cBoxAssignType.SelectedItem;  
+          
             if (selectedItem.Id== assignDoctor.id)
             {
                 var doctorTypeDefinition = defination.FirstOrDefault(x =>
@@ -772,7 +865,7 @@ namespace Patient_Managment_System
                 cBoxAssignValue.DisplayMember = "Name";
                 cBoxAssignValue.ValueMember = "Id";
             }
-            else 
+            else if(selectedItem.Id!=0) 
             {
                rooms .Select(x => new ComoBoxList
                 {
@@ -809,6 +902,10 @@ namespace Patient_Managment_System
         private void comboBoxInvoiceTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             comboBoxInvoiceTypes.BackColor = Color.White;
+            if (comboBoxInvoiceTypes.SelectedIndex < 0)
+            {
+                comboBoxInvoiceTypes.SelectedIndex = 0;
+            }
         }
 
         private void txtRegAmount_TextChanged_1(object sender, EventArgs e)
@@ -822,8 +919,8 @@ namespace Patient_Managment_System
         {
            
         }
-      
 
+        string imagePath;
         private void btnUploadPhoto_Click(object sender, EventArgs e)
         {
             // Create an instance of the OpenFileDialog
@@ -837,10 +934,10 @@ namespace Patient_Managment_System
                     try
                     {
                         // Get the selected image file path
-                        string imagePath = openFileDialog.FileName;
-
+                        imagePath = openFileDialog.FileName;
                         // Load the image into the PictureBox
                         pictureBoxPatientProfile.Image = new System.Drawing.Bitmap(imagePath);
+                      
                     }
                     catch (Exception ex)
                     {
@@ -848,6 +945,29 @@ namespace Patient_Managment_System
                     }
                 }
             }
+        }
+        public string UploadImage()
+        {
+           
+            var workingDir = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
+            
+
+            string projectDir = Directory.GetParent(workingDir).Parent.FullName;
+            string localFolderPath = Path.Combine(projectDir, "PatientImages");
+            
+
+            if (!Directory.Exists(localFolderPath))
+            {
+                Directory.CreateDirectory(localFolderPath);
+                
+            }
+            string patientName= txtFirstName.Text.Trim();  
+            string fileName = patientName+"s" + Path.GetExtension(imagePath);
+            string newFilePath = Path.Combine(localFolderPath, fileName);
+            File.Copy(imagePath, newFilePath, true);
+            return newFilePath;
+
+           
         }
         #endregion
         #region Reset Method For New Registration
@@ -865,10 +985,13 @@ namespace Patient_Managment_System
             txtCity.Text = string.Empty;
             txtKebele.Text = string.Empty;
             txtHouseNo.Text = string.Empty;
-            cBoxRegType.Text = string.Empty; 
-            cBoxAssignType.Text = string.Empty; 
-            cBoxAssignValue.Text = string.Empty;    
-            cBoxVisitType.Text = string.Empty;  
+            cBoxRegType.SelectedIndex = 0;
+            cBoxAssignType.SelectedIndex = 0;            
+            cBoxVisitType.SelectedIndex = 0;
+            comboBoxInvoiceTypes.SelectedIndex = 0;
+            txtBoxKinName.Text = string.Empty;  
+            txtBoxKinPhone.Text = string.Empty;
+            comboBoxPatientType.SelectedIndex = 0;
         }
         #endregion      
         #region Start Visit Method
@@ -959,30 +1082,31 @@ namespace Patient_Managment_System
         {
             try
             {
-                patientDocuments = dbContext.GetPatients();
+                registrationInvoiceHistory = dbContext.getRegistrationInvoiceHistory(invoiceCategory.id);//for invoice history
+                depositHistories = dbContext.getDepositHistory();//for deposit history
+                patientKinInfos = dbContext.getPatientKinInfo();//for patient additional info 
+                patientOrgRelations = dbContext.getPatientOrganizationName();//for organization names
+                patientDocuments = dbContext.GetPatients();//for grid view data source
                 patientDocuments = patientDocuments.GroupBy(x => x.PersonID).
                                                     Select(group => group.OrderByDescending(x => x.LastArrivalDate).First()).ToList();
 
                 listofPatientDocument = patientDocuments.Select(x => new PatientDocument
                 {
-                    Id = x.PersonID,
-                    Name = x.FirstName + " " + x.MiddleName + " " + x.LastName,
+                    Id = x.PersonID.Trim(),
+                    Name = x.FirstName.Trim() + " " + x.MiddleName.Trim() + " " + x.LastName.Trim(),
                     Age = x.Age,
-                    Gender = x.Gender,
-                    PhoneNumber = x.PhoneNumber,
-                    VisitLocation = x.VisitLocation,
-                    VisitStartDate = x.VisitStartDate,  
-                    VisitEndDate = x.VisitEndDate,  
-                    VisitStatus = x.VisitStatus,    
+                    Gender = x.Gender.Trim(),
+                    PhoneNumber = x.PhoneNumber.Trim(),
+                    VisitLocation = x.VisitLocation.Trim(),
+                    VisitStatus = x.VisitStatus.Trim(),
+                    VisitStartDate = x.VisitStartDate,
+                    VisitEndDate = x.VisitEndDate,
+                    LastInvoiceDate = (x.LastInvoiceDate).ToString().Trim(),
+                    LastArrivalDate = (x.LastArrivalDate).ToString().Trim(),
                     DateRegistered = (x.DateRegistered),
-                    LastInvoiceDate = (x.LastInvoiceDate).ToString(),
-                    LastArrivalDate = (x.LastArrivalDate.ToLongTimeString()).ToString(),
-                    DeviceName = x.DeviceName,
-                    City = x.City,
-                    SubCity = x.SubCity,
-                    Kebele = x.Kebele,
-                    HouseNo = x.HouseNo,
-               
+                    Address = x.City.Trim() != "" ? $"[{x.HouseNo.Trim()}] {x.City.Trim()}, {x.SubCity.Trim()}, {x.Kebele.Trim()}" : "",
+                    DeviceName = x.DeviceName.Trim()
+
                 }).ToList();
                 listofPatientDocument = listofPatientDocument.GroupBy(x => x.Id).Select(group => group.First()).ToList();
 
@@ -1037,14 +1161,7 @@ namespace Patient_Managment_System
             }
         }
 
-        private void txtPhone_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            char ch = e.KeyChar;
-            if (!char.IsDigit(ch) && ch != 8)
-            {
-                e.Handled = true;
-            }
-        }
+       
 
         private void txtRegAmount_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -1348,6 +1465,7 @@ namespace Patient_Managment_System
             //craete UpdateVist Object
             UpdateVisit updateVisit = new UpdateVisit();
             updateVisit.status_id = 2;
+            updateVisit.end_date = DateTime.Now;    
             updateVisit.patient_id= clickedPatient.PatientID;   
             var closedVisit=dbContext.updateVisitStatus(updateVisit);
             if (closedVisit.IsPassed)
@@ -1387,13 +1505,17 @@ namespace Patient_Managment_System
                 {
                     groupBoxPatientType.Controls.Remove(comboBoxOrgnization);
                     groupBoxPatientType.Controls.Remove(lblOrganization);
+                    groupBoxPatientType.Controls.Remove(lblAstrixOrg);
 
                 }
                 if (comboBoxPatientType.SelectedIndex == 1)
                 {
                     groupBoxPatientType.Controls.Add(comboBoxOrgnization);
                     groupBoxPatientType.Controls.Add(lblOrganization);
+                    groupBoxPatientType.Controls.Add(lblAstrixOrg);
                     comboBoxOrgnization.DataSource = organizations;
+                    comboBoxOrgnization.DisplayMember = "brandName";
+                    comboBoxOrgnization.ValueMember = "id";
 
                 }
             }
@@ -1864,6 +1986,7 @@ namespace Patient_Managment_System
                     // Get the clicked row's data
                     clickedRowData = gridViewPatients.GetRow(e.RowHandle) as PatientDocument;
                     var clickedPatient = patientDocuments.FirstOrDefault(x => x.PersonID == clickedRowData.Id);
+                                                             
                     if (clickedPatient.VisitStatus.Trim().ToLower() == ("Started").ToLower())
                     {
 
@@ -1890,11 +2013,12 @@ namespace Patient_Managment_System
                         collapseSidePanel = true;
                         gridControlPatient.Dock = DockStyle.None;
                     }
+                    var invoiceHistory= registrationInvoiceHistory.Where(x=>x.PatientID==clickedPatient.PatientID).ToList();
                     PatientHistory patientHistory = new PatientHistory
                     {
-                        Id = clickedPatient.PersonID,
-                        VochourCode = clickedPatient.VochourCode,
-                        Name=clickedPatient.FirstName+" "+clickedPatient.MiddleName+" "+clickedPatient.LastName,
+                        Id = clickedPatient.PersonID,                     
+                      
+                        FullName=clickedPatient.FirstName+" "+clickedPatient.MiddleName+" "+clickedPatient.LastName,
                         VisitLocation = clickedPatient.VisitLocation,
                         VisitStatus = clickedPatient.VisitStatus,   
                         DateRegistered = (clickedPatient.DateRegistered).ToString(),
@@ -1904,8 +2028,41 @@ namespace Patient_Managment_System
                     patientData.Add(patientHistory);
                     gridControlPatientDataSide.DataSource = patientData;
                     cardViewArrivalHistory.RefreshData();
-                    gridControlPatienLog.DataSource = patientData;
+                    var registerCodeHistory = invoiceHistory.Select(x => new RegisterCodeHostory
+                    {
+                        Code=x.Code,
+                        GrandTotal=x.GrandTotal.ToString().Trim(),
+                        Date=x.Date,    
+                        CardType=x.CardType
+                    }).ToList();
+                    gridControlVochourHistoryCard.DataSource = registerCodeHistory;
+                    cardViewPatientVochourHistory.RefreshData();
+
+                    //for Patient Addtional History Card
+                    List<PatientInfoDisplay> patientRelation = new List<PatientInfoDisplay>();
+                    var patientKinInfo=patientKinInfos.FirstOrDefault(x => x.patient_id == clickedPatient.PatientID);
+                    var patientOrg= patientOrgRelations.FirstOrDefault(x => x.patient_id == clickedPatient.PatientID);
+                    
+                    PatientInfoDisplay patientInfoDisplay = new PatientInfoDisplay();
+                    patientInfoDisplay.Address = clickedRowData.Address == "" ? "No Address Entered yet!" : clickedRowData.Address;
+                    patientInfoDisplay.Orgaanization = patientOrg is null? "No organization" : patientOrg.brandName;
+                    patientInfoDisplay.KinName = patientKinInfo is null?"No Kin Data is Entered": patientKinInfo.kin_name;
+                    patientInfoDisplay.KinPhone = patientKinInfo is null ? "No Kin Data is Entered" :patientKinInfo.kin_phone;
+                    patientRelation.Add(patientInfoDisplay);
+                    gridControlPatienLog.DataSource = patientRelation;
                     cardViewPatientLog.RefreshData();
+                   
+
+                    //for Deposit History Card
+                    var patientDepositHistory=depositHistories.Where(x=>x.PatientID==clickedPatient.PatientID)
+                                                                                          .Select(x => new DepositHistoryDocument
+                    {
+                        DepositID = x.Code,
+                        DepositAmount=x.GrandTotal,
+                        DepositedDate=x.Date
+                    });
+                    gridControlPatientDepositHistory.DataSource= patientDepositHistory;
+                    cardViewPatientDepositHistory.RefreshData();    
 
 
 
@@ -2099,6 +2256,26 @@ namespace Patient_Managment_System
         }
 
         private void sidePanelForPatintInfo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void simpleButton1_Click_1(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void panelPatientHistoryCard2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void gridControlVochourHistoryCard_Click(object sender, EventArgs e)
         {
 
         }

@@ -30,7 +30,7 @@ namespace Patient_Managment_System.Data_Access_Layer
         {
 
             SqlConnection connection = new SqlConnection(connectionString);
-            var sql = "select MAX(invoice_id) from general.invoice_operation";
+            var sql = "select MAX(invoice_id) from general.invoice_operation where (invoice_id like'%REG%') ";
             var lastId = connection.QueryFirstOrDefault<string>(sql);
             var centerValue = lastId.Substring(4, 5);
             var maxValue = int.Parse(centerValue);

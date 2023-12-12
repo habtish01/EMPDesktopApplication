@@ -33,20 +33,31 @@
             this.xtraTabControlRegistration = new DevExpress.XtraTab.XtraTabControl();
             this.xtraTabPageGeneral = new DevExpress.XtraTab.XtraTabPage();
             this.panelGeneral = new System.Windows.Forms.Panel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.txtBoxKinPhone = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtBoxKinName = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBoxInvoiceType = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.comboBoxInvoiceTypes = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.cBoxVisitType = new System.Windows.Forms.ComboBox();
             this.label30 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.cBoxAssignValue = new System.Windows.Forms.ComboBox();
             this.cBoxAssignType = new System.Windows.Forms.ComboBox();
             this.label34 = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
             this.groupBoxPatientType = new System.Windows.Forms.GroupBox();
+            this.lblAstrixOrg = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.comboBoxOrgnization = new System.Windows.Forms.ComboBox();
             this.comboBoxPatientType = new System.Windows.Forms.ComboBox();
             this.lblOrganization = new System.Windows.Forms.Label();
@@ -62,6 +73,8 @@
             this.label45 = new System.Windows.Forms.Label();
             this.label46 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.txtRegAmount = new System.Windows.Forms.TextBox();
             this.cBoxRegType = new System.Windows.Forms.ComboBox();
             this.label47 = new System.Windows.Forms.Label();
@@ -96,10 +109,19 @@
             this.xtraTabPagePatientDocument = new DevExpress.XtraTab.XtraTabPage();
             this.panelPatientDocument = new System.Windows.Forms.Panel();
             this.sidePanelForPatintInfo = new DevExpress.XtraEditors.SidePanel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.gridControlPatientDepositHistory = new DevExpress.XtraGrid.GridControl();
+            this.cardViewPatientDepositHistory = new DevExpress.XtraGrid.Views.Card.CardView();
+            this.label14 = new System.Windows.Forms.Label();
+            this.panelPatientHistoryCard2 = new System.Windows.Forms.Panel();
             this.lblPatientLog = new System.Windows.Forms.Label();
             this.gridControlPatienLog = new DevExpress.XtraGrid.GridControl();
             this.cardViewPatientLog = new DevExpress.XtraGrid.Views.Card.CardView();
+            this.panelPatientHistoryCard3 = new System.Windows.Forms.Panel();
             this.lblArrivalHisttory = new System.Windows.Forms.Label();
+            this.gridControlVochourHistoryCard = new DevExpress.XtraGrid.GridControl();
+            this.cardViewPatientVochourHistory = new DevExpress.XtraGrid.Views.Card.CardView();
+            this.cardViewVochourHistory = new DevExpress.XtraGrid.Views.Card.CardView();
             this.gridControlPatientDataSide = new DevExpress.XtraGrid.GridControl();
             this.cardViewArrivalHistory = new DevExpress.XtraGrid.Views.Card.CardView();
             this.gridControlPatient = new DevExpress.XtraGrid.GridControl();
@@ -141,6 +163,7 @@
             this.xtraTabControlRegistration.SuspendLayout();
             this.xtraTabPageGeneral.SuspendLayout();
             this.panelGeneral.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBoxInvoiceType.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -154,8 +177,16 @@
             this.xtraTabPagePatientDocument.SuspendLayout();
             this.panelPatientDocument.SuspendLayout();
             this.sidePanelForPatintInfo.SuspendLayout();
+            this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlPatientDepositHistory)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cardViewPatientDepositHistory)).BeginInit();
+            this.panelPatientHistoryCard2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridControlPatienLog)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cardViewPatientLog)).BeginInit();
+            this.panelPatientHistoryCard3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlVochourHistoryCard)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cardViewPatientVochourHistory)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cardViewVochourHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControlPatientDataSide)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cardViewArrivalHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControlPatient)).BeginInit();
@@ -218,6 +249,7 @@
             // 
             this.panelGeneral.BackColor = System.Drawing.Color.White;
             this.panelGeneral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelGeneral.Controls.Add(this.groupBox3);
             this.panelGeneral.Controls.Add(this.groupBoxInvoiceType);
             this.panelGeneral.Controls.Add(this.label5);
             this.panelGeneral.Controls.Add(this.label6);
@@ -235,8 +267,63 @@
             this.panelGeneral.Size = new System.Drawing.Size(1463, 637);
             this.panelGeneral.TabIndex = 1;
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.txtBoxKinPhone);
+            this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.txtBoxKinName);
+            this.groupBox3.Controls.Add(this.label1);
+            this.groupBox3.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox3.Location = new System.Drawing.Point(1021, 337);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(399, 148);
+            this.groupBox3.TabIndex = 35;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Next of KIN";
+            // 
+            // txtBoxKinPhone
+            // 
+            this.txtBoxKinPhone.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtBoxKinPhone.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBoxKinPhone.Location = new System.Drawing.Point(132, 106);
+            this.txtBoxKinPhone.Multiline = true;
+            this.txtBoxKinPhone.Name = "txtBoxKinPhone";
+            this.txtBoxKinPhone.Size = new System.Drawing.Size(228, 30);
+            this.txtBoxKinPhone.TabIndex = 25;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(16, 108);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(141, 23);
+            this.label3.TabIndex = 26;
+            this.label3.Text = "Phone Number:";
+            // 
+            // txtBoxKinName
+            // 
+            this.txtBoxKinName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtBoxKinName.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBoxKinName.Location = new System.Drawing.Point(132, 51);
+            this.txtBoxKinName.Multiline = true;
+            this.txtBoxKinName.Name = "txtBoxKinName";
+            this.txtBoxKinName.Size = new System.Drawing.Size(228, 30);
+            this.txtBoxKinName.TabIndex = 22;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(45, 56);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(104, 23);
+            this.label1.TabIndex = 24;
+            this.label1.Text = "Full-Name:";
+            // 
             // groupBoxInvoiceType
             // 
+            this.groupBoxInvoiceType.Controls.Add(this.label10);
             this.groupBoxInvoiceType.Controls.Add(this.comboBoxInvoiceTypes);
             this.groupBoxInvoiceType.Controls.Add(this.label2);
             this.groupBoxInvoiceType.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -246,6 +333,21 @@
             this.groupBoxInvoiceType.TabIndex = 34;
             this.groupBoxInvoiceType.TabStop = false;
             this.groupBoxInvoiceType.Text = "Invoice Type";
+            // 
+            // label10
+            // 
+            this.label10.AutoEllipsis = true;
+            this.label10.AutoSize = true;
+            this.label10.BackColor = System.Drawing.Color.Transparent;
+            this.label10.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.Color.Red;
+            this.label10.Location = new System.Drawing.Point(101, 52);
+            this.label10.Margin = new System.Windows.Forms.Padding(0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(20, 23);
+            this.label10.TabIndex = 27;
+            this.label10.Text = "*";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // comboBoxInvoiceTypes
             // 
@@ -305,15 +407,32 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.label11);
             this.groupBox5.Controls.Add(this.cBoxVisitType);
             this.groupBox5.Controls.Add(this.label30);
             this.groupBox5.Font = new System.Drawing.Font("Times New Roman", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox5.Location = new System.Drawing.Point(1088, 490);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(314, 118);
+            this.groupBox5.Size = new System.Drawing.Size(332, 118);
             this.groupBox5.TabIndex = 34;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Assign Visit Type";
+            // 
+            // label11
+            // 
+            this.label11.AutoEllipsis = true;
+            this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.Color.Transparent;
+            this.label11.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.Red;
+            this.label11.Location = new System.Drawing.Point(85, 50);
+            this.label11.Margin = new System.Windows.Forms.Padding(0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(20, 23);
+            this.label11.TabIndex = 25;
+            this.label11.Text = "*";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.label11.Click += new System.EventHandler(this.label11_Click);
             // 
             // cBoxVisitType
             // 
@@ -323,9 +442,9 @@
             this.cBoxVisitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cBoxVisitType.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cBoxVisitType.FormattingEnabled = true;
-            this.cBoxVisitType.Location = new System.Drawing.Point(124, 59);
+            this.cBoxVisitType.Location = new System.Drawing.Point(110, 58);
             this.cBoxVisitType.Name = "cBoxVisitType";
-            this.cBoxVisitType.Size = new System.Drawing.Size(169, 30);
+            this.cBoxVisitType.Size = new System.Drawing.Size(183, 30);
             this.cBoxVisitType.TabIndex = 15;
             this.cBoxVisitType.ValueMember = "description";
             this.cBoxVisitType.SelectedIndexChanged += new System.EventHandler(this.cBoxVisitType_SelectedIndexChanged);
@@ -342,6 +461,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.label13);
+            this.groupBox4.Controls.Add(this.label9);
             this.groupBox4.Controls.Add(this.cBoxAssignValue);
             this.groupBox4.Controls.Add(this.cBoxAssignType);
             this.groupBox4.Controls.Add(this.label34);
@@ -353,6 +474,36 @@
             this.groupBox4.TabIndex = 33;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Patient Assignment";
+            // 
+            // label13
+            // 
+            this.label13.AutoEllipsis = true;
+            this.label13.AutoSize = true;
+            this.label13.BackColor = System.Drawing.Color.Transparent;
+            this.label13.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.Color.Red;
+            this.label13.Location = new System.Drawing.Point(91, 84);
+            this.label13.Margin = new System.Windows.Forms.Padding(0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(20, 23);
+            this.label13.TabIndex = 31;
+            this.label13.Text = "*";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
+            // label9
+            // 
+            this.label9.AutoEllipsis = true;
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.Color.Red;
+            this.label9.Location = new System.Drawing.Point(91, 43);
+            this.label9.Margin = new System.Windows.Forms.Padding(0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(20, 23);
+            this.label9.TabIndex = 26;
+            this.label9.Text = "*";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // cBoxAssignValue
             // 
@@ -404,6 +555,8 @@
             // 
             // groupBoxPatientType
             // 
+            this.groupBoxPatientType.Controls.Add(this.lblAstrixOrg);
+            this.groupBoxPatientType.Controls.Add(this.label12);
             this.groupBoxPatientType.Controls.Add(this.comboBoxOrgnization);
             this.groupBoxPatientType.Controls.Add(this.comboBoxPatientType);
             this.groupBoxPatientType.Controls.Add(this.lblOrganization);
@@ -416,6 +569,36 @@
             this.groupBoxPatientType.TabStop = false;
             this.groupBoxPatientType.Text = "Patient Type";
             // 
+            // lblAstrixOrg
+            // 
+            this.lblAstrixOrg.AutoEllipsis = true;
+            this.lblAstrixOrg.AutoSize = true;
+            this.lblAstrixOrg.BackColor = System.Drawing.Color.Transparent;
+            this.lblAstrixOrg.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAstrixOrg.ForeColor = System.Drawing.Color.Red;
+            this.lblAstrixOrg.Location = new System.Drawing.Point(113, 82);
+            this.lblAstrixOrg.Margin = new System.Windows.Forms.Padding(0);
+            this.lblAstrixOrg.Name = "lblAstrixOrg";
+            this.lblAstrixOrg.Size = new System.Drawing.Size(20, 23);
+            this.lblAstrixOrg.TabIndex = 31;
+            this.lblAstrixOrg.Text = "*";
+            this.lblAstrixOrg.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
+            // label12
+            // 
+            this.label12.AutoEllipsis = true;
+            this.label12.AutoSize = true;
+            this.label12.BackColor = System.Drawing.Color.Transparent;
+            this.label12.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.Color.Red;
+            this.label12.Location = new System.Drawing.Point(115, 42);
+            this.label12.Margin = new System.Windows.Forms.Padding(0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(20, 23);
+            this.label12.TabIndex = 26;
+            this.label12.Text = "*";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
             // comboBoxOrgnization
             // 
             this.comboBoxOrgnization.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
@@ -426,7 +609,7 @@
             this.comboBoxOrgnization.Items.AddRange(new object[] {
             "Cash",
             "Credit"});
-            this.comboBoxOrgnization.Location = new System.Drawing.Point(127, 84);
+            this.comboBoxOrgnization.Location = new System.Drawing.Point(130, 84);
             this.comboBoxOrgnization.Name = "comboBoxOrgnization";
             this.comboBoxOrgnization.Size = new System.Drawing.Size(202, 30);
             this.comboBoxOrgnization.TabIndex = 30;
@@ -442,7 +625,7 @@
             this.comboBoxPatientType.Items.AddRange(new object[] {
             "Cash",
             "Credit"});
-            this.comboBoxPatientType.Location = new System.Drawing.Point(127, 46);
+            this.comboBoxPatientType.Location = new System.Drawing.Point(132, 46);
             this.comboBoxPatientType.Name = "comboBoxPatientType";
             this.comboBoxPatientType.Size = new System.Drawing.Size(202, 30);
             this.comboBoxPatientType.TabIndex = 29;
@@ -452,7 +635,7 @@
             // 
             this.lblOrganization.AutoSize = true;
             this.lblOrganization.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOrganization.Location = new System.Drawing.Point(9, 90);
+            this.lblOrganization.Location = new System.Drawing.Point(20, 88);
             this.lblOrganization.Name = "lblOrganization";
             this.lblOrganization.Size = new System.Drawing.Size(128, 23);
             this.lblOrganization.TabIndex = 28;
@@ -473,9 +656,9 @@
             this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel9.Controls.Add(this.btnUploadPhoto);
             this.panel9.Controls.Add(this.pictureBoxPatientProfile);
-            this.panel9.Location = new System.Drawing.Point(1134, 121);
+            this.panel9.Location = new System.Drawing.Point(1188, 84);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(223, 300);
+            this.panel9.Size = new System.Drawing.Size(232, 244);
             this.panel9.TabIndex = 30;
             // 
             // btnUploadPhoto
@@ -483,9 +666,9 @@
             this.btnUploadPhoto.BackColor = System.Drawing.Color.DarkTurquoise;
             this.btnUploadPhoto.Font = new System.Drawing.Font("Times New Roman", 14F, System.Drawing.FontStyle.Bold);
             this.btnUploadPhoto.ForeColor = System.Drawing.Color.White;
-            this.btnUploadPhoto.Location = new System.Drawing.Point(49, 212);
+            this.btnUploadPhoto.Location = new System.Drawing.Point(62, 191);
             this.btnUploadPhoto.Name = "btnUploadPhoto";
-            this.btnUploadPhoto.Size = new System.Drawing.Size(116, 54);
+            this.btnUploadPhoto.Size = new System.Drawing.Size(94, 48);
             this.btnUploadPhoto.TabIndex = 3;
             this.btnUploadPhoto.Text = "Upload";
             this.btnUploadPhoto.UseVisualStyleBackColor = false;
@@ -493,10 +676,12 @@
             // 
             // pictureBoxPatientProfile
             // 
-            this.pictureBoxPatientProfile.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxPatientProfile.Image")));
-            this.pictureBoxPatientProfile.Location = new System.Drawing.Point(22, 28);
+            this.pictureBoxPatientProfile.BackColor = System.Drawing.Color.LightGray;
+            this.pictureBoxPatientProfile.Image = global::Patient_Managment_System.Properties.Resources._988_9886269_blank_person_facebook_no_profile;
+            this.pictureBoxPatientProfile.InitialImage = null;
+            this.pictureBoxPatientProfile.Location = new System.Drawing.Point(26, 8);
             this.pictureBoxPatientProfile.Name = "pictureBoxPatientProfile";
-            this.pictureBoxPatientProfile.Size = new System.Drawing.Size(177, 170);
+            this.pictureBoxPatientProfile.Size = new System.Drawing.Size(177, 175);
             this.pictureBoxPatientProfile.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxPatientProfile.TabIndex = 0;
             this.pictureBoxPatientProfile.TabStop = false;
@@ -586,6 +771,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.txtRegAmount);
             this.groupBox2.Controls.Add(this.cBoxRegType);
             this.groupBox2.Controls.Add(this.label47);
@@ -597,6 +784,36 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Registration Fee";
+            // 
+            // label8
+            // 
+            this.label8.AutoEllipsis = true;
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.Red;
+            this.label8.Location = new System.Drawing.Point(110, 104);
+            this.label8.Margin = new System.Windows.Forms.Padding(0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(20, 23);
+            this.label8.TabIndex = 25;
+            this.label8.Text = "*";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
+            // label7
+            // 
+            this.label7.AutoEllipsis = true;
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.Red;
+            this.label7.Location = new System.Drawing.Point(112, 53);
+            this.label7.Margin = new System.Windows.Forms.Padding(0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(20, 23);
+            this.label7.TabIndex = 22;
+            this.label7.Text = "*";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // txtRegAmount
             // 
@@ -899,7 +1116,6 @@
             this.txtPhone.Size = new System.Drawing.Size(280, 30);
             this.txtPhone.TabIndex = 5;
             this.txtPhone.TextChanged += new System.EventHandler(this.txtPhone_TextChanged);
-            this.txtPhone.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPhone_KeyPress);
             // 
             // txtAge
             // 
@@ -1030,34 +1246,91 @@
             // 
             // sidePanelForPatintInfo
             // 
+            this.sidePanelForPatintInfo.AllowResize = false;
             this.sidePanelForPatintInfo.AutoScroll = true;
-            this.sidePanelForPatintInfo.Controls.Add(this.lblPatientLog);
-            this.sidePanelForPatintInfo.Controls.Add(this.gridControlPatienLog);
-            this.sidePanelForPatintInfo.Controls.Add(this.lblArrivalHisttory);
-            this.sidePanelForPatintInfo.Controls.Add(this.gridControlPatientDataSide);
+            this.sidePanelForPatintInfo.Controls.Add(this.panel2);
+            this.sidePanelForPatintInfo.Controls.Add(this.panelPatientHistoryCard2);
+            this.sidePanelForPatintInfo.Controls.Add(this.panelPatientHistoryCard3);
             this.sidePanelForPatintInfo.Location = new System.Drawing.Point(0, 112);
             this.sidePanelForPatintInfo.Name = "sidePanelForPatintInfo";
-            this.sidePanelForPatintInfo.Size = new System.Drawing.Size(304, 530);
+            this.sidePanelForPatintInfo.Size = new System.Drawing.Size(300, 520);
             this.sidePanelForPatintInfo.TabIndex = 27;
             this.sidePanelForPatintInfo.Text = "sidePanel1";
             this.sidePanelForPatintInfo.Click += new System.EventHandler(this.sidePanelForPatintInfo_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.gridControlPatientDepositHistory);
+            this.panel2.Controls.Add(this.label14);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(0, 546);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(279, 136);
+            this.panel2.TabIndex = 30;
+            // 
+            // gridControlPatientDepositHistory
+            // 
+            this.gridControlPatientDepositHistory.Location = new System.Drawing.Point(10, 21);
+            this.gridControlPatientDepositHistory.MainView = this.cardViewPatientDepositHistory;
+            this.gridControlPatientDepositHistory.Name = "gridControlPatientDepositHistory";
+            this.gridControlPatientDepositHistory.Size = new System.Drawing.Size(346, 111);
+            this.gridControlPatientDepositHistory.TabIndex = 2;
+            this.gridControlPatientDepositHistory.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.cardViewPatientDepositHistory});
+            // 
+            // cardViewPatientDepositHistory
+            // 
+            this.cardViewPatientDepositHistory.Appearance.FieldCaption.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cardViewPatientDepositHistory.Appearance.FieldCaption.Options.UseFont = true;
+            this.cardViewPatientDepositHistory.Appearance.FieldValue.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cardViewPatientDepositHistory.Appearance.FieldValue.Options.UseFont = true;
+            this.cardViewPatientDepositHistory.CardWidth = 260;
+            this.cardViewPatientDepositHistory.GridControl = this.gridControlPatientDepositHistory;
+            this.cardViewPatientDepositHistory.Name = "cardViewPatientDepositHistory";
+            this.cardViewPatientDepositHistory.OptionsBehavior.Editable = false;
+            this.cardViewPatientDepositHistory.OptionsView.ShowCardCaption = false;
+            this.cardViewPatientDepositHistory.OptionsView.ShowCardExpandButton = false;
+            this.cardViewPatientDepositHistory.OptionsView.ShowQuickCustomizeButton = false;
+            this.cardViewPatientDepositHistory.VertScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Auto;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(79, 1);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(237, 22);
+            this.label14.TabIndex = 3;
+            this.label14.Text = "Patient  DepositInformation";
+            // 
+            // panelPatientHistoryCard2
+            // 
+            this.panelPatientHistoryCard2.AutoSize = true;
+            this.panelPatientHistoryCard2.Controls.Add(this.lblPatientLog);
+            this.panelPatientHistoryCard2.Controls.Add(this.gridControlPatienLog);
+            this.panelPatientHistoryCard2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelPatientHistoryCard2.Location = new System.Drawing.Point(0, 354);
+            this.panelPatientHistoryCard2.Name = "panelPatientHistoryCard2";
+            this.panelPatientHistoryCard2.Size = new System.Drawing.Size(279, 192);
+            this.panelPatientHistoryCard2.TabIndex = 28;
+            this.panelPatientHistoryCard2.Paint += new System.Windows.Forms.PaintEventHandler(this.panelPatientHistoryCard2_Paint);
             // 
             // lblPatientLog
             // 
             this.lblPatientLog.AutoSize = true;
             this.lblPatientLog.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPatientLog.Location = new System.Drawing.Point(3, 309);
+            this.lblPatientLog.Location = new System.Drawing.Point(18, 0);
             this.lblPatientLog.Name = "lblPatientLog";
-            this.lblPatientLog.Size = new System.Drawing.Size(170, 22);
+            this.lblPatientLog.Size = new System.Drawing.Size(253, 22);
             this.lblPatientLog.TabIndex = 3;
-            this.lblPatientLog.Text = "Patient Log History";
+            this.lblPatientLog.Text = "Patient  Additionl Information";
             // 
             // gridControlPatienLog
             // 
-            this.gridControlPatienLog.Location = new System.Drawing.Point(2, 329);
+            this.gridControlPatienLog.Location = new System.Drawing.Point(3, 12);
             this.gridControlPatienLog.MainView = this.cardViewPatientLog;
             this.gridControlPatienLog.Name = "gridControlPatienLog";
-            this.gridControlPatienLog.Size = new System.Drawing.Size(274, 246);
+            this.gridControlPatienLog.Size = new System.Drawing.Size(280, 177);
             this.gridControlPatienLog.TabIndex = 2;
             this.gridControlPatienLog.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.cardViewPatientLog});
@@ -1074,25 +1347,82 @@
             this.cardViewPatientLog.OptionsBehavior.Editable = false;
             this.cardViewPatientLog.OptionsView.ShowCardCaption = false;
             this.cardViewPatientLog.OptionsView.ShowCardExpandButton = false;
+            this.cardViewPatientLog.OptionsView.ShowHorzScrollBar = false;
             this.cardViewPatientLog.OptionsView.ShowQuickCustomizeButton = false;
             this.cardViewPatientLog.VertScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Auto;
+            // 
+            // panelPatientHistoryCard3
+            // 
+            this.panelPatientHistoryCard3.Controls.Add(this.lblArrivalHisttory);
+            this.panelPatientHistoryCard3.Controls.Add(this.gridControlVochourHistoryCard);
+            this.panelPatientHistoryCard3.Controls.Add(this.gridControlPatientDataSide);
+            this.panelPatientHistoryCard3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelPatientHistoryCard3.Location = new System.Drawing.Point(0, 0);
+            this.panelPatientHistoryCard3.Name = "panelPatientHistoryCard3";
+            this.panelPatientHistoryCard3.Size = new System.Drawing.Size(279, 354);
+            this.panelPatientHistoryCard3.TabIndex = 29;
             // 
             // lblArrivalHisttory
             // 
             this.lblArrivalHisttory.AutoSize = true;
             this.lblArrivalHisttory.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblArrivalHisttory.Location = new System.Drawing.Point(3, 23);
+            this.lblArrivalHisttory.Location = new System.Drawing.Point(21, 0);
             this.lblArrivalHisttory.Name = "lblArrivalHisttory";
             this.lblArrivalHisttory.Size = new System.Drawing.Size(195, 22);
             this.lblArrivalHisttory.TabIndex = 1;
             this.lblArrivalHisttory.Text = "Patient Arrival History";
             // 
+            // gridControlVochourHistoryCard
+            // 
+            this.gridControlVochourHistoryCard.Location = new System.Drawing.Point(3, 193);
+            this.gridControlVochourHistoryCard.MainView = this.cardViewPatientVochourHistory;
+            this.gridControlVochourHistoryCard.Name = "gridControlVochourHistoryCard";
+            this.gridControlVochourHistoryCard.Size = new System.Drawing.Size(277, 158);
+            this.gridControlVochourHistoryCard.TabIndex = 2;
+            this.gridControlVochourHistoryCard.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.cardViewPatientVochourHistory,
+            this.cardViewVochourHistory});
+            this.gridControlVochourHistoryCard.Click += new System.EventHandler(this.gridControlVochourHistoryCard_Click);
+            // 
+            // cardViewPatientVochourHistory
+            // 
+            this.cardViewPatientVochourHistory.Appearance.FieldCaption.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Bold);
+            this.cardViewPatientVochourHistory.Appearance.FieldCaption.Options.UseFont = true;
+            this.cardViewPatientVochourHistory.Appearance.FieldValue.Font = new System.Drawing.Font("Times New Roman", 11.25F);
+            this.cardViewPatientVochourHistory.Appearance.FieldValue.Options.UseFont = true;
+            this.cardViewPatientVochourHistory.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            this.cardViewPatientVochourHistory.CardWidth = 250;
+            this.cardViewPatientVochourHistory.GridControl = this.gridControlVochourHistoryCard;
+            this.cardViewPatientVochourHistory.Name = "cardViewPatientVochourHistory";
+            this.cardViewPatientVochourHistory.OptionsBehavior.Editable = false;
+            this.cardViewPatientVochourHistory.OptionsFind.AllowFindPanel = false;
+            this.cardViewPatientVochourHistory.OptionsView.ShowCardCaption = false;
+            this.cardViewPatientVochourHistory.OptionsView.ShowCardExpandButton = false;
+            this.cardViewPatientVochourHistory.OptionsView.ShowFilterPanelMode = DevExpress.XtraGrid.Views.Base.ShowFilterPanelMode.Never;
+            this.cardViewPatientVochourHistory.OptionsView.ShowLines = false;
+            this.cardViewPatientVochourHistory.OptionsView.ShowQuickCustomizeButton = false;
+            // 
+            // cardViewVochourHistory
+            // 
+            this.cardViewVochourHistory.Appearance.FieldCaption.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cardViewVochourHistory.Appearance.FieldCaption.Options.UseFont = true;
+            this.cardViewVochourHistory.Appearance.FieldValue.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cardViewVochourHistory.Appearance.FieldValue.Options.UseFont = true;
+            this.cardViewVochourHistory.CardWidth = 260;
+            this.cardViewVochourHistory.GridControl = this.gridControlVochourHistoryCard;
+            this.cardViewVochourHistory.Name = "cardViewVochourHistory";
+            this.cardViewVochourHistory.OptionsBehavior.Editable = false;
+            this.cardViewVochourHistory.OptionsView.ShowCardCaption = false;
+            this.cardViewVochourHistory.OptionsView.ShowCardExpandButton = false;
+            this.cardViewVochourHistory.OptionsView.ShowQuickCustomizeButton = false;
+            this.cardViewVochourHistory.VertScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Auto;
+            // 
             // gridControlPatientDataSide
             // 
-            this.gridControlPatientDataSide.Location = new System.Drawing.Point(3, 43);
+            this.gridControlPatientDataSide.Location = new System.Drawing.Point(3, 17);
             this.gridControlPatientDataSide.MainView = this.cardViewArrivalHistory;
             this.gridControlPatientDataSide.Name = "gridControlPatientDataSide";
-            this.gridControlPatientDataSide.Size = new System.Drawing.Size(273, 246);
+            this.gridControlPatientDataSide.Size = new System.Drawing.Size(277, 177);
             this.gridControlPatientDataSide.TabIndex = 0;
             this.gridControlPatientDataSide.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.cardViewArrivalHistory});
@@ -1109,15 +1439,17 @@
             this.cardViewArrivalHistory.OptionsBehavior.Editable = false;
             this.cardViewArrivalHistory.OptionsView.ShowCardCaption = false;
             this.cardViewArrivalHistory.OptionsView.ShowCardExpandButton = false;
+            this.cardViewArrivalHistory.OptionsView.ShowHorzScrollBar = false;
+            this.cardViewArrivalHistory.OptionsView.ShowLines = false;
             this.cardViewArrivalHistory.OptionsView.ShowQuickCustomizeButton = false;
             this.cardViewArrivalHistory.VertScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Auto;
             // 
             // gridControlPatient
             // 
-            this.gridControlPatient.Location = new System.Drawing.Point(310, 115);
+            this.gridControlPatient.Location = new System.Drawing.Point(303, 112);
             this.gridControlPatient.MainView = this.gridViewPatients;
             this.gridControlPatient.Name = "gridControlPatient";
-            this.gridControlPatient.Size = new System.Drawing.Size(1151, 531);
+            this.gridControlPatient.Size = new System.Drawing.Size(1154, 518);
             this.gridControlPatient.TabIndex = 26;
             this.gridControlPatient.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridViewPatients});
@@ -1134,6 +1466,18 @@
             this.gridViewPatients.Appearance.FocusedRow.ForeColor = System.Drawing.Color.White;
             this.gridViewPatients.Appearance.FocusedRow.Options.UseBackColor = true;
             this.gridViewPatients.Appearance.FocusedRow.Options.UseForeColor = true;
+            this.gridViewPatients.Appearance.HeaderPanel.Font = new System.Drawing.Font("Times New Roman", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gridViewPatients.Appearance.HeaderPanel.ForeColor = System.Drawing.Color.Black;
+            this.gridViewPatients.Appearance.HeaderPanel.Options.UseFont = true;
+            this.gridViewPatients.Appearance.HeaderPanel.Options.UseForeColor = true;
+            this.gridViewPatients.Appearance.Row.BackColor = System.Drawing.Color.Transparent;
+            this.gridViewPatients.Appearance.Row.BorderColor = System.Drawing.Color.Transparent;
+            this.gridViewPatients.Appearance.Row.Font = new System.Drawing.Font("Times New Roman", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.gridViewPatients.Appearance.Row.ForeColor = System.Drawing.Color.Transparent;
+            this.gridViewPatients.Appearance.Row.Options.UseBackColor = true;
+            this.gridViewPatients.Appearance.Row.Options.UseBorderColor = true;
+            this.gridViewPatients.Appearance.Row.Options.UseFont = true;
+            this.gridViewPatients.Appearance.Row.Options.UseForeColor = true;
             this.gridViewPatients.GridControl = this.gridControlPatient;
             this.gridViewPatients.Name = "gridViewPatients";
             this.gridViewPatients.OptionsBehavior.Editable = false;
@@ -1550,6 +1894,8 @@
             this.xtraTabPageGeneral.ResumeLayout(false);
             this.panelGeneral.ResumeLayout(false);
             this.panelGeneral.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBoxInvoiceType.ResumeLayout(false);
             this.groupBoxInvoiceType.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -1571,8 +1917,19 @@
             this.panelPatientDocument.ResumeLayout(false);
             this.sidePanelForPatintInfo.ResumeLayout(false);
             this.sidePanelForPatintInfo.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlPatientDepositHistory)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cardViewPatientDepositHistory)).EndInit();
+            this.panelPatientHistoryCard2.ResumeLayout(false);
+            this.panelPatientHistoryCard2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridControlPatienLog)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cardViewPatientLog)).EndInit();
+            this.panelPatientHistoryCard3.ResumeLayout(false);
+            this.panelPatientHistoryCard3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControlVochourHistoryCard)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cardViewPatientVochourHistory)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cardViewVochourHistory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControlPatientDataSide)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cardViewArrivalHistory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControlPatient)).EndInit();
@@ -1708,6 +2065,28 @@
         private DevExpress.XtraGrid.Views.Grid.GridView gridViewAppointmentDocument;
         private DevExpress.XtraEditors.SeparatorControl separatorControl1;
         private DevExpress.XtraEditors.SimpleButton btnExit;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.TextBox txtBoxKinPhone;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtBoxKinName;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Panel panelPatientHistoryCard2;
+        private System.Windows.Forms.Panel panelPatientHistoryCard3;
+        private System.Windows.Forms.Label label14;
+        private DevExpress.XtraGrid.GridControl gridControlPatientDepositHistory;
+        private DevExpress.XtraGrid.Views.Card.CardView cardViewPatientDepositHistory;
+        private System.Windows.Forms.Label lblAstrixOrg;
+        private DevExpress.XtraGrid.GridControl gridControlVochourHistoryCard;
+        private DevExpress.XtraGrid.Views.Card.CardView cardViewVochourHistory;
+        private System.Windows.Forms.Panel panel2;
+        private DevExpress.XtraGrid.Views.Card.CardView cardViewPatientVochourHistory;
     }
 }
 

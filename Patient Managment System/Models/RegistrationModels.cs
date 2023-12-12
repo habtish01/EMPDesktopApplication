@@ -29,7 +29,7 @@ namespace Patient_Managment_System.Models
     //patient table in database
     public class Patient
     {
-       public int id { get; set; }
+        public int id { get; set; }
         public string person_id { get; set; }
 
     }
@@ -48,7 +48,7 @@ namespace Patient_Managment_System.Models
 
     public class PatientDto
     {
-       
+
         public string PersonID { get; set; }
         public int PatientID { get; set; }
         public int LocationID { get; set; }
@@ -67,7 +67,7 @@ namespace Patient_Managment_System.Models
         public string City { get; set; }
         public string SubCity { get; set; }
         public string Kebele { get; set; }
-        public string HouseNo { get; set;}
+        public string HouseNo { get; set; }
         public int VisitStatusID { get; set; }
         public string VochourCode { get; set; }
         public DateTime LastArrivalDate { get; set; }
@@ -77,7 +77,7 @@ namespace Patient_Managment_System.Models
         public int AssignmentType { get; set; }
         public string AssignedValue { get; set; }
         public string DeviceName { get; set; }
-        public string color { get; set; }   
+        public string color { get; set; }
         public bool Active { get; set; }
     }
     public class PatientDocument
@@ -88,25 +88,20 @@ namespace Patient_Managment_System.Models
         public string Gender { get; set; }
         public string PhoneNumber { get; set; }
         public string VisitLocation { get; set; }
+        public string VisitStatus { get; set; }
         public DateTime VisitStartDate { get; set; }
         public DateTime? VisitEndDate { get; set; }
-        public string VisitStatus { get; set; }
-        public string City { get; set; }
-        public string SubCity { get; set; }
-        public string Kebele { get; set; }
-        public string HouseNo { get; set; }
-        public DateTime DateRegistered { get; set; }
-        public string VochourCode { get; set; }
         public string LastArrivalDate { get; set; }
         public string LastInvoiceDate { get; set; }
+        public DateTime DateRegistered { get; set; }
+        public string Address { get; set; }    
         public string DeviceName { get; set; }
-        
+
     }
     public class PatientHistory
     {
-        public string Id { get; set; }
-        public string VochourCode { get; set; }
-        public string Name { get; set; }
+        public string Id { get; set; }            
+        public string FullName { get; set; }
         public string DateRegistered { get; set; }
         public string VisitLocation { get; set; }
         public string VisitStatus { get; set; }
@@ -115,6 +110,13 @@ namespace Patient_Managment_System.Models
 
 
     }
+    public class RegisterCodeHostory
+    {
+        public string Code { get; set; }
+        public string GrandTotal { get; set; }
+        public DateTime Date { get; set; }
+        public string CardType { get; set; }
+    }
 
     public class Regestrationfee
     {
@@ -122,10 +124,10 @@ namespace Patient_Managment_System.Models
         public string value { get; set; }
     }
 
- 
+
     public class ComoBoxList
     {
-        public int Id { get; set; }  
+        public int Id { get; set; }
         public string Description { get; set; }
     }
     public class Doctor
@@ -143,7 +145,7 @@ namespace Patient_Managment_System.Models
         public int uom { get; set; }
         public int Reference { get; set; }
         public int Price { get; set; }
-        public string value { get; set; }    
+        public string value { get; set; }
         public string item_Id { get; set; }
 
 
@@ -152,11 +154,11 @@ namespace Patient_Managment_System.Models
     {
         public int id { get; set; }
         public string description { get; set; }
-        public string type { get; set; }     
+        public string type { get; set; }
         public string value { get; set; }
         public bool is_active { get; set; }
         public string remark { get; set; }
-      
+
 
 
     }
@@ -174,12 +176,12 @@ namespace Patient_Managment_System.Models
     }
     public class MenuDefinition
     {
-        public int id { get; set; } 
-        public string name { get; set; }    
-        public string parent { get; set; }  
-        public string abbreviation { get; set;}
+        public int id { get; set; }
+        public string name { get; set; }
+        public string parent { get; set; }
+        public string abbreviation { get; set; }
         public bool is_active { get; set; }
-        public string remark { get; set; }  
+        public string remark { get; set; }
     }
     public class Room
     {
@@ -230,7 +232,7 @@ namespace Patient_Managment_System.Models
         public int id { get; set; }
         public string description { get; set; }
         public DateTime start_date { get; set; }
-        public DateTime end_date { get; set;}
+        public DateTime end_date { get; set; }
         public string remark { get; set; }
     }
     public class InvoiceOperation
@@ -260,7 +262,7 @@ namespace Patient_Managment_System.Models
         public int location_id { get; set; }
         public int patient_id { get; set; }
         public DateTime start_date { get; set; }
-        public DateTime? end_date { get; set;}
+        public DateTime? end_date { get; set; }
         public int status_id { get; set; }
     }
     public class PatientAssignment
@@ -276,6 +278,7 @@ namespace Patient_Managment_System.Models
     {
         public int patient_id { get; set; }
         public int location_id { get; set; }
+        public DateTime end_date { get; set; }
         public int status_id { get; set; }
     }
     public class UpdateInvoice
@@ -285,6 +288,76 @@ namespace Patient_Managment_System.Models
 
         public int last_operation { get; set; }
     }
+    public class Organization
+    {
+        public string id { get; set; }
+        public string brandName{get; set;}
+    }
+    public class NextofKin
+    {
+        public  int id { get; set; }
+        public int patient_id { get; set; }
+        public string kin_name { get; set; }
+        public string kin_phone { get; set; }
+        public string remark { get; set; }
+    }
+    public class OrganizationalCustomer
+    {
+        public int id { get; set; }
+        public int patient_id { get; set; }
+        public string organization_id { get; set; }
+    }
+    public class DepositHistory
+    {
+        public string Code { get; set; }
+        public string GrandTotal { get; set; }
+        public string Date { get; set; }
+        public int InvoiceType { get; set; }
+        public int PatientID { get; set; }
+    }
+    public class DepositHistoryDocument
+    {
+        public string DepositID { get; set; }  
+        public string DepositAmount { get; set; }  
+        public string DepositedDate { get; set; }
+    }
+    public class RegisterationInvoiceHistory
+    {
+        public string Code { get; set; }
+        public DateTime Date { get; set; }
+        public decimal GrandTotal { get; set; }
+        public string CardType { get; set; }
+        public int PatientID { get; set; }
+        public int InvoiceType { get; set; }
+    }
+    public class PatientKinData
+    {
+        public string kin_name { get; set; }
+        public string kin_phone { get; set; }              
+        public int patient_id { get; set; }
+    }
+    public class PatientInfoDisplay
+    {
+        public string  Address { get; set; }
+        public string Orgaanization { get; set; }
+        public string KinName { get; set; }
+        public string KinPhone { get; set; }
+    }
+    public class PatientRelation
+    {
+        public string brandName { get; set; }
+        public int patient_id { get; set; }
+       
+    }
+
+
+    public class SaveImageUrl
+    {
+        public int patient_id { get; set; }
+        public string image_url { get; set;}
+    }
+
     #endregion
+
 
 }

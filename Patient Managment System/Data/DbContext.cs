@@ -464,7 +464,7 @@ namespace Patient_Managment_System.Data_Access_Layer
             try
             {
                 SqlConnection connection = new SqlConnection(connectionString);               
-                string sql = "UPDATE general.visit SET status_id =@status_id WHERE patient_id = @patient_id";
+                string sql = "UPDATE general.visit SET status_id =@status_id,end_date=@end_date WHERE patient_id = @patient_id";
                 int rows = connection.Execute(sql, updateVisit);
                 if (rows > 0)
                 {
@@ -1001,6 +1001,160 @@ namespace Patient_Managment_System.Data_Access_Layer
                 response.ErrorMessage = "For Update Invoice Excution\n" + ex.Message;
                 return response;
             }
+        }
+        public List<Organization> getOrganization(int type)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string sql = @"select id,brandName from general.organization                                                       
+                                                        WHERE type = @type";
+
+                var organizations = conn.Query<Organization>(sql, new { type }).ToList();
+                return organizations;   
+
+            }   
+
+
+        }
+        public Response saveNextOfKin(NextofKin nextofKin)
+        {
+            Response response = new Response();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string sql = @"INSERT INTO [general].[patientadditionalinfo]
+                                                         ([patient_id]
+                                                         ,[kin_name]
+                                                         ,[kin_phone]
+                                                         ,[remark])
+                                                   VALUES
+                                                         (@patient_id
+                                                         ,@kin_name
+                                                         ,@kin_phone
+                                                         ,@remark)";
+
+                    var rows = conn.Execute(sql, nextofKin);
+                    if (rows > 0)
+                    {
+                        response.IsPassed = true;
+                        response.SuccessMessage = "Next of Kin Registered Successfully";
+                        return response;
+                    }
+                    else
+                    {
+                        response.IsPassed = false;
+                        response.ErrorMessage = "Next of Kin Registration Failled";
+                        return response;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.IsPassed = false;
+                response.ErrorMessage = "For Next of Kin registration Excution\n" + ex.Message;
+                return response;
+            }
+        }
+        public Response saveOrganizationalCustomer(OrganizationalCustomer organizationalCustomer)
+        {
+            Response response = new Response();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string sql = @"INSERT INTO [general].[patient_relation]
+                                                         ([patient_id]
+                                                         ,[organization_id])
+                                                   VALUES
+                                                         (@patient_id
+                                                         ,@organization_id)";
+
+                    var rows = conn.Execute(sql, organizationalCustomer);
+                    if (rows > 0)
+                    {
+                        response.IsPassed = true;
+                        response.SuccessMessage = "Organizational Customer Registered Successfully";
+                        return response;
+                    }
+                    else
+                    {
+                        response.IsPassed = false;
+                        response.ErrorMessage = "Organizational Customer Registration Failled";
+                        return response;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response.IsPassed = false;
+                response.ErrorMessage = "For Organizational Customer Registration Excution\n" + ex.Message;
+                return response;
+            }
+        }
+        public List<DepositHistory> getDepositHistory()
+        {
+            SqlConnection conn = new SqlConnection(connectionString);
+            string sql = @"select *from [general].PatientDepositHistory";
+            var depositHistory=conn.Query<DepositHistory>(sql).ToList();
+            return depositHistory;
+        }
+
+        public List<RegisterationInvoiceHistory> getRegistrationInvoiceHistory(int invoiceType)
+        {
+            SqlConnection conn = new SqlConnection(connectionString);
+            string sql = @"select *from [general].RegistrationInvoiceHistory where InvoiceType=@invoiceType";
+            var history=conn.Query<RegisterationInvoiceHistory>(sql,new { invoiceType }).ToList();    
+            return history;     
+        }
+        public List<PatientKinData> getPatientKinInfo()
+        {
+            SqlConnection conn = new SqlConnection(connectionString);
+            string sql = @"select *from [EMR].[general].[patientadditionalinfo]";
+            var patientKinfos = conn.Query<PatientKinData>(sql).ToList();
+            return patientKinfos;
+        }
+        public Response saveImageUrl(SaveImageUrl saveImageUrl)
+        {
+            Response response = new Response();
+            try
+            {
+                SqlConnection connection= new SqlConnection(connectionString);
+                string sql = @"INSERT INTO [general].[attachment]
+                                                                ([patient_id]
+                                                                ,[image_url])
+                                                          VALUES
+                                                                 (@patient_id
+                                                                 ,@image_url)";
+                int rows = connection.Execute(sql, saveImageUrl);
+                if(rows>0)
+                {
+                    response.SuccessMessage = "Image Saved Sucessfully";
+                    response.IsPassed = true;
+                    return response;
+                }
+                else
+                {
+                    response.ErrorMessage = "Image Saving Failed";
+                    response.IsPassed = false;
+                    return response;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessage = "In Image Saving Excution"+ex.Message;
+                response.IsPassed = false;
+                return response;
+            }
+        }
+        public List<PatientRelation> getPatientOrganizationName()
+        {
+            SqlConnection conn = new SqlConnection(connectionString);
+            string sql = @"select brandName,patient_id from [general].PatientRelation";
+            var patientOrganiations = conn.Query<PatientRelation>(sql).ToList();
+            return patientOrganiations;
         }
     }
 }
